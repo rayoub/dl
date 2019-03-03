@@ -1,0 +1,33 @@
+
+# data directories
+data/pdbstyle-2.07
+
+# big data files
+data/astral-rapid-access-2.07-stable.raf
+data/astral-scopedom-atom-gd-all-2.07-stable.fa
+data/astral-scopedom-seqres-gd-all-2.07-stable.fa
+data/dir.cla.scope.2.07-stable.txt
+
+# build ignores
+dl-mgr/target/
+
+# file types
+**/*.swp
+**/*.tar
+**/*.pdf
+**/*.aux
+**/*.out
+**/*.bbl
+**/*.blg
+**/*.dvi
+**/*.idx
+**/*.log
+**/nohup.out
+
+# eclim
+**/workbench.xmi
+dl-mgr/.settings/
+dl-mgr/.classpath
+dl-mgr/.project
+dl-mgr/.gitignore
+
