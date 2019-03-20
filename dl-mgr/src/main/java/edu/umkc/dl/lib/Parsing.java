@@ -9,8 +9,8 @@ public class Parsing {
 
     public static class ResidueCoords {
 
-        public int ResidueNumber;
-        public String InsertCode;
+        public int ResidueNumber = Integer.MIN_VALUE;
+        public String InsertCode = "";
     }
 
     public static class MapCoords { 
@@ -24,9 +24,6 @@ public class Parsing {
     public static ResidueCoords parseResidueCoords(String text, boolean negate) {
 
         ResidueCoords coords = new ResidueCoords();
-
-        coords.ResidueNumber = Integer.MIN_VALUE;
-        coords.InsertCode = "";
 
         Matcher matcher = ALPHA_PATTERN.matcher(text);
         if (matcher.find()) {

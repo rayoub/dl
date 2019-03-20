@@ -10,7 +10,7 @@ CREATE TABLE residue
     sse VARCHAR NOT NULL,
     phi NUMERIC NULL,
     psi NUMERIC NULL,
-    descriptor VARCHAR NOT NULL,
+    descriptor VARCHAR NULL,
     ca_x NUMERIC NOT NULL,
     ca_y NUMERIC NOT NULL,
     ca_z NUMERIC NOT NULL,

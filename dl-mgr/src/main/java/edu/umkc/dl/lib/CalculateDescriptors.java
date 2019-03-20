@@ -60,7 +60,12 @@ public class CalculateDescriptors {
                
                     scopId = rs.getString("scop_id").toLowerCase();
                     residueNumber = rs.getInt("residue_number");
-                    insertCode = rs.getString("insert_code").toUpperCase();
+                    if (rs.wasNull()) 
+                        residueNumber = Integer.MIN_VALUE;
+                    insertCode = rs.getString("insert_code");
+                    if (rs.wasNull())
+                        insertCode = "";
+                    insertCode = insertCode.toUpperCase();
                     sequenceText = rs.getString("sequence_text");
                     mapText = rs.getString("map_text");
 
@@ -92,16 +97,37 @@ public class CalculateDescriptors {
 
     private static void calculateForScopId(String scopId, int residueNumber, String insertCode, String sequenceText, String mapText) {
 
-        List<String> seqCodes = Arrays.asList(sequenceText.toLowerCase().split(","));
+        List<String> seqCodes = Arrays.asList(sequenceText.toUpperCase().split(","));
         List<Parsing.MapCoords> mapCoords = Arrays.asList(mapText.split(",")).stream().map(m -> Parsing.parseMapCoords(m)).collect(Collectors.toList());
         List<ResidueDescriptor> residueDescriptors = Db.getResidueDescriptors(scopId);
 
-        residueDescriptors.stream().forEach(rd -> {
-            System.out.println(rd.getDescriptor());
-        });
-
+        System.out.println(scopId + ", " + seqCodes.size() + ", " + mapCoords.size() + ", " + residueDescriptors.size()); 
+       
         // using the sequence residue number and insert code scan for start of sequence in the map text
         
+        // sequence index
+        int i = 0;
+
+        // map index
+        int j = 0;
+        if (residueNumber != Integer.MIN_VALUE) {
+            while (mapCoords.get(j).ResidueNumber != residueNumber || !mapCoords.get(j).InsertCode.equals(insertCode)) {
+                j++;
+            }
+        }
+        else {
+            residueNumber = mapCoords.get(j).ResidueNumber;
+            insertCode = mapCoords.get(j).InsertCode;
+        }
+
+        // residue index
+        int k = 0;
+        while (residueDescriptors.get(k).getResidueNumber() != residueNumber || !residueDescriptors.get(k).getInsertCode().equals(insertCode)) {
+            k++;
+        }
+       
+        System.out.println(scopId + ", " + i + ", " + j + ", " + k);
+        System.out.println(scopId + ", " + residueNumber + ", " + insertCode);
         // once found iterate the map in lockstep with the sequence and residues of the domain
         
         // for missing domain residue insert a _ for descriptor

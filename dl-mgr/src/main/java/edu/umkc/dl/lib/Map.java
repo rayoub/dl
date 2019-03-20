@@ -75,9 +75,9 @@ public class Map extends PGobject {
             + pdbId + "," 
             + chain + "," 
             + (residueNumber1 == Integer.MIN_VALUE ? "" : residueNumber1) + "," 
-            + (insertCode1 == null || insertCode1.equals("null") ? "" : insertCode1) + ","
+            + (insertCode1 == null || insertCode1.toLowerCase().equals("null") ? "" : insertCode1) + ","
             + (residueNumber2 == Integer.MIN_VALUE ? "" : residueNumber2) + "," 
-            + (insertCode2 == null || insertCode2.equals("null") ? "" : insertCode2) + ","
+            + (insertCode2 == null || insertCode2.toLowerCase().equals("null") ? "" : insertCode2) + ","
             + text 
             + ")";
         return row;

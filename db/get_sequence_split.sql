@@ -28,7 +28,7 @@ BEGIN
     SELECT 
         ns.scop_id,
         ns.residue_number,
-        COALESCE(ns.insert_code, '') AS insert_code,
+        ns.insert_code,
         ns.sequence_text,
         ns.map_text
     FROM 

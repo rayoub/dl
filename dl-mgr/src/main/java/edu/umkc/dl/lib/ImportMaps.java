@@ -38,7 +38,7 @@ public class ImportMaps {
                 }
                     
                 String header = line.substring(0,38);
-                String text = splitByFixedWidth(line.substring(38), 7).stream().collect(Collectors.joining("\\,"));
+                String text = splitByFixedWidth(line.substring(38).toUpperCase(), 7).stream().collect(Collectors.joining("\\,"));
                 
                 pdbId = header.substring(0,4).toLowerCase();
                 chain = header.substring(4,6).trim().toUpperCase();

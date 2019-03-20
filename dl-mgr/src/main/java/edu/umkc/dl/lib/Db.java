@@ -45,9 +45,15 @@ public class Db {
 
                 residueDescriptor.setScopId(rs.getString("scop_id"));
                 residueDescriptor.setResidueNumber(rs.getInt("residue_number"));
+                if (rs.wasNull()) 
+                    residueDescriptor.setResidueNumber(Integer.MIN_VALUE);
                 residueDescriptor.setInsertCode(rs.getString("insert_code"));
+                if (rs.wasNull()) 
+                    residueDescriptor.setInsertCode("");
                 residueDescriptor.setResidueCode(rs.getString("residue_code"));
                 residueDescriptor.setDescriptor(rs.getString("descriptor"));
+                if (rs.wasNull()) 
+                    residueDescriptor.setDescriptor("_");
 
                 residueDescriptors.add(residueDescriptor);
             }

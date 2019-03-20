@@ -153,7 +153,7 @@ public class Residue extends PGobject {
     public String getValue() {
         String row = "(" 
             + scopId + "," + atomNumber + ","
-            + residueNumber + "," + (insertCode == null || insertCode.equals("null") ? "" : insertCode) + "," + residueCode + "," 
+            + residueNumber + "," + (insertCode == null || insertCode.toLowerCase().equals("null") ? "" : insertCode) + "," + residueCode + "," 
             + ssa + "," + sse + "," 
             + ((phi == 360.0) ? "" : phi) + "," 
             + ((psi == 360.0) ? "" : psi) + "," 
