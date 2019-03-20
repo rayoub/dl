@@ -239,6 +239,7 @@ public class ImportStructures {
                 Residue residue = new Residue();
 
                 residue.setScopId(scopId);
+                residue.setAtomNumber(ca.getPDBserial());
                 residue.setResidueNumber(g.getResidueNumber().getSeqNum());
                 residue.setResidueCode(String.valueOf(g.getResidueNumber().getInsCode()));
                 residue.setResidueCode(residueCode);
@@ -265,7 +266,7 @@ public class ImportStructures {
     public static String calculateRegion(double phi, double psi, String sse) {
 
         if (phi == 360 || psi == 360) 
-            return "";
+            return "_";
         
         // helix 0, 1, 2, 3
         else if (sse.equals("Helix")) {
@@ -285,7 +286,7 @@ public class ImportStructures {
 
     public static String calculateHelixRegion(double phi, double psi) {
 
-        String region = "";
+        String region = "_";
 
         if (psi >= -180 && psi < -135) {
             if (phi >= 0 && phi < 180) {
@@ -333,7 +334,7 @@ public class ImportStructures {
 
     public static String calculateStrandRegion(double phi, double psi) {
 
-        String region = "";
+        String region = "_";
 
         if (psi >= -180 && psi < -110) {
             region = "4";
@@ -371,7 +372,7 @@ public class ImportStructures {
     
     public static String calculateLoopRegion(double phi, double psi) {
 
-        String region = "";
+        String region = "_";
 
         if (psi >= -180 && psi < -100) {
             region = "7";

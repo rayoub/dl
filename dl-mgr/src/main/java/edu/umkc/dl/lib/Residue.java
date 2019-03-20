@@ -5,6 +5,7 @@ import org.postgresql.util.PGobject;
 public class Residue extends PGobject {
 
     private String scopId;
+    private int atomNumber;
     private int residueNumber;
     private String insertCode;
     private String residueCode;
@@ -26,6 +27,14 @@ public class Residue extends PGobject {
 
     public void setScopId(String scopId) {
         this.scopId = scopId;
+    }
+
+    public int getAtomNumber() {
+        return atomNumber;
+    }
+
+    public void setAtomNumber(int atomNumber) {
+        this.atomNumber = atomNumber;
     }
 
     public int getResidueNumber() {
@@ -143,7 +152,7 @@ public class Residue extends PGobject {
     @Override
     public String getValue() {
         String row = "(" 
-            + scopId + ","
+            + scopId + "," + atomNumber + ","
             + residueNumber + "," + (insertCode == null || insertCode.equals("null") ? "" : insertCode) + "," + residueCode + "," 
             + ssa + "," + sse + "," 
             + ((phi == 360.0) ? "" : phi) + "," 

@@ -56,6 +56,7 @@ public class Map extends PGobject {
         return insertCode2;
     }
 
+
     public void setInsertCode2(String insertCode2) {
         this.insertCode2 = insertCode2;
     }
@@ -77,7 +78,7 @@ public class Map extends PGobject {
             + (insertCode1 == null || insertCode1.equals("null") ? "" : insertCode1) + ","
             + (residueNumber2 == Integer.MIN_VALUE ? "" : residueNumber2) + "," 
             + (insertCode2 == null || insertCode2.equals("null") ? "" : insertCode2) + ","
-            + "'" + text + "'" 
+            + text 
             + ")";
         return row;
     }

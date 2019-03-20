@@ -13,6 +13,14 @@ public class Parsing {
         public String InsertCode;
     }
 
+    public static class MapCoords { 
+
+        public int ResidueNumber;
+        public String InsertCode;
+        public String Code1;
+        public String Code2;
+    }
+
     public static ResidueCoords parseResidueCoords(String text, boolean negate) {
 
         ResidueCoords coords = new ResidueCoords();
@@ -34,6 +42,25 @@ public class Parsing {
         }
 
         return coords;
+    }
+
+    public static MapCoords parseMapCoords(String text) {
+
+        MapCoords mapCoords = new MapCoords();
+        
+        String str = text.substring(0, 4).trim();
+        try { 
+            mapCoords.ResidueNumber = Integer.parseInt(str);    
+        }
+        catch (NumberFormatException e) {
+            mapCoords.ResidueNumber = Integer.MIN_VALUE;
+        }
+       
+        mapCoords.InsertCode = text.substring(4,5).trim(); 
+        mapCoords.Code1 = text.substring(5,6);
+        mapCoords.Code2 = text.substring(6,7);
+
+        return mapCoords;
     }
 }
 

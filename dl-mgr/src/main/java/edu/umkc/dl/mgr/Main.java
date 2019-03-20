@@ -12,6 +12,7 @@ import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import edu.umkc.dl.lib.CalculateDescriptors;
 import edu.umkc.dl.lib.Constants;
 import edu.umkc.dl.lib.ImportStructures;
 
@@ -80,7 +81,7 @@ public class Main {
     
     private static void option_c(CommandLine line) {
 
-        System.out.println("Not implemented!");
+        CalculateDescriptors.calculate();
     }
     
     private static void option_e(CommandLine line) {
