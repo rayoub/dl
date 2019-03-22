@@ -2,7 +2,7 @@
 CREATE TABLE residue
 (
     scop_id VARCHAR NOT NULL,
-    atom_number INTEGER NOT NULL,
+    order_number INTEGER NOT NULL,
     residue_number INTEGER NOT NULL,
     insert_code VARCHAR NULL,
     residue_code VARCHAR NOT NULL, 
@@ -19,4 +19,4 @@ CREATE TABLE residue
     cb_z NUMERIC NULL
 );
 
-CREATE UNIQUE INDEX idx_residue_unique ON residue (scop_id, atom_number);
+CREATE UNIQUE INDEX idx_residue_unique ON residue (scop_id, order_number);

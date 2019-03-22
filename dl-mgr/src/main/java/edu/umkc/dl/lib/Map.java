@@ -11,6 +11,7 @@ public class Map extends PGobject {
     private int residueNumber2;
     private String insertCode2;
     private String text;
+    private int len;
 
     public String getPdbId() {
         return pdbId;
@@ -69,6 +70,14 @@ public class Map extends PGobject {
         this.text = text;
     }
 
+    public int getLen() {
+        return len;
+    }
+
+    public void setLen(int len) {
+        this.len = len;
+    }
+
     @Override
     public String getValue() {
         String row = "(" 
@@ -78,7 +87,7 @@ public class Map extends PGobject {
             + (insertCode1 == null || insertCode1.toLowerCase().equals("null") ? "" : insertCode1) + ","
             + (residueNumber2 == Integer.MIN_VALUE ? "" : residueNumber2) + "," 
             + (insertCode2 == null || insertCode2.toLowerCase().equals("null") ? "" : insertCode2) + ","
-            + text 
+            + text + "," + len
             + ")";
         return row;
     }

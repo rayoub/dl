@@ -6,7 +6,9 @@ data/pdbstyle-2.07
 data/astral-rapid-access-2.07-stable.raf
 data/astral-scopedom-atom-gd-all-2.07-stable.fa
 data/astral-scopedom-seqres-gd-all-2.07-stable.fa
-data/dir.cla.scope.2.07-stable.txt
+data/astral-rapid-access-2.07-stable-bak.raf
+data/astral-scopedom-atom-gd-all-2.07-stable-bak.fa
+data/astral-scopedom-seqres-gd-all-2.07-stable-bak.fa
 
 # build ignores
 dl-mgr/target/

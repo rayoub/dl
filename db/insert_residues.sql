@@ -6,7 +6,7 @@ BEGIN
 
 	INSERT INTO residue (
         scop_id,
-        atom_number,
+        order_number,
         residue_number, 
         insert_code, 
         residue_code, 
@@ -24,7 +24,7 @@ BEGIN
     )
 	SELECT
         scop_id,
-        atom_number,
+        order_number,
         residue_number, 
         insert_code, 
         residue_code, 

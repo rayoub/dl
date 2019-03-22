@@ -38,7 +38,10 @@ public class ImportMaps {
                 }
                     
                 String header = line.substring(0,38);
-                String text = splitByFixedWidth(line.substring(38).toUpperCase(), 7).stream().collect(Collectors.joining("\\,"));
+
+                List<String> parts = splitByFixedWidth(line.substring(38).toUpperCase(), 7);
+                String text = parts.stream().collect(Collectors.joining("\\,"));
+                int len = parts.size();
                 
                 pdbId = header.substring(0,4).toLowerCase();
                 chain = header.substring(4,6).trim().toUpperCase();
@@ -55,6 +58,7 @@ public class ImportMaps {
                 map.setResidueNumber2(coords2.ResidueNumber);
                 map.setInsertCode2(coords2.InsertCode);
                 map.setText(text);
+                map.setLen(len);
 
                 maps.add(map);
 

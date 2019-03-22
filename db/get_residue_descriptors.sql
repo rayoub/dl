@@ -22,7 +22,7 @@ BEGIN
     WHERE
         r.scop_id = p_scop_id
     ORDER BY
-        r.atom_number;
+        r.order_number;
 
 END;
 $$LANGUAGE plpgsql;

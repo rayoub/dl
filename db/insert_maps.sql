@@ -11,7 +11,8 @@ BEGIN
         insert_code_1,
         residue_number_2,
         insert_code_2,
-        text
+        text,
+        len
     )
 	SELECT
         pdb_id,
@@ -20,7 +21,8 @@ BEGIN
         insert_code_1,
         residue_number_2,
         insert_code_2,
-        text
+        text,
+        len
 	FROM
 		UNNEST(p_tab);
 
