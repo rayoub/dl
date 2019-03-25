@@ -148,7 +148,6 @@ public class ImportStructures {
             // *** gather residues
             
             // iterate residues (i.e. groups of atoms)
-            int orderNumber = 0;
             List<Group> groups = chain.getAtomGroups();
             for (int i = 0; i < groups.size(); i++) {
 
@@ -161,9 +160,6 @@ public class ImportStructures {
                     continue;
                 }
 
-                // increment order number
-                orderNumber++;
-                
                 // get secondary structure assignment
                 String ssa = "C";
                 Object obj = g.getProperty(Group.SEC_STRUC);
@@ -243,7 +239,6 @@ public class ImportStructures {
                 Residue residue = new Residue();
 
                 residue.setScopId(scopId);
-                residue.setOrderNumber(orderNumber);
                 residue.setResidueNumber(g.getResidueNumber().getSeqNum());
                 residue.setInsertCode(String.valueOf(g.getResidueNumber().getInsCode()).toUpperCase());
                 residue.setResidueCode(residueCode);
@@ -263,6 +258,11 @@ public class ImportStructures {
             }
             
         } // iterating chains
+
+        // set order numbers
+        for (int i = 0; i < residues.size(); i++) {
+            residues.get(i).setOrderNumber(i+1);
+        }
 
         return residues;
     }

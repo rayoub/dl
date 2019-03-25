@@ -152,7 +152,7 @@ public class Residue extends PGobject {
     @Override
     public String getValue() {
         String row = "(" 
-            + scopId + "," + orderNumber + ","
+            + scopId + "," + orderNumber + "," 
             + residueNumber + "," + (insertCode == null || insertCode.toLowerCase().equals("null") ? "" : insertCode) + "," + residueCode + "," 
             + ssa + "," + sse + "," 
             + ((phi == 360.0) ? "" : phi) + "," 

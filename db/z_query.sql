@@ -1,4 +1,3 @@
-
 /*
 SELECT
     s.scop_id,
@@ -20,36 +19,37 @@ FROM
         ON s.pdb_id = m.pdb_id
         AND s.chain = m.chain
 WHERE
-    s.scop_id = 'd1gw9a_';
+    s.scop_id = 'd2uzsa_';
 */
 
--- write a query that gets all the mismatches start indices where missing in pdb first line
--- then check the matched sequences such that the residue number is null
---
-
-WITH indices AS
-(
+    WITH indices AS
+    (
+        SELECT
+            r.scop_id,
+            r.residue_number AS structure_number,
+            s.residue_number_2 AS sequence_number,
+            m.residue_number_2 AS map_number
+            --s.residue_number_1 AS sequence_number,
+            --m.residue_number_1 AS map_number
+        FROM
+            residue r
+            INNER JOIN sequence s
+                ON r.order_number = 1 AND r.scop_id = s.scop_id 
+            INNER JOIN map m
+                ON s.pdb_id = m.pdb_id AND s.chain = m.chain 
+    )
     SELECT
-        r.scop_id,
-        r.residue_number AS structure_number,
-        s.residue_number_1 AS sequence_number,
-        m.residue_number_1 AS map_number
+        i.scop_id,
+        i.structure_number,
+        i.sequence_number,
+        i.map_number 
     FROM
-        residue r
-        INNER JOIN sequence s
-            ON r.order_number = 1 AND r.scop_id = s.scop_id 
-        INNER JOIN map m
-            ON s.pdb_id = m.pdb_id AND s.chain = m.chain 
-)
-SELECT
-    *
-FROM
-    indices
-WHERE
-    1 = 1
-    AND sequence_number IS NULL
-    AND structure_number != map_number
-ORDER BY
-    scop_id;
+        indices i
+    WHERE
+        1 = 1
+        AND i.sequence_number IS NULL
+        AND i.structure_number != i.map_number
+    ORDER BY
+        scop_id;
 
 

@@ -2,8 +2,10 @@
 CREATE OR REPLACE FUNCTION get_sequence_split (p_split_index INTEGER, p_split_count INTEGER)
 RETURNS TABLE (
     scop_id VARCHAR,
-    residue_number INTEGER,
-    insert_code VARCHAR,
+    residue_number_1 INTEGER,
+    insert_code_1 VARCHAR,
+    residue_number_2 INTEGER,
+    insert_code_2 VARCHAR,
     sequence_text VARCHAR,
     map_text VARCHAR
 )
@@ -16,8 +18,10 @@ BEGIN
         SELECT
             ROW_NUMBER() OVER (ORDER BY s.scop_id) AS n,
             s.scop_id,
-            s.residue_number_1 AS residue_number,
-            s.insert_code_1 AS insert_code,
+            s.residue_number_1,
+            s.insert_code_1,
+            s.residue_number_2,
+            s.insert_code_2,
             s.text AS sequence_text,
             m.text AS map_text
         FROM
@@ -27,8 +31,10 @@ BEGIN
     )
     SELECT 
         ns.scop_id,
-        ns.residue_number,
-        ns.insert_code,
+        ns.residue_number_1,
+        ns.insert_code_1,
+        ns.residue_number_2,
+        ns.insert_code_2,
         ns.sequence_text,
         ns.map_text
     FROM 
