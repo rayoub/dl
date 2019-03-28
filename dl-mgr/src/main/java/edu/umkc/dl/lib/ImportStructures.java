@@ -161,7 +161,7 @@ public class ImportStructures {
                 }
 
                 // get secondary structure assignment
-                String ssa = "C";
+                String ssa = "";
                 Object obj = g.getProperty(Group.SEC_STRUC);
                 if (obj instanceof SecStrucInfo) {
                    SecStrucInfo info = (SecStrucInfo)obj;
@@ -172,24 +172,24 @@ public class ImportStructures {
                 }
 
                 // map to extension coding
-                String sse;
+                String grouping;
                 switch(ssa) {
                     case "G":
                     case "H":
                     case "I":
                     case "T":
-                        sse = "Helix";
+                        grouping = "Helix";
                         break;
                     case "E":
                     case "B":
-                        sse = "Strand";
+                        grouping = "Strand";
                         break;
                     case "S":
                     case "C":
-                        sse = "Loop";
+                        grouping = "Loop";
                         break;
                     default:
-                        sse = "Loop";
+                        grouping = "";
                 }
                 
                 // calculate torsion angles
@@ -243,10 +243,9 @@ public class ImportStructures {
                 residue.setInsertCode(String.valueOf(g.getResidueNumber().getInsCode()).toUpperCase());
                 residue.setResidueCode(residueCode);
                 residue.setSsa(ssa);
-                residue.setSse(sse);
                 residue.setPhi(phi);
                 residue.setPsi(psi);
-                residue.setDescriptor(calculateRegion(phi,psi,sse));
+                residue.setDescriptor(calculateRegion(phi,psi,grouping));
                 residue.setCaX(caX);
                 residue.setCaY(caY);
                 residue.setCaZ(caZ);
@@ -267,18 +266,18 @@ public class ImportStructures {
         return residues;
     }
     
-    public static String calculateRegion(double phi, double psi, String sse) {
+    public static String calculateRegion(double phi, double psi, String grouping) {
 
-        if (phi == 360 || psi == 360) 
+        if (phi == 360 || psi == 360 || grouping.isEmpty()) 
             return "";
         
         // helix 0, 1, 2, 3
-        else if (sse.equals("Helix")) {
+        else if (grouping.equals("Helix")) {
             return calculateHelixRegion(phi, psi);
         }
 
         // strand 4, 5, 6
-        else if (sse.equals("Strand")) {
+        else if (grouping.equals("Strand")) {
             return calculateStrandRegion(phi, psi);
         }
      

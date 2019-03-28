@@ -51,7 +51,8 @@ public class Db {
                     residue.setInsertCode("");
                 residue.setResidueCode(rs.getString("residue_code"));
                 residue.setSsa(rs.getString("ssa"));
-                residue.setSse(rs.getString("sse"));
+                if (rs.wasNull()) 
+                    residue.setSsa("_");
                 residue.setPhi(rs.getDouble("phi"));
                 if (rs.wasNull())
                     residue.setPhi(360.0);

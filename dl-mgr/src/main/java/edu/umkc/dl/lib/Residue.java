@@ -10,7 +10,6 @@ public class Residue extends PGobject {
     private String insertCode;
     private String residueCode;
     private String ssa;
-    private String sse;
     private double phi = 360.0;
     private double psi = 360.0;
     private String descriptor;
@@ -67,14 +66,6 @@ public class Residue extends PGobject {
 
     public void setSsa(String ssa) {
         this.ssa = ssa;
-    }
-
-    public String getSse() {
-        return sse;
-    }
-
-    public void setSse(String sse) {
-        this.sse = sse;
     }
 
     public double getPhi() {
@@ -154,7 +145,7 @@ public class Residue extends PGobject {
         String row = "(" 
             + scopId + "," + orderNumber + "," 
             + residueNumber + "," + (insertCode == null || insertCode.toLowerCase().equals("null") ? "" : insertCode) + "," + residueCode + "," 
-            + ssa + "," + sse + "," 
+            + ssa + "," 
             + ((phi == 360.0) ? "" : phi) + "," 
             + ((psi == 360.0) ? "" : psi) + "," 
             + descriptor + ","

@@ -14,8 +14,7 @@ import org.apache.commons.cli.ParseException;
 
 import edu.umkc.dl.lib.CalculateAssignments;
 import edu.umkc.dl.lib.Constants;
-import edu.umkc.dl.lib.ImportMaps;
-import edu.umkc.dl.lib.ImportSequences;
+import edu.umkc.dl.lib.ImportStructures;
 
 public class Main {
 
@@ -75,9 +74,9 @@ public class Main {
     
     private static void option_i(CommandLine line) {
 
-        ImportSequences.importSequences();
-        ImportMaps.importMaps();
-        //ImportStructures.importStructures();
+        //ImportSequences.importSequences();
+        //ImportMaps.importMaps();
+        ImportStructures.importStructures();
     }
     
     private static void option_c(CommandLine line) {
