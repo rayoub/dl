@@ -90,8 +90,7 @@ public class Main {
     }
     
     private static void option_d(CommandLine line) {
-        
-        System.out.println("Not implemented!");
+    
     }
 
     private static void option_help(Options options) {

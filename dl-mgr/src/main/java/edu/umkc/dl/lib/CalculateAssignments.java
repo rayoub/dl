@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -17,6 +19,8 @@ import org.postgresql.ds.PGSimpleDataSource;
 
 public class CalculateAssignments {
 
+    public final static Pattern ALL_MISSING_PATTERN = Pattern.compile("^(_\\\\,)*_$");
+    
     public static void calculate() {
 
         IntStream.range(0, Constants.SPLIT_COUNT)
@@ -86,7 +90,7 @@ public class CalculateAssignments {
 
                     String text = calculateForScopId(scopId, coords1, coords2, sequenceText, mapText);
 
-                    if (!text.isEmpty()) {
+                    if (!text.isEmpty() && !areAllMissing(text)) {
 
                         SequenceAssignments seqDescr = new SequenceAssignments();
                         seqDescr.setScopId(scopId);
@@ -288,6 +292,12 @@ public class CalculateAssignments {
             return true;
         else
             return false;
+    }
+
+    private static boolean areAllMissing(String text) {
+
+        Matcher matcher = ALL_MISSING_PATTERN.matcher(text);
+        return matcher.find();
     }
 
     private static void printlnError(String message) {

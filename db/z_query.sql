@@ -9,4 +9,4 @@ FROM
         ON a.scop_id = s.scop_id
 WHERE
     LENGTH(s.text) = LENGTH(a.text)
-LIMIT 1000;
+LIMIT 10000;
