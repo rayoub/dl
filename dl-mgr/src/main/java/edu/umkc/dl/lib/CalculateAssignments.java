@@ -15,7 +15,7 @@ import java.util.stream.IntStream;
 import org.postgresql.PGConnection;
 import org.postgresql.ds.PGSimpleDataSource;
 
-public class CalculateDescriptors {
+public class CalculateAssignments {
 
     public static void calculate() {
 
@@ -28,7 +28,7 @@ public class CalculateDescriptors {
     private static void calculateSplit(int splitIndex) {
 
         int processed = 0;
-        List<SequenceDescriptors> seqDescrs = new ArrayList<>();
+        List<SequenceAssignments> seqDescrs = new ArrayList<>();
 
         PGSimpleDataSource ds = Db.getDataSource();
 
@@ -88,7 +88,7 @@ public class CalculateDescriptors {
 
                     if (!text.isEmpty()) {
 
-                        SequenceDescriptors seqDescr = new SequenceDescriptors();
+                        SequenceAssignments seqDescr = new SequenceAssignments();
                         seqDescr.setScopId(scopId);
                         seqDescr.setText(text);
 
@@ -96,7 +96,7 @@ public class CalculateDescriptors {
                     }
 
                 } catch (Exception e) {
-                    Logger.getLogger(CalculateDescriptors.class.getName()).log(Level.SEVERE, scopId, e);
+                    Logger.getLogger(CalculateAssignments.class.getName()).log(Level.SEVERE, scopId, e);
                 }
                 
                 // output
@@ -118,7 +118,7 @@ public class CalculateDescriptors {
             conn.close();
 
         } catch (SQLException e) {
-            Logger.getLogger(CalculateDescriptors.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(CalculateAssignments.class.getName()).log(Level.SEVERE, null, e);
         }
     }
 
@@ -126,7 +126,7 @@ public class CalculateDescriptors {
 
         List<String> codes = Arrays.asList(sequenceText.toUpperCase().split(","));
         List<Parsing.MapCoords> maps = Arrays.asList(mapText.split(",")).stream().map(m -> Parsing.parseMapCoords(m)).collect(Collectors.toList());
-        List<ResidueDescriptor> residues = Db.getResidueDescriptors(scopId);
+        List<Residue> residues = Db.getResidues(scopId);
 
         // we have a more inclusive definition of missing than ASTRAL - no CA atom rather than no atoms at all
         // also assigns start and end coords when null - chain domains 
@@ -152,12 +152,12 @@ public class CalculateDescriptors {
         
         // *** iterate lists
        
-        List<String> descriptors = new ArrayList<>();
+        List<String> assignments = new ArrayList<>();
         for (i = 0; i < codes.size(); i++) {
 
             String code = codes.get(i);
             Parsing.MapCoords map = maps.get(j);
-            ResidueDescriptor residue = null;
+            Residue residue = null;
             if (k < residues.size()) {
                 residue = residues.get(k);    
             }
@@ -185,57 +185,57 @@ public class CalculateDescriptors {
                 printlnError(scopId + ": code mismatch at map coords (" + map.ResidueNumber + "," + map.InsertCode + ")");
             }
 
-            // assign descriptors
+            // assignments
             if (check) {
 
                 if (!map.Code1.equals(".")) {
-                    descriptors.add(residue.getDescriptor());
+                    assignments.add(residue.getSsa());
                     k++;
                 }
                 else {
-                    descriptors.add("_");
+                    assignments.add("_");
                 }
                 j++;
             }
             else {
 
-                descriptors.clear();
+                assignments.clear();
                 break;
             }
         } 
 
         // check results
-        String descriptorText = descriptors.stream().collect(Collectors.joining(","));
-        if (!descriptorText.isEmpty() && descriptorText.length() != sequenceText.length()) {
+        String assignmentText = assignments.stream().collect(Collectors.joining(","));
+        if (!assignmentText.isEmpty() && assignmentText.length() != sequenceText.length()) {
 
-            printlnError(scopId + ": size mismatch between sequence text and descriptor text");
-            descriptorText = "";
+            printlnError(scopId + ": size mismatch between sequence text and assignment text");
+            assignmentText = "";
         }
         else {
 
-            descriptorText = descriptors.stream().collect(Collectors.joining("\\,"));
+            assignmentText = assignments.stream().collect(Collectors.joining("\\,"));
         }
 
         // output 
-        if (!descriptorText.isEmpty()) {
+        if (!assignmentText.isEmpty()) {
 
             boolean debug = false;
             if (debug) {
 
                 System.out.println(scopId);
                 System.out.println(sequenceText);
-                System.out.println(descriptorText);
+                System.out.println(assignmentText);
             }
         }
 
-        return descriptorText;
+        return assignmentText;
     }
 
     private static void identifyMissingResidues(
             Parsing.ResidueCoords coords1, 
             Parsing.ResidueCoords coords2,
             List<Parsing.MapCoords> maps, 
-            List<ResidueDescriptor> residues)
+            List<Residue> residues)
     {
         // map indices
         int j = 0, jEnd = maps.size() - 1;
@@ -295,20 +295,20 @@ public class CalculateDescriptors {
         System.out.println((char)27 + "[31m" + message + (char)27 + "[0m");
     }
     
-    private static void saveDescriptors(List<SequenceDescriptors> seqDescrs) throws SQLException {
+    private static void saveDescriptors(List<SequenceAssignments> sequenceAssignments) throws SQLException {
 
         PGSimpleDataSource ds = Db.getDataSource();
 
         Connection conn = ds.getConnection();
         conn.setAutoCommit(true);
 
-        ((PGConnection) conn).addDataType("sequence_descriptors", SequenceDescriptors.class);
+        ((PGConnection) conn).addDataType("sequence_assignments", SequenceAssignments.class);
 
-        PreparedStatement updt = conn.prepareStatement("SELECT insert_sequence_descriptors(?);");
+        PreparedStatement updt = conn.prepareStatement("SELECT insert_sequence_assignments(?);");
     
-        SequenceDescriptors a[] = new SequenceDescriptors[seqDescrs.size()];
-        seqDescrs.toArray(a);
-        updt.setArray(1, conn.createArrayOf("sequence_descriptors", a));
+        SequenceAssignments a[] = new SequenceAssignments[sequenceAssignments.size()];
+        sequenceAssignments.toArray(a);
+        updt.setArray(1, conn.createArrayOf("sequence_assignments", a));
     
         updt.execute();
         updt.close();

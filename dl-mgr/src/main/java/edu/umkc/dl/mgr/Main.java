@@ -12,7 +12,7 @@ import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import edu.umkc.dl.lib.CalculateDescriptors;
+import edu.umkc.dl.lib.CalculateAssignments;
 import edu.umkc.dl.lib.Constants;
 import edu.umkc.dl.lib.ImportMaps;
 import edu.umkc.dl.lib.ImportSequences;
@@ -82,7 +82,7 @@ public class Main {
     
     private static void option_c(CommandLine line) {
 
-        CalculateDescriptors.calculate();
+        CalculateAssignments.calculate();
     }
     
     private static void option_e(CommandLine line) {

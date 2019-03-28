@@ -23,9 +23,9 @@ public class Db {
         return ds;
     }
 
-    public static List<ResidueDescriptor> getResidueDescriptors(String scopId) {
+    public static List<Residue> getResidues(String scopId) {
 
-        List<ResidueDescriptor> residueDescriptors = new ArrayList<ResidueDescriptor>();
+        List<Residue> residues = new ArrayList<Residue>();
 
         PGSimpleDataSource ds = getDataSource();
 
@@ -34,28 +34,35 @@ public class Db {
             Connection conn = ds.getConnection();
             conn.setAutoCommit(false);
        
-            PreparedStatement stmt = conn.prepareCall("SELECT * FROM get_residue_descriptors(?);");
+            PreparedStatement stmt = conn.prepareCall("SELECT * FROM get_residues(?);");
        
             stmt.setString(1, scopId);
             
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
 
-                ResidueDescriptor residueDescriptor = new ResidueDescriptor();
+                Residue residue = new Residue();
 
-                residueDescriptor.setScopId(rs.getString("scop_id"));
-                residueDescriptor.setResidueNumber(rs.getInt("residue_number"));
+                residue.setScopId(rs.getString("scop_id"));
+                residue.setOrderNumber(rs.getInt("order_number"));
+                residue.setResidueNumber(rs.getInt("residue_number"));
+                residue.setInsertCode(rs.getString("insert_code"));
                 if (rs.wasNull()) 
-                    residueDescriptor.setResidueNumber(Integer.MIN_VALUE);
-                residueDescriptor.setInsertCode(rs.getString("insert_code"));
+                    residue.setInsertCode("");
+                residue.setResidueCode(rs.getString("residue_code"));
+                residue.setSsa(rs.getString("ssa"));
+                residue.setSse(rs.getString("sse"));
+                residue.setPhi(rs.getDouble("phi"));
+                if (rs.wasNull())
+                    residue.setPhi(360.0);
+                residue.setPsi(rs.getDouble("psi"));
+                if (rs.wasNull())
+                    residue.setPsi(360.0);
+                residue.setDescriptor(rs.getString("descriptor"));
                 if (rs.wasNull()) 
-                    residueDescriptor.setInsertCode("");
-                residueDescriptor.setResidueCode(rs.getString("residue_code"));
-                residueDescriptor.setDescriptor(rs.getString("descriptor"));
-                if (rs.wasNull()) 
-                    residueDescriptor.setDescriptor("_");
+                    residue.setDescriptor("_");
 
-                residueDescriptors.add(residueDescriptor);
+                residues.add(residue);
             }
 
             rs.close();
@@ -66,7 +73,7 @@ public class Db {
             Logger.getLogger(Db.class.getName()).log(Level.SEVERE, scopId, e);
         }
 
-        return residueDescriptors; 
+        return residues; 
     }
 }
 

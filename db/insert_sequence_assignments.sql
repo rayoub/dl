@@ -1,10 +1,10 @@
 
-CREATE OR REPLACE FUNCTION insert_sequence_descriptors (p_tab sequence_descriptors ARRAY)
+CREATE OR REPLACE FUNCTION insert_sequence_assignments (p_tab sequence_assignments ARRAY)
 RETURNS VOID
 AS $$
 BEGIN
 
-	INSERT INTO sequence_descriptors (
+	INSERT INTO sequence_assignments (
         scop_id, 
         text
     )
