@@ -6,11 +6,15 @@ BEGIN
 
 	INSERT INTO sequence_assignments (
         scop_id, 
-        text
+        text,
+        len,
+        missing_len
     )
 	SELECT
         scop_id,
-        text
+        text,
+        len,
+        missing_len
     FROM
         UNNEST(p_tab);
 

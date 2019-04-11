@@ -9,8 +9,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -19,8 +17,6 @@ import org.postgresql.ds.PGSimpleDataSource;
 
 public class CalculateAssignments {
 
-    public final static Pattern ALL_MISSING_PATTERN = Pattern.compile("^(_\\\\,)*_$");
-    
     public static void calculate() {
 
         IntStream.range(0, Constants.SPLIT_COUNT)
@@ -88,13 +84,19 @@ public class CalculateAssignments {
                     sequenceText = rs.getString("sequence_text");
                     mapText = rs.getString("map_text");
 
-                    String text = calculateForScopId(scopId, coords1, coords2, sequenceText, mapText);
+                    List<String> assignments = calculateForScopId(scopId, coords1, coords2, sequenceText, mapText);
 
-                    if (!text.isEmpty() && !areAllMissing(text)) {
+                    String text = assignments.stream().collect(Collectors.joining("\\,"));
+                    int len = assignments.size();
+                    int missingLen = (int)assignments.stream().filter(a -> a.equals("_")).count();
+
+                    if (assignments.size() > 0 && len > missingLen) {
 
                         SequenceAssignments seqDescr = new SequenceAssignments();
                         seqDescr.setScopId(scopId);
                         seqDescr.setText(text);
+                        seqDescr.setLen(len);
+                        seqDescr.setMissingLen(missingLen);
 
                         seqDescrs.add(seqDescr);
                     }
@@ -126,7 +128,9 @@ public class CalculateAssignments {
         }
     }
 
-    private static String calculateForScopId(String scopId, Parsing.ResidueCoords coords1, Parsing.ResidueCoords coords2, String sequenceText, String mapText) {
+    private static List<String> calculateForScopId(String scopId, Parsing.ResidueCoords coords1, Parsing.ResidueCoords coords2, String sequenceText, String mapText) {
+
+        List<String> assignments = new ArrayList<>();
 
         List<String> codes = Arrays.asList(sequenceText.toUpperCase().split(","));
         List<Parsing.MapCoords> maps = Arrays.asList(mapText.split(",")).stream().map(m -> Parsing.parseMapCoords(m)).collect(Collectors.toList());
@@ -148,15 +152,14 @@ public class CalculateAssignments {
         }
         if (j == maps.size()) {
             printlnError(scopId + ": missing map at start coords (" + coords1.ResidueNumber + "," + coords1.InsertCode + ")");
-            return "";
+            return assignments;
         }
         
         // residue index
         int k = 0;
         
         // *** iterate lists
-       
-        List<String> assignments = new ArrayList<>();
+        
         for (i = 0; i < codes.size(); i++) {
 
             String code = codes.get(i);
@@ -208,31 +211,7 @@ public class CalculateAssignments {
             }
         } 
 
-        // check results
-        String assignmentText = assignments.stream().collect(Collectors.joining(","));
-        if (!assignmentText.isEmpty() && assignmentText.length() != sequenceText.length()) {
-
-            printlnError(scopId + ": size mismatch between sequence text and assignment text");
-            assignmentText = "";
-        }
-        else {
-
-            assignmentText = assignments.stream().collect(Collectors.joining("\\,"));
-        }
-
-        // output 
-        if (!assignmentText.isEmpty()) {
-
-            boolean debug = false;
-            if (debug) {
-
-                System.out.println(scopId);
-                System.out.println(sequenceText);
-                System.out.println(assignmentText);
-            }
-        }
-
-        return assignmentText;
+        return assignments;
     }
 
     private static void identifyMissingResidues(
@@ -292,12 +271,6 @@ public class CalculateAssignments {
             return true;
         else
             return false;
-    }
-
-    private static boolean areAllMissing(String text) {
-
-        Matcher matcher = ALL_MISSING_PATTERN.matcher(text);
-        return matcher.find();
     }
 
     private static void printlnError(String message) {

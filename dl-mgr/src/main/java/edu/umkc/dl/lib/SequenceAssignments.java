@@ -6,6 +6,8 @@ public class SequenceAssignments extends PGobject {
 
     private String scopId;
     private String text;
+    private int len;
+    private int missingLen;
 
     public String getScopId() {
         return scopId;
@@ -23,9 +25,25 @@ public class SequenceAssignments extends PGobject {
         this.text = text;
     }
 
+    public int getLen() {
+        return len;
+    }
+
+    public void setLen(int len) {
+        this.len = len;
+    }
+
+    public int getMissingLen() {
+        return missingLen;
+    }
+
+    public void setMissingLen(int missingLen) {
+        this.missingLen = missingLen;
+    }
+
     @Override
     public String getValue() {
-        String row = "(" + scopId + "," + text + ")"; 
+        String row = "(" + scopId + "," + text + "," + len + "," + missingLen + ")"; 
         return row;
     }
 }
