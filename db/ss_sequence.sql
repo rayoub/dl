@@ -1,5 +1,5 @@
 
-CREATE TABLE sequence_assignments
+CREATE TABLE ss_sequence
 (
     scop_id VARCHAR NOT NULL,
     text VARCHAR NOT NULL,
@@ -7,4 +7,4 @@ CREATE TABLE sequence_assignments
     missing_len INTEGER NOT NULL
 );
 
-CREATE UNIQUE INDEX idx_sequence_assignments_unique ON sequence_assignments (scop_id);
+CREATE UNIQUE INDEX idx_ss_sequence_unique ON ss_sequence (scop_id);

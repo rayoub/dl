@@ -55,7 +55,7 @@ public class ImportStructures {
 
             System.out.println("Split: " + splitIndex + ", Getting Ids to Import.");
                 
-            PreparedStatement stmt = conn.prepareCall("SELECT * FROM get_sequence_split(?,?);");
+            PreparedStatement stmt = conn.prepareCall("SELECT * FROM get_split(?,?);");
             stmt.setInt(1, splitIndex);
             stmt.setInt(2, Constants.SPLIT_COUNT);
             

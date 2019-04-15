@@ -1,5 +1,5 @@
 
-CREATE OR REPLACE FUNCTION get_sequence_split (p_split_index INTEGER, p_split_count INTEGER)
+CREATE OR REPLACE FUNCTION get_split (p_split_index INTEGER, p_split_count INTEGER)
 RETURNS TABLE (
     scop_id VARCHAR,
     residue_number_1 INTEGER,
@@ -25,7 +25,7 @@ BEGIN
             s.text AS sequence_text,
             m.text AS map_text
         FROM
-            sequence s
+            aa_sequence s
             INNER JOIN map m
                 ON m.pdb_id = s.pdb_id AND m.chain = s.chain
     )

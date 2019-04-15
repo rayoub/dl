@@ -12,9 +12,9 @@ import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import edu.umkc.dl.lib.CalculateAssignments;
+import edu.umkc.dl.lib.SetSsSequences;
 import edu.umkc.dl.lib.Constants;
-import edu.umkc.dl.lib.ImportStructures;
+import edu.umkc.dl.lib.ImportAaSequences;
 
 public class Main {
 
@@ -27,11 +27,8 @@ public class Main {
         group.addOption(Option.builder("i")
                 .longOpt("import")
                 .build());
-        group.addOption(Option.builder("c")
-                .longOpt("calculate")
-                .build());
-        group.addOption(Option.builder("e")
-                .longOpt("export")
+        group.addOption(Option.builder("s")
+                .longOpt("set")
                 .build());
         group.addOption(Option.builder("d")
                 .longOpt("debug")
@@ -57,10 +54,8 @@ public class Main {
         try {
             if (line.hasOption("i")) {
                 option_i(line);
-            } else if (line.hasOption("c")) {
-                option_c(line);
-            } else if (line.hasOption("e")) {
-                option_e(line);
+            } else if (line.hasOption("s")) {
+                option_s(line);
             } else if (line.hasOption("d")) {
                 option_d(line);
             } else if (line.hasOption("?")) {
@@ -74,19 +69,14 @@ public class Main {
     
     private static void option_i(CommandLine line) {
 
-        //ImportSequences.importSequences();
+        ImportAaSequences.importAaSequences();
         //ImportMaps.importMaps();
-        ImportStructures.importStructures();
+        //ImportStructures.importStructures();
     }
     
-    private static void option_c(CommandLine line) {
+    private static void option_s(CommandLine line) {
 
-        CalculateAssignments.calculate();
-    }
-    
-    private static void option_e(CommandLine line) {
-
-        System.out.println("Not implemented!");
+        SetSsSequences.set();
     }
     
     private static void option_d(CommandLine line) {

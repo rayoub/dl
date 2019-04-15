@@ -2,7 +2,7 @@ package edu.umkc.dl.lib;
 
 import org.postgresql.util.PGobject;
 
-public class Sequence extends PGobject {
+public class AaSequence extends PGobject {
 
     private String scopId;
     private String pdbId;

@@ -22,9 +22,9 @@ import org.postgresql.ds.PGSimpleDataSource;
 
 import edu.umkc.dl.lib.Parsing.ResidueCoords;
 
-public class ImportSequences {
+public class ImportAaSequences {
 
-    public static void importSequences() {
+    public static void importAaSequences() {
 
         String scopId = "";
         String fileName = Constants.DATA_PATH + "astral-scopedom-seqres-gd-all-2.07-stable.fa";
@@ -35,7 +35,7 @@ public class ImportSequences {
             LinkedHashMap<String, ProteinSequence> seq = FastaReaderHelper.readFastaProteinSequence(inputStream);
             
             int processed = 0;
-            List<Sequence> sequences = new ArrayList<>();
+            List<AaSequence> sequences = new ArrayList<>();
             for (Entry<String, ProteinSequence> entry : seq.entrySet()) {
 
                 // get header information
@@ -93,7 +93,7 @@ public class ImportSequences {
                 int len = compounds.size();
 
                 // add sequence to list
-                Sequence sequence = new Sequence();
+                AaSequence sequence = new AaSequence();
 
                 sequence.setScopId(scopId);
                 sequence.setPdbId(pdbId);
@@ -113,39 +113,39 @@ public class ImportSequences {
 
                 processed++;
                 if (processed % 5000 == 0) {
-                    saveSequences(sequences);
+                    saveAaSequences(sequences);
                     sequences.clear();
                     System.out.println("processed: " + processed);
                 }
             }
 
             if (sequences.size() > 0) {
-                saveSequences(sequences);
+                saveAaSequences(sequences);
             }
 
         } catch (NumberFormatException e) {
-            Logger.getLogger(ImportSequences.class.getName()).log(Level.SEVERE, scopId, e);
+            Logger.getLogger(ImportAaSequences.class.getName()).log(Level.SEVERE, scopId, e);
         } catch (SQLException e) {
-            Logger.getLogger(ImportSequences.class.getName()).log(Level.SEVERE, scopId, e);
+            Logger.getLogger(ImportAaSequences.class.getName()).log(Level.SEVERE, scopId, e);
         } catch (IOException e) {
-            Logger.getLogger(ImportSequences.class.getName()).log(Level.SEVERE, scopId, e);
+            Logger.getLogger(ImportAaSequences.class.getName()).log(Level.SEVERE, scopId, e);
         }
     }
     
-    public static void saveSequences(List<Sequence> sequences) throws SQLException {
+    public static void saveAaSequences(List<AaSequence> sequences) throws SQLException {
 
         PGSimpleDataSource ds = Db.getDataSource();
 
         Connection conn = ds.getConnection();
         conn.setAutoCommit(true);
 
-        ((PGConnection) conn).addDataType("sequence", Sequence.class);
+        ((PGConnection) conn).addDataType("aa_sequence", AaSequence.class);
 
-        PreparedStatement updt = conn.prepareStatement("SELECT insert_sequences(?);");
+        PreparedStatement updt = conn.prepareStatement("SELECT insert_aa_sequences(?);");
      
-        Sequence a[] = new Sequence[sequences.size()];
+        AaSequence a[] = new AaSequence[sequences.size()];
         sequences.toArray(a);
-        updt.setArray(1, conn.createArrayOf("sequence", a));
+        updt.setArray(1, conn.createArrayOf("aa_sequence", a));
     
         updt.execute();
         updt.close();

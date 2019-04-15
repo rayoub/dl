@@ -1,5 +1,5 @@
 
-CREATE TABLE sequence
+CREATE TABLE aa_sequence
 (
     scop_id VARCHAR NOT NULL,
     pdb_id VARCHAR NOT NULL,
@@ -16,4 +16,4 @@ CREATE TABLE sequence
     len INTEGER NOT NULL
 );
 
-CREATE UNIQUE INDEX idx_sequence_unique ON sequence (scop_id);
+CREATE UNIQUE INDEX idx_aa_sequence_unique ON aa_sequence (scop_id);

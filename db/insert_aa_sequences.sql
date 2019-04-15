@@ -1,10 +1,10 @@
 
-CREATE OR REPLACE FUNCTION insert_sequences (p_tab sequence ARRAY)
+CREATE OR REPLACE FUNCTION insert_aa_sequences (p_tab aa_sequence ARRAY)
 RETURNS VOID
 AS $$
 BEGIN
 
-	INSERT INTO sequence (
+	INSERT INTO aa_sequence (
         scop_id,
         pdb_id,
         cl,

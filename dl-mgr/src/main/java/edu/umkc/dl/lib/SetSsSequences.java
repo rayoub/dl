@@ -15,20 +15,20 @@ import java.util.stream.IntStream;
 import org.postgresql.PGConnection;
 import org.postgresql.ds.PGSimpleDataSource;
 
-public class CalculateAssignments {
+public class SetSsSequences {
 
-    public static void calculate() {
+    public static void set() {
 
         IntStream.range(0, Constants.SPLIT_COUNT)
             .boxed()
             .parallel()
-            .forEach(splitIndex -> calculateSplit(splitIndex));
+            .forEach(splitIndex -> setSplit(splitIndex));
     }
 
-    private static void calculateSplit(int splitIndex) {
+    private static void setSplit(int splitIndex) {
 
         int processed = 0;
-        List<SequenceAssignments> seqDescrs = new ArrayList<>();
+        List<SsSequence> sequences = new ArrayList<>();
 
         PGSimpleDataSource ds = Db.getDataSource();
 
@@ -41,7 +41,7 @@ public class CalculateAssignments {
 
             System.out.println("Split: " + splitIndex + ", Getting Ids to Process.");
                 
-            PreparedStatement stmt = conn.prepareCall("SELECT * FROM get_sequence_split(?,?);");
+            PreparedStatement stmt = conn.prepareCall("SELECT * FROM get_split(?,?);");
             stmt.setInt(1, splitIndex);
             stmt.setInt(2, Constants.SPLIT_COUNT);
             
@@ -92,31 +92,31 @@ public class CalculateAssignments {
 
                     if (assignments.size() > 0 && len > missingLen) {
 
-                        SequenceAssignments seqDescr = new SequenceAssignments();
-                        seqDescr.setScopId(scopId);
-                        seqDescr.setText(text);
-                        seqDescr.setLen(len);
-                        seqDescr.setMissingLen(missingLen);
+                        SsSequence sequence = new SsSequence();
+                        sequence.setScopId(scopId);
+                        sequence.setText(text);
+                        sequence.setLen(len);
+                        sequence.setMissingLen(missingLen);
 
-                        seqDescrs.add(seqDescr);
+                        sequences.add(sequence);
                     }
 
                 } catch (Exception e) {
-                    Logger.getLogger(CalculateAssignments.class.getName()).log(Level.SEVERE, scopId, e);
+                    Logger.getLogger(SetSsSequences.class.getName()).log(Level.SEVERE, scopId, e);
                 }
                 
                 // output
                 processed++;
                 if (processed % Constants.PROCESSED_INCREMENT == 0) {
-                    saveDescriptors(seqDescrs);
-                    seqDescrs.clear();
+                    saveSsSequences(sequences);
+                    sequences.clear();
                     System.out.println("Split: " + splitIndex + ", Processed: "
                             + (Constants.PROCESSED_INCREMENT * (processed / Constants.PROCESSED_INCREMENT)));
                 }
             }
 
-            if (seqDescrs.size() > 0) {
-                saveDescriptors(seqDescrs);
+            if (sequences.size() > 0) {
+                saveSsSequences(sequences);
             }
 
             rs.close();
@@ -124,11 +124,16 @@ public class CalculateAssignments {
             conn.close();
 
         } catch (SQLException e) {
-            Logger.getLogger(CalculateAssignments.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(SetSsSequences.class.getName()).log(Level.SEVERE, null, e);
         }
     }
 
-    private static List<String> calculateForScopId(String scopId, Parsing.ResidueCoords coords1, Parsing.ResidueCoords coords2, String sequenceText, String mapText) {
+    private static List<String> calculateForScopId(
+            String scopId, 
+            Parsing.ResidueCoords coords1, 
+            Parsing.ResidueCoords coords2, 
+            String sequenceText, 
+            String mapText) {
 
         List<String> assignments = new ArrayList<>();
 
@@ -278,20 +283,20 @@ public class CalculateAssignments {
         System.out.println((char)27 + "[31m" + message + (char)27 + "[0m");
     }
     
-    private static void saveDescriptors(List<SequenceAssignments> sequenceAssignments) throws SQLException {
+    private static void saveSsSequences(List<SsSequence> sequences) throws SQLException {
 
         PGSimpleDataSource ds = Db.getDataSource();
 
         Connection conn = ds.getConnection();
         conn.setAutoCommit(true);
 
-        ((PGConnection) conn).addDataType("sequence_assignments", SequenceAssignments.class);
+        ((PGConnection) conn).addDataType("ss_sequence", SsSequence.class);
 
-        PreparedStatement updt = conn.prepareStatement("SELECT insert_sequence_assignments(?);");
+        PreparedStatement updt = conn.prepareStatement("SELECT insert_ss_sequences(?);");
     
-        SequenceAssignments a[] = new SequenceAssignments[sequenceAssignments.size()];
-        sequenceAssignments.toArray(a);
-        updt.setArray(1, conn.createArrayOf("sequence_assignments", a));
+        SsSequence a[] = new SsSequence[sequences.size()];
+        sequences.toArray(a);
+        updt.setArray(1, conn.createArrayOf("ss_sequence", a));
     
         updt.execute();
         updt.close();

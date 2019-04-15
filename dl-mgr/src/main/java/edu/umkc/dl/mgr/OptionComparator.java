@@ -12,10 +12,9 @@ public class OptionComparator implements Comparator<Option> {
     
     static {
         _map.put("i",1);
-        _map.put("c",2);
-        _map.put("e",3);
-        _map.put("d",4);
-        _map.put("?",5);
+        _map.put("s",2);
+        _map.put("d",3);
+        _map.put("?",4);
     }
 
     public int compare(Option x, Option y) {

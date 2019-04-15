@@ -1,10 +1,10 @@
 
-CREATE OR REPLACE FUNCTION insert_sequence_assignments (p_tab sequence_assignments ARRAY)
+CREATE OR REPLACE FUNCTION insert_ss_sequences (p_tab ss_sequence ARRAY)
 RETURNS VOID
 AS $$
 BEGIN
 
-	INSERT INTO sequence_assignments (
+	INSERT INTO ss_sequence (
         scop_id, 
         text,
         len,
