@@ -34,7 +34,7 @@ def map_aa_ds (elem):
 
     a = tf.expand_dims(elem, 0)
     b = tf.strings.split(a, sep=',')
-    c = tf.sparse.to_dense(b, default_value='_')
+    c = tf.sparse.to_dense(b, default_value='')
     d = tf.unstack(c, num=1)
     e = tf.map_fn(map_aa_inner, c, dtype=tf.int64)
 
@@ -44,7 +44,7 @@ def map_ss_ds (elem):
 
     a = tf.expand_dims(elem, 0)
     b = tf.strings.split(a, sep=',')
-    c = tf.sparse.to_dense(b, default_value='_')
+    c = tf.sparse.to_dense(b, default_value='')
     d = tf.unstack(c, num=1)
     e = tf.map_fn(map_ss_inner, c, dtype=tf.int64)
 
@@ -55,7 +55,7 @@ def map_ss_ds (elem):
 def map_aa_batch (elem):
 
     a = tf.strings.split(elem, sep=',')
-    b = tf.sparse.to_dense(a, default_value='_')
+    b = tf.sparse.to_dense(a, default_value='')
     c = tf.map_fn(map_aa_outer, b, dtype=tf.int64)
 
     return c
@@ -63,17 +63,34 @@ def map_aa_batch (elem):
 def map_ss_batch (elem):
 
     a = tf.strings.split(elem, sep=',')
-    b = tf.sparse.to_dense(a, default_value='_')
+    b = tf.sparse.to_dense(a, default_value='')
     c = tf.map_fn(map_ss_outer, b, dtype=tf.int64)
 
     return c
 
-# running 
+# if mapping inputs and labels together (to shuffle together)
 
+def map_aa_ss (elem):
 
-aa = tf.data.TextLineDataset(['aa.txt']).map(map_aa_ds)
-ss = tf.data.TextLineDataset(['ss.txt']).map(map_ss_ds)
-combo = aa.zip(ss).take(10).batch(2)
+    a = tf.expand_dims(elem[0], 0)                      , tf.expand_dims(elem[1], 0)
+    b = tf.strings.split(a[0], sep=',')                 , tf.strings.split(a[1], sep=',')
+    c = tf.sparse.to_dense(b[0], default_value='')      , tf.sparse.to_dense(b[1], default_value='')
+    d = tf.squeeze(c[0])                                , tf.squeeze(c[1])
+    e = tf.map_fn(map_aa_inner, d[0], dtype=tf.int64)   , tf.map_fn(map_ss_inner, d[1], dtype=tf.int64)
+    
+    return e
+
+def map_aa_ss_batch (elem):
+
+    a = tf.strings.split(elem, sep='|')
+    b = tf.sparse.to_dense(a, default_value='')
+    c = tf.map_fn(map_aa_ss, b, dtype=(tf.int64, tf.int64))
+
+    return c
+
+# run input pipeline
+
+ds = tf.data.TextLineDataset(['aa_ss.txt']).take(10).batch(2).map(map_aa_ss_batch)
 
 
 
