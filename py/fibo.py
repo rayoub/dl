@@ -89,8 +89,16 @@ def map_aa_ss_batch (elem):
     return c
 
 # run input pipeline
-
 ds = tf.data.TextLineDataset(['aa_ss.txt']).take(10).batch(2).map(map_aa_ss_batch)
+
+# build the model
+#model = tf.keras.Sequential([
+#    tf.keras.layers.LSTM(256, return_sequences=True, stateful=True, recurrent_initializer='glorot_uniform'),
+#    tf.keras.layers.Dense(MAP_SS_VALS_CNT)
+#])
+
+
+
 
 
 
