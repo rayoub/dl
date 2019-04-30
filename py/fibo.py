@@ -4,8 +4,9 @@ import tensorflow as tf
 # one-hot lookups
 
 MAP_AA_KEYS = ['_','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
-MAP_AA_VALS_CNT = len(MAP_AA_KEYS)
-MAP_AA_INIT = tf.lookup.KeyValueTensorInitializer(MAP_AA_KEYS, list(range(len(MAP_AA_KEYS))), value_dtype=tf.int64)
+MAP_AA_VALS = list(range(len(MAP_AA_KEYS)))
+MAP_AA_VALS_CNT = len(MAP_AA_VALS)
+MAP_AA_INIT = tf.lookup.KeyValueTensorInitializer(MAP_AA_KEYS, MAP_AA_VALS, value_dtype=tf.int64)
 MAP_AA = tf.lookup.StaticVocabularyTable(MAP_AA_INIT, 1)
 
 MAP_SS_KEYS = ['_','G','H','I','B','E','C','S','T']
