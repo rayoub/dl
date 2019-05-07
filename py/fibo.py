@@ -1,13 +1,10 @@
 
 # TODO
-# 1. early stopping
-# 2. missing data
-# 3. different sizes (done)
-# 4. possibly embedding
-# 5. from_logits code
-# 6. saving a trained model
-# 7. identify amino acids (done)
-# 8. bidirectional
+# 1. saving model
+# 2. loading model
+# 3. missing data
+# 4. optimization 
+# 5. regularization
 
 import tensorflow as tf
 
@@ -18,6 +15,7 @@ import tensorflow as tf
 BATCH_SIZE = 32
 VAL_SIZE = 512
 BUFFER_SIZE = 20000
+MAX_EPOCHS = 40
 
 # one-hot lookups
 MAP_AA_KEYS = ['_','A','B','C','D','E','F','G','H','I','K','L','M','N','P','Q','R','S','T','V','W','X','Y','Z']
@@ -61,8 +59,6 @@ def map_aa_ss_batch (elem):
 ds = tf.data.TextLineDataset(['aa_ss.txt'])
 val_ds = ds.take(VAL_SIZE).batch(BATCH_SIZE, drop_remainder=False).map(map_aa_ss_batch)
 train_ds = ds.skip(VAL_SIZE).shuffle(BUFFER_SIZE).batch(BATCH_SIZE, drop_remainder=True).map(map_aa_ss_batch)
-#ds = tf.data.TextLineDataset(['aa_ss.txt']).shuffle(10000).batch(BATCH_SIZE, drop_remainder=True).map(map_aa_ss_batch)
-
 
 # *******************************************
 # *** MODEL DEFINITION ***
@@ -75,7 +71,7 @@ def loss(labels, logits):
 # define the model
 model = tf.keras.Sequential([
     tf.keras.layers.Dense(128, batch_input_shape=(BATCH_SIZE, None, MAP_AA_VALS_CNT)),
-    tf.keras.layers.LSTM(200, return_sequences=True, stateful=True, recurrent_initializer='glorot_uniform'),
+    tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(200, return_sequences=True, stateful=False, recurrent_initializer='glorot_uniform')),
     tf.keras.layers.Dense(MAP_SS_VALS_CNT)
 ])
 
@@ -86,7 +82,12 @@ model.compile(optimizer='adam', loss=loss)
 # *** TRAINING LOOP ***
 # *******************************************
 
-# model.fit(train_ds, epochs=8, validation_data=val_ds)
+callbacks = [
+        # early stopping
+        tf.keras.callbacks.EarlyStopping(monitor='val_loss', min_delta=0.001, patience=3, verbose=0, restore_best_weights=True)
+    ]
+
+model.fit(train_ds, epochs=MAX_EPOCHS, validation_data=val_ds, callbacks=callbacks)
 
 
 
