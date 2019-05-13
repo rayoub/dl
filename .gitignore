@@ -2,10 +2,12 @@
 # data directories
 data/pdbstyle-2.07
 
-# big data files
+# big data files from astral
 data/astral-rapid-access-2.07-stable.raf
-data/astral-scopedom-atom-gd-all-2.07-stable.fa
 data/astral-scopedom-seqres-gd-all-2.07-stable.fa
+
+# big data files from pdb
+data/entries.idx
 
 # build ignores
 dl-mgr/target/
