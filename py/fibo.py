@@ -5,6 +5,7 @@
 # 3. missing data
 # 4. optimization 
 # 5. regularization
+# 6. validation data
 
 import tensorflow as tf
 
@@ -76,7 +77,7 @@ model = tf.keras.Sequential([
 ])
 
 # compile the model
-model.compile(optimizer='adam', loss=loss)
+model.compile(optimizer='adam', loss=loss, metrics=['categorical_accuracy'] )
 
 # *******************************************
 # *** TRAINING LOOP ***
