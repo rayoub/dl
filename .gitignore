@@ -1,15 +1,15 @@
 
 # data directories
-data/pdbstyle-2.07
-benchmarks/CASP11
-benchmarks/CB513
+train/pdbstyle-2.07
+test/CASP11
+test/CB513
 
 # big data files from astral
-data/astral-rapid-access-2.07-stable.raf
-data/astral-scopedom-seqres-gd-all-2.07-stable.fa
+train/astral-rapid-access-2.07-stable.raf
+train/astral-scopedom-seqres-gd-all-2.07-stable.fa
 
 # big data files from pdb
-data/entries.idx
+train/entries.idx
 
 # build ignores
 dl-mgr/target/
