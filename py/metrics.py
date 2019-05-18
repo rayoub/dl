@@ -13,7 +13,7 @@ def categorical_accuracy_with_missing_data(y_true, y_pred, shaped_like):
                     tf.where(
                         tf.math.equal(tf.reduce_max(y_true, axis=-1), tf.ones_like(shaped_like, dtype=tf.float32)),
                         tf.math.argmax(y_true, axis=-1),
-                        tf.ones_like(shaped_like, dtype=tf.int64)
+                        tf.negative(tf.ones_like(shaped_like, dtype=tf.int64))
                     ), 
                     tf.math.argmax(y_pred, axis=-1)
                 ),
