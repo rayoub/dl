@@ -34,7 +34,7 @@ class CategoricalAccuracyWithMissingData(tf.keras.metrics.Metric):
         self.total = tf.Variable(name='total', initial_value=zeros_init(shape=(), dtype=tf.float32), trainable=False)
        
         # mean denominator
-        self.count = tf.Variable(name='count', initial_value=zeros_init( shape=(), dtype=tf.float32), trainable=False)
+        self.count = tf.Variable(name='count', initial_value=zeros_init(shape=(), dtype=tf.float32), trainable=False)
 
     def update_state(self, y_true, y_pred, sample_weight=None):
         
