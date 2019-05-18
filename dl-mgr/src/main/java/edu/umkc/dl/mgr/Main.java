@@ -12,9 +12,9 @@ import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import edu.umkc.dl.lib.SetSsSequences;
 import edu.umkc.dl.lib.Constants;
 import edu.umkc.dl.lib.ImportAaSequences;
+import edu.umkc.dl.lib.SetAaTypes;
 
 public class Main {
 
@@ -76,7 +76,8 @@ public class Main {
     
     private static void option_s(CommandLine line) {
 
-        SetSsSequences.set();
+        //SetSsSequences.set();
+        SetAaTypes.set();
     }
     
     private static void option_d(CommandLine line) {
