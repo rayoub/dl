@@ -8,7 +8,7 @@
 # 6. validation data
 
 import tensorflow as tf
-import tensorflow.keras.backend as K
+import losses
 import metrics
 
 # *******************************************
@@ -76,19 +76,10 @@ model = tf.keras.Sequential([
     tf.keras.layers.Dense(MAP_SS_VALS_CNT)
 ])
 
-# define loss function
-def loss(labels, logits):
-
-    mask = tf.math.logical_not(K.all(tf.math.equal(labels, tf.zeros_like(labels)), axis=-1))
-    labels = tf.boolean_mask(labels, mask)
-    logits = tf.boolean_mask(logits, mask)
-    
-    return tf.keras.losses.categorical_crossentropy(labels, logits, from_logits=True)
-
 # compile the model
 model.compile(optimizer='adam', 
-        loss=loss, 
-        metrics=[metrics.CategoricalAccuracyWithMissingData(BATCH_SIZE,TIME_STEPS)])
+        loss=losses.categorical_crossentropy_with_missing_data,
+        metrics=[metrics.CategoricalAccuracyWithMissingData()])
 
 # *******************************************
 # *** TRAINING LOOP ***
