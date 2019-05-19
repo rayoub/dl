@@ -25,7 +25,6 @@ class CategoricalAccuracyWithMissingData(tf.keras.metrics.Metric):
     def __init__(self, batch_size, time_steps, name='categorical_accuracy_with_missing_data', **kwargs):
         super(CategoricalAccuracyWithMissingData, self).__init__(name=name, **kwargs)
       
-
         self.shaped_like = tf.Variable(name='shaped_like', initial_value=tf.ones([batch_size, time_steps]), trainable=False)
 
         zeros_init = tf.zeros_initializer()

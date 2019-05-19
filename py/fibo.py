@@ -8,14 +8,15 @@
 # 6. validation data
 
 import tensorflow as tf
-import metrics as mets
+import tensorflow.keras.backend as K
+import metrics
 
 # *******************************************
 # *** INPUT PIPELINE ***
 # *******************************************
 
 BATCH_SIZE = 32
-TIME_STEPS = 121
+TIME_STEPS = 200
 VAL_SIZE = 512
 BUFFER_SIZE = 20000
 MAX_EPOCHS = 40
@@ -78,13 +79,16 @@ model = tf.keras.Sequential([
 # define loss function
 def loss(labels, logits):
 
-    # this will return zero for zero vector labels representing missing data
+    mask = tf.math.logical_not(K.all(tf.math.equal(labels, tf.zeros_like(labels)), axis=-1))
+    labels = tf.boolean_mask(labels, mask)
+    logits = tf.boolean_mask(logits, mask)
+    
     return tf.keras.losses.categorical_crossentropy(labels, logits, from_logits=True)
 
 # compile the model
 model.compile(optimizer='adam', 
-        loss=tf.keras.losses.CategoricalCrossentropy(from_logits=True, reduction=tf.keras.losses.Reduction.SUM), 
-        metrics=[mets.CategoricalAccuracyWithMissingData(BATCH_SIZE,TIME_STEPS)])
+        loss=loss, 
+        metrics=[metrics.CategoricalAccuracyWithMissingData(BATCH_SIZE,TIME_STEPS)])
 
 # *******************************************
 # *** TRAINING LOOP ***
