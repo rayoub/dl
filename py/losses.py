@@ -8,8 +8,8 @@ import tensorflow.keras.backend as K
 
 def categorical_crossentropy_with_missing_data(y_true, y_pred):
 
-    mask = tf.math.logical_not(K.all(tf.math.equal(y_true, tf.zeros_like(y_true)), axis=-1))
-    y_true = tf.boolean_mask(y_true, mask)
-    y_pred = tf.boolean_mask(y_pred, mask)
+#    mask = tf.math.logical_not(K.all(tf.math.equal(y_true, tf.zeros_like(y_true)), axis=-1))
+#    y_true = tf.boolean_mask(y_true, mask)
+#    y_pred = tf.boolean_mask(y_pred, mask)
     
     return tf.keras.losses.categorical_crossentropy(y_true, y_pred, from_logits=True)
