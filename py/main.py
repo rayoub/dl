@@ -12,8 +12,8 @@ import metrics
 
 # constants
 BATCH_SIZE = 16
-BUFFER_SIZE = 5000
-MAX_EPOCHS = 40
+BUFFER_SIZE = 100
+MAX_EPOCHS = 3
 
 # inputs
 train_ds = data.get_data('train.txt', BUFFER_SIZE, BATCH_SIZE)
@@ -36,8 +36,7 @@ def get_model():
 
     # compile model
     m.compile(optimizer='adam', 
-            loss = losses.categorical_crossentropy_with_missing_data,
-#            loss=tf.keras.losses.CategoricalCrossentropy(from_logits=True),
+            loss=tf.keras.losses.CategoricalCrossentropy(from_logits=True),
             metrics=[metrics.CategoricalAccuracyWithMissingData()])
 
     return m

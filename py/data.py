@@ -60,6 +60,7 @@ def map_ds_part_2 (elem):
     e = tf.map_fn(map_aa, d[0], dtype=tf.float32)   , tf.map_fn(map_ss, d[1], dtype=tf.float32)
     
     return e
+
 def get_data(file_name, buffer_size, batch_size):
 
     return tf.data.TextLineDataset([file_name]).shuffle(buffer_size).map(map_ds).padded_batch(
