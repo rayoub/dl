@@ -15,6 +15,9 @@ train/entries.idx
 dl-mgr/target/
 py/__pycache__/
 
+# copied data files
+py/*.txt
+
 # file types
 **/*.swp
 **/*.tar
