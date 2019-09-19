@@ -1,8 +1,8 @@
 
 # data directories
 train/pdbstyle-2.07
-test/CASP11
-test/CB513
+test_ss/CASP11
+test_ss/CB513
 
 # big data files from astral
 train/astral-rapid-access-2.07-stable.raf
