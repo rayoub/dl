@@ -7,12 +7,11 @@
 
 import tensorflow as tf
 import data
-import losses
 import metrics
 
 # constants
 BATCH_SIZE = 16
-BUFFER_SIZE = 100
+BUFFER_SIZE = 1000
 MAX_EPOCHS = 3
 
 # inputs
@@ -25,6 +24,9 @@ test_ds = data.get_data('test_CASP11.txt', BUFFER_SIZE, BATCH_SIZE)
 ##########################################################
 
 def get_model():
+
+    # I'm not sure whether or not the masking here loses context information
+    # however, without it we end up processing padding which slows execution significantly
 
     # define model
     m = tf.keras.Sequential([

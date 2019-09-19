@@ -21,7 +21,7 @@ def map_aa (elem):
 def map_ss (elem):
     return tf.one_hot(MAP_SS.lookup(elem), MAP_SS_VALS_CNT, dtype=tf.float32)
 
-# for mapping after batching 
+# for mapping after batching TODO: needs to be update for tf 2.0 rc
 def map_batch (elem):
 
     a = tf.strings.split(elem, sep='|')
@@ -43,23 +43,11 @@ def map_batch_part_2 (elem):
 # for mapping before batching
 def map_ds (elem):
 
-    a = tf.expand_dims(elem, 0)
-    b = tf.strings.split(a, sep='|')
-    c = tf.sparse.to_dense(b, default_value='')
-    f1, f2 = tf.map_fn(map_ds_part_2, c, dtype=(tf.float32, tf.float32))
-    g1, g2 = tf.squeeze(f1), tf.squeeze(f2)
+    a = tf.strings.split(elem, sep='|')
+    b = tf.strings.split(a[0], sep=',')             , tf.strings.split(b[1], sep=',')
+    c = tf.map_fn(map_aa, b[0], dtype=tf.float32)   , tf.map_fn(map_ss, b[1], dtype=tf.float32)
 
-    return g1, g2
-
-def map_ds_part_2 (elem):
-
-    a = tf.expand_dims(elem[0], axis=0)             , tf.expand_dims(elem[1], axis=0) 
-    b = tf.strings.split(a[0], sep=',')             , tf.strings.split(a[1], sep=',')
-    c = tf.sparse.to_dense(b[0], default_value='')  , tf.sparse.to_dense(b[1], default_value='')
-    d = tf.squeeze(c[0])                            , tf.squeeze(c[1])
-    e = tf.map_fn(map_aa, d[0], dtype=tf.float32)   , tf.map_fn(map_ss, d[1], dtype=tf.float32)
-    
-    return e
+    return c
 
 def get_data(file_name, buffer_size, batch_size):
 
