@@ -13,10 +13,10 @@ train/entries.idx
 
 # build ignores
 dl-mgr/target/
-py/__pycache__/
+py_ss/__pycache__/
 
 # copied data files
-py/*.txt
+py_ss/*.txt
 
 # file types
 **/*.swp
