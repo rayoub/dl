@@ -15,7 +15,7 @@ import java.util.stream.IntStream;
 import org.postgresql.PGConnection;
 import org.postgresql.ds.PGSimpleDataSource;
 
-public class SetSsSequences {
+public class SetPpSequences {
 
     public static void set() {
 
@@ -28,7 +28,7 @@ public class SetSsSequences {
     private static void setSplit(int splitIndex) {
 
         int processed = 0;
-        List<SsSequence> sequences = new ArrayList<>();
+        List<PpSequence> sequences = new ArrayList<>();
 
         PGSimpleDataSource ds = Db.getDataSource();
 
@@ -84,15 +84,15 @@ public class SetSsSequences {
                     sequenceText = rs.getString("sequence_text");
                     mapText = rs.getString("map_text");
 
-                    List<String> assignments = calculateForScopId(scopId, coords1, coords2, sequenceText, mapText);
+                    List<String> coordinates = calculateForScopId(scopId, coords1, coords2, sequenceText, mapText);
 
-                    String text = assignments.stream().collect(Collectors.joining("\\,"));
-                    int len = assignments.size();
-                    int missingLen = (int)assignments.stream().filter(a -> a.equals("_")).count();
+                    String text = coordinates.stream().collect(Collectors.joining("\\,"));
+                    int len = coordinates.size();
+                    int missingLen = (int)coordinates.stream().filter(a -> a.equals("_\\,_")).count();
 
-                    if (assignments.size() > 0 && len > missingLen) {
+                    if (coordinates.size() > 0 && len > missingLen) {
 
-                        SsSequence sequence = new SsSequence();
+                        PpSequence sequence = new PpSequence();
                         sequence.setScopId(scopId);
                         sequence.setText(text);
                         sequence.setLen(len);
@@ -102,13 +102,13 @@ public class SetSsSequences {
                     }
 
                 } catch (Exception e) {
-                    Logger.getLogger(SetSsSequences.class.getName()).log(Level.SEVERE, scopId, e);
+                    Logger.getLogger(SetPpSequences.class.getName()).log(Level.SEVERE, scopId, e);
                 }
                 
                 // output
                 processed++;
                 if (processed % Constants.PROCESSED_INCREMENT == 0) {
-                    saveSsSequences(sequences);
+                    savePpSequences(sequences);
                     sequences.clear();
                     System.out.println("Split: " + splitIndex + ", Processed: "
                             + (Constants.PROCESSED_INCREMENT * (processed / Constants.PROCESSED_INCREMENT)));
@@ -116,7 +116,7 @@ public class SetSsSequences {
             }
 
             if (sequences.size() > 0) {
-                saveSsSequences(sequences);
+                savePpSequences(sequences);
             }
 
             rs.close();
@@ -124,7 +124,7 @@ public class SetSsSequences {
             conn.close();
 
         } catch (SQLException e) {
-            Logger.getLogger(SetSsSequences.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(SetPpSequences.class.getName()).log(Level.SEVERE, null, e);
         }
     }
 
@@ -197,17 +197,21 @@ public class SetSsSequences {
                 printlnError(scopId + ": code mismatch at map coords (" + map.ResidueNumber + "," + map.InsertCode + ")");
             }
 
-            // assignments
+            // coordinates
             if (check) {
 
                 if (!map.Code1.equals(".")) {
-                    // this may already be assigned _ 
-                    // we still count as a present residue in that case
-                    seq.add(residue.getSsa());
-                    k++;
+                    if (residue.getPhi() == Residue.NULL_ANGLE && residue.getPsi() == Residue.NULL_ANGLE) {
+                        seq.add("_\\,_");
+                    }
+                    else {
+                        seq.add(String.format("%.3f", residue.getPhi()));
+                        seq.add(String.format("%.3f", residue.getPsi()));
+                    }
+                    k++; // we did have a residue
                 }
                 else {
-                    seq.add("_");
+                    seq.add("_\\,_");
                 }
                 j++;
             }
@@ -226,20 +230,20 @@ public class SetSsSequences {
         System.out.println((char)27 + "[31m" + message + (char)27 + "[0m");
     }
     
-    private static void saveSsSequences(List<SsSequence> sequences) throws SQLException {
+    private static void savePpSequences(List<PpSequence> sequences) throws SQLException {
 
         PGSimpleDataSource ds = Db.getDataSource();
 
         Connection conn = ds.getConnection();
         conn.setAutoCommit(true);
 
-        ((PGConnection) conn).addDataType("ss_sequence", SsSequence.class);
+        ((PGConnection) conn).addDataType("pp_sequence", PpSequence.class);
 
-        PreparedStatement updt = conn.prepareStatement("SELECT insert_ss_sequences(?);");
+        PreparedStatement updt = conn.prepareStatement("SELECT insert_pp_sequences(?);");
     
-        SsSequence a[] = new SsSequence[sequences.size()];
+        PpSequence a[] = new PpSequence[sequences.size()];
         sequences.toArray(a);
-        updt.setArray(1, conn.createArrayOf("ss_sequence", a));
+        updt.setArray(1, conn.createArrayOf("pp_sequence", a));
     
         updt.execute();
         updt.close();

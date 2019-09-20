@@ -7,15 +7,18 @@ RETURNS TABLE (
     insert_code VARCHAR,
     residue_code VARCHAR,
     ssa VARCHAR,
-    phi NUMERIC,
-    psi NUMERIC,
+    phi DOUBLE PRECISION,
+    psi DOUBLE PRECISION,
     descriptor VARCHAR,
-    ca_x NUMERIC,
-    ca_y NUMERIC,
-    ca_z NUMERIC,
-    cb_x NUMERIC,
-    cb_y NUMERIC,
-    cb_z NUMERIC
+    ca_x DOUBLE PRECISION,
+    ca_y DOUBLE PRECISION,
+    ca_z DOUBLE PRECISION,
+    cb_x DOUBLE PRECISION,
+    cb_y DOUBLE PRECISION,
+    cb_z DOUBLE PRECISION,
+    ck_x DOUBLE PRECISION,
+    ck_y DOUBLE PRECISION,
+    ck_z DOUBLE PRECISION
 )
 AS $$
 BEGIN
@@ -36,7 +39,10 @@ BEGIN
         r.ca_z,
         r.cb_x,
         r.cb_y,
-        r.cb_z
+        r.cb_z,
+        r.ck_x,
+        r.ck_y,
+        r.ck_z
     FROM 
         residue r
     WHERE

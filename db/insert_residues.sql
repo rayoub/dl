@@ -19,7 +19,10 @@ BEGIN
         ca_z, 
         cb_x, 
         cb_y,
-        cb_z
+        cb_z,
+        ck_x, 
+        ck_y,
+        ck_z
     )
 	SELECT
         scop_id,
@@ -36,7 +39,10 @@ BEGIN
         ca_z, 
         cb_x, 
         cb_y,
-        cb_z
+        cb_z,
+        ck_x, 
+        ck_y,
+        ck_z
 	FROM
 		UNNEST(p_tab);
 

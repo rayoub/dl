@@ -13,8 +13,8 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import edu.umkc.dl.lib.Constants;
-import edu.umkc.dl.lib.ImportAaSequences;
-import edu.umkc.dl.lib.SetAaTypes;
+import edu.umkc.dl.lib.ImportStructures;
+import edu.umkc.dl.lib.SetPpSequences;
 
 public class Main {
 
@@ -69,19 +69,23 @@ public class Main {
     
     private static void option_i(CommandLine line) {
 
-        ImportAaSequences.importAaSequences();
+        //ImportAaSequences.importAaSequences();
         //ImportMaps.importMaps();
-        //ImportStructures.importStructures();
+        ImportStructures.importStructures();
     }
     
     private static void option_s(CommandLine line) {
 
         //SetSsSequences.set();
-        SetAaTypes.set();
+        SetPpSequences.set();
+        //SetCkSequences.set();
+        //SetAaTypes.set();
     }
     
     private static void option_d(CommandLine line) {
-    
+   
+        double a = 3423.623523523;
+        System.out.println(String.format("%.3f", a));
     }
 
     private static void option_help(Options options) {

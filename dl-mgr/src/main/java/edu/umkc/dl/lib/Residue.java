@@ -4,21 +4,32 @@ import org.postgresql.util.PGobject;
 
 public class Residue extends PGobject {
 
+    public static double NULL_ANGLE = 360.0;
+    public static double NULL_COORD = -9999.0;
+
     private String scopId;
     private int orderNumber;
     private int residueNumber;
     private String insertCode;
     private String residueCode;
     private String ssa;
-    private double phi = 360.0;
-    private double psi = 360.0;
+    private double phi = NULL_ANGLE;
+    private double psi = NULL_ANGLE;
     private String descriptor;
     private double caX;
     private double caY;
     private double caZ;
-    private double cbX = -1;
-    private double cbY = -1;
-    private double cbZ = -1;
+    private double cbX = NULL_COORD;
+    private double cbY = NULL_COORD;
+    private double cbZ = NULL_COORD;
+    private double nX = NULL_COORD;
+    private double nY = NULL_COORD;
+    private double nZ = NULL_COORD;
+    private double ckX = NULL_COORD;
+    private double ckY = NULL_COORD;
+    private double ckZ = NULL_COORD;
+    private boolean breakBefore;
+    private boolean breakAfter;
 
     public String getScopId() {
         return scopId;
@@ -140,6 +151,70 @@ public class Residue extends PGobject {
         this.cbZ = cbZ;
     }
 
+    public double getNX() {
+        return nX;
+    }
+
+    public void setNX(double nX) {
+        this.nX = nX;
+    }
+
+    public double getNY() {
+        return nY;
+    }
+
+    public void setNY(double nY) {
+        this.nY = nY;
+    }
+
+    public double getNZ() {
+        return nZ;
+    }
+
+    public void setNZ(double nZ) {
+        this.nZ = nZ;
+    }
+
+    public double getCkX() {
+        return ckX;
+    }
+
+    public void setCkX(double ckX) {
+        this.ckX = ckX;
+    }
+
+    public double getCkY() {
+        return ckY;
+    }
+
+    public void setCkY(double ckY) {
+        this.ckY = ckY;
+    }
+
+    public double getCkZ() {
+        return ckZ;
+    }
+
+    public void setCkZ(double ckZ) {
+        this.ckZ = ckZ;
+    }
+
+    public boolean isBreakBefore() {
+        return breakBefore;
+    }
+
+    public void setBreakBefore(boolean breakBefore) {
+        this.breakBefore = breakBefore;
+    }
+
+    public boolean isBreakAfter() {
+        return breakAfter;
+    }
+
+    public void setBreakAfter(boolean breakAfter) {
+        this.breakAfter = breakAfter;
+    }
+
     @Override
     public String getValue() {
         String row = "(" 
@@ -150,9 +225,12 @@ public class Residue extends PGobject {
             + ((psi == 360.0) ? "" : psi) + "," 
             + descriptor + ","
             + caX + "," + caY + "," + caZ + ","
-            + ((cbX == -1) ? "" : cbX) + "," 
-            + ((cbY == -1) ? "" : cbY) + "," 
-            + ((cbZ == -1) ? "" : cbZ) 
+            + ((cbX == NULL_COORD) ? "" : cbX) + "," 
+            + ((cbY == NULL_COORD) ? "" : cbY) + "," 
+            + ((cbZ == NULL_COORD) ? "" : cbZ) + ","
+            + ((ckX == NULL_COORD) ? "" : ckX) + "," 
+            + ((ckY == NULL_COORD) ? "" : ckY) + "," 
+            + ((ckZ == NULL_COORD) ? "" : ckZ) 
             + ")";
         return row;
     }

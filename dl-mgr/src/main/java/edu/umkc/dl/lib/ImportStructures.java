@@ -130,133 +130,271 @@ public class ImportStructures {
 
     public static List<Residue> parseStructure(String scopId, Structure structure) {
 
-        List<Residue> residues = new ArrayList<>();
-
-        SecStrucCalc ssCalc = new SecStrucCalc();
-            
         // assign secondary structure
+        SecStrucCalc ssCalc = new SecStrucCalc();
         try {
             ssCalc.calculate(structure, true);
         } catch (StructureException e) {
             // do nothing
         }
 
-        // iterate chains
-        List<Chain> chains = structure.getChains();
-        for(Chain chain : chains) {
-        
-            // *** gather residues
-            
-            // iterate residues (i.e. groups of atoms)
-            List<Group> groups = chain.getAtomGroups();
-            for (int i = 0; i < groups.size(); i++) {
+        // get first chain 
+        Chain chain = structure.getChainByIndex(0);
 
-                Group g = groups.get(i);
-               
-                String residueCode = g.getChemComp().getOne_letter_code().toUpperCase();
+        // gather residues 
+        List<Residue> residues = new ArrayList<>();
+        List<Group> groups = chain.getAtomGroups();
+        for (int i = 0; i < groups.size(); i++) {
 
-                // we need the carbon alpha
-                if (!g.hasAtom("CA")) {
-                    continue;
+            Group g = groups.get(i);
+           
+            String residueCode = g.getChemComp().getOne_letter_code().toUpperCase();
+
+            // we need the carbon alpha
+            if (!g.hasAtom("CA")) {
+                continue;
+            }
+
+            // get secondary structure assignment 
+            // empty strings will be converted to _ when getting
+            String ssa = "";
+            Object obj = g.getProperty(Group.SEC_STRUC);
+            if (obj instanceof SecStrucInfo) {
+               SecStrucInfo info = (SecStrucInfo)obj;
+               ssa = String.valueOf(info.getType().type).trim();
+               if (ssa.isEmpty()) {
+                   ssa = "C";
                 }
+            }
 
-                // get secondary structure assignment
-                String ssa = "";
-                Object obj = g.getProperty(Group.SEC_STRUC);
-                if (obj instanceof SecStrucInfo) {
-                   SecStrucInfo info = (SecStrucInfo)obj;
-                   ssa = String.valueOf(info.getType().type).trim();
-                   if (ssa.isEmpty()) {
-                       ssa = "C";
-                    }
-                }
-
-                // map to extension coding
-                String grouping;
-                switch(ssa) {
-                    case "G":
-                    case "H":
-                    case "I":
-                    case "T":
-                        grouping = "Helix";
-                        break;
-                    case "E":
-                    case "B":
-                        grouping = "Strand";
-                        break;
-                    case "S":
-                    case "C":
-                        grouping = "Loop";
-                        break;
-                    default:
-                        grouping = "";
-                }
-                
-                // calculate torsion angles
-                double phi = 360.0;
-                double psi = 360.0;
-                if (i > 0 && i < groups.size() - 1) {
-
-                    Group g1 = groups.get(i - 1);
-                    Group g3 = groups.get(i + 1);
-                    try {
-                        if (g1 instanceof AminoAcid && g instanceof AminoAcid && g3 instanceof AminoAcid) {
-                            
-                            AminoAcid a1 = (AminoAcid) g1;
-                            AminoAcid a2 = (AminoAcid) g;
-                            AminoAcid a3 = (AminoAcid) g3;
-                           
-                            // check connectivity
-                            boolean breakBefore = !Calc.isConnected(a1,a2);
-                            boolean breakAfter = !Calc.isConnected(a2,a3);
-                            if (!breakBefore && !breakAfter) {
-                                phi = Calc.getPhi(a1,a2);
-                                psi = Calc.getPsi(a2,a3);
-                            }
-                        }
-                    } catch (StructureException e) {
-                        // do nothing
-                    }
-                }
-
-                // get coordinates
-                Atom ca = g.getAtom("CA");
-                double caX = ca.getX();
-                double caY = ca.getY();
-                double caZ = ca.getZ();
-
-                double cbX = -1;
-                double cbY = -1;
-                double cbZ = -1;
-                if (g.hasAtom("CB")) {
-                
-                    Atom cb = g.getAtom("CB");
-                    cbX = cb.getX();
-                    cbY = cb.getY();
-                    cbZ = cb.getZ();
-                }
-
-                Residue residue = new Residue();
-
-                residue.setScopId(scopId);
-                residue.setResidueNumber(g.getResidueNumber().getSeqNum());
-                residue.setInsertCode(String.valueOf(g.getResidueNumber().getInsCode()).toUpperCase());
-                residue.setResidueCode(residueCode);
-                residue.setSsa(ssa);
-                residue.setPhi(phi);
-                residue.setPsi(psi);
-                residue.setDescriptor(calculateRegion(phi,psi,grouping));
-                residue.setCaX(caX);
-                residue.setCaY(caY);
-                residue.setCaZ(caZ);
-                residue.setCbX(cbX);
-                residue.setCbY(cbY);
-                residue.setCbZ(cbZ);
-
-                residues.add(residue);
+            // map to sse group 
+            String grouping;
+            switch(ssa) {
+                case "G":
+                case "H":
+                case "I":
+                case "T":
+                    grouping = "Helix";
+                    break;
+                case "E":
+                case "B":
+                    grouping = "Strand";
+                    break;
+                case "S":
+                case "C":
+                    grouping = "Loop";
+                    break;
+                default:
+                    // empty strings will be converted to _ when getting
+                    grouping = "";
             }
             
-        } // iterating chains
+            // calculate torsion angles
+            double phi = Residue.NULL_ANGLE;
+            double psi = Residue.NULL_ANGLE;
+            boolean breakBefore = true;
+            boolean breakAfter = true;
+            if (i > 0 && i < groups.size() - 1) {
+
+                Group g1 = groups.get(i - 1);
+                Group g3 = groups.get(i + 1);
+                try {
+                    if (g1 instanceof AminoAcid && g instanceof AminoAcid && g3 instanceof AminoAcid) {
+                        
+                        AminoAcid a1 = (AminoAcid) g1;
+                        AminoAcid a2 = (AminoAcid) g;
+                        AminoAcid a3 = (AminoAcid) g3;
+                       
+                        // check connectivity
+                        breakBefore = !Calc.isConnected(a1,a2);
+                        breakAfter = !Calc.isConnected(a2,a3);
+                        if (!breakBefore && !breakAfter) {
+                            phi = Calc.getPhi(a1,a2);
+                            psi = Calc.getPsi(a2,a3);
+                        }
+                    }
+                } catch (StructureException e) {
+                    // do nothing
+                }
+            }
+
+            // get coordinates
+            Atom ca = g.getAtom("CA");
+            double caX = ca.getX();
+            double caY = ca.getY();
+            double caZ = ca.getZ();
+
+            double cbX = Residue.NULL_COORD;
+            double cbY = Residue.NULL_COORD;
+            double cbZ = Residue.NULL_COORD;
+            if (g.hasAtom("CB")) {
+            
+                Atom cb = g.getAtom("CB");
+                cbX = cb.getX();
+                cbY = cb.getY();
+                cbZ = cb.getZ();
+            }
+            
+            double nX = Residue.NULL_COORD;
+            double nY = Residue.NULL_COORD;
+            double nZ = Residue.NULL_COORD;
+            if (g.hasAtom("N")) {
+                
+                Atom n = g.getAtom("N");
+                nX = n.getX();
+                nY = n.getY();
+                nZ = n.getZ();
+            }
+
+            Residue residue = new Residue();
+
+            residue.setScopId(scopId);
+            residue.setResidueNumber(g.getResidueNumber().getSeqNum());
+            residue.setInsertCode(String.valueOf(g.getResidueNumber().getInsCode()).toUpperCase());
+            residue.setResidueCode(residueCode);
+            residue.setSsa(ssa);
+            residue.setPhi(phi);
+            residue.setPsi(psi);
+            residue.setDescriptor(calculateRegion(phi,psi,grouping));
+            residue.setCaX(caX);
+            residue.setCaY(caY);
+            residue.setCaZ(caZ);
+            residue.setCbX(cbX);
+            residue.setCbY(cbY);
+            residue.setCbZ(cbZ);
+            residue.setNX(nX);
+            residue.setNY(nY);
+            residue.setNZ(nZ);
+            residue.setBreakBefore(breakBefore);
+            residue.setBreakAfter(breakAfter);
+
+            residues.add(residue);
+        }
+
+        // calculate cossack coords
+        for (int i = 1; i < residues.size() - 1; i++) {
+
+            Residue residue1 = residues.get(i - 1);
+            Residue residue2 = residues.get(i);
+            Residue residue3 = residues.get(i + 1);
+
+            // connected residues
+            if (!residue2.isBreakBefore() && !residue2.isBreakAfter()) {
+            
+                double[][] coords = new double[3][4];
+
+                // translate ca2 to origin
+
+                // ca1
+                coords[0][0] = residue1.getCaX() - residue2.getCaX();
+                coords[1][0] = residue1.getCaY() - residue2.getCaY();
+                coords[2][0] = residue1.getCaZ() - residue2.getCaZ();
+               
+                // n2 
+                coords[0][1] = residue2.getNX() - residue2.getCaX();
+                coords[1][1] = residue2.getNY() - residue2.getCaY();
+                coords[2][1] = residue2.getNZ() - residue2.getCaZ();
+
+                // ca2
+                coords[0][2] = 0;
+                coords[1][2] = 0;
+                coords[2][2] = 0;
+
+                // ca3
+                coords[0][3] = residue3.getCaX() - residue2.getCaX();
+                coords[1][3] = residue3.getCaY() - residue2.getCaY();
+                coords[2][3] = residue3.getCaZ() - residue2.getCaZ();
+
+                // 1. rotate ca1 about the x-axis to fall in the xy-plane
+                // 2. rotate ca1 about the z-axis to fall in the xz-plane along negative x-axis
+                // 1&2 will put ca1 on the x-axis an approximately fixed distance from ca2 at the origin
+                // 3. rotate n2 about the x-axis to fall in the xy-plane with y > 0 
+
+                // 1.
+                double x = coords[0][0]; 
+                double y = coords[1][0]; 
+                double z = coords[2][0]; 
+
+                if (z != 0) {
+
+                    double cn = Math.sqrt(Math.pow(y,2) + Math.pow(z,2));
+                    double pn = Math.sqrt(Math.pow(y,2));
+                    double dot = Math.pow(y,2);
+                    double cos = dot / (pn * cn);
+                    double angle = Math.acos(cos);
+
+                    if (((z > 0) && (y > 0)) || ((z < 0) && (y < 0))) {
+                        angle = Math.PI - angle;
+                    }
+
+                    double[][] r = getRotationX(angle);
+                    coords = matmul(r, coords);
+                } 
+
+                // 2.
+                x = coords[0][0]; 
+                y = coords[1][0]; 
+                z = coords[2][0]; 
+
+                if (!(x < 0 && y == 0)) {
+
+                    double cn = Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
+                    double pn = Math.sqrt(Math.pow(x,2));
+                    double dot = Math.pow(x,2);
+                    double cos = dot / (pn * cn);
+                    double angle = Math.acos(cos);
+                    
+                    if (y < 0) {
+                        if (x < 0) {
+                            angle = 2 * Math.PI - angle;
+                        } 
+                        else {
+                            angle = Math.PI + angle;
+                        }
+                    }
+                    else if (x > 0) {
+                        angle = Math.PI - angle; 
+                    }
+
+                    double[][] r = getRotationZ(angle);
+                    coords = matmul(r, coords);
+                }
+
+                // 3. 
+                x = coords[0][1]; 
+                y = coords[1][1]; 
+                z = coords[2][1]; 
+
+                if (z != 0) {
+
+                    double cn = Math.sqrt(Math.pow(y,2) + Math.pow(z,2));
+                    double pn = Math.sqrt(Math.pow(y,2));
+                    double dot = Math.pow(y,2);
+                    double cos = dot / (pn * cn);
+                    double angle = Math.acos(cos);
+
+                    if (y < 0) {
+                        if (z < 0) {
+                            angle = Math.PI - angle;
+                        } 
+                        else {
+                            angle = Math.PI + angle;
+                        }
+                    }
+                    else if (z > 0) {
+                        angle = 2 * Math.PI - angle; 
+                    }
+
+                    double[][] r = getRotationX(angle);
+                    coords = matmul(r, coords);
+                }
+                
+                // assign the ca3 coords 
+                residue2.setCkX(coords[0][3]);
+                residue2.setCkY(coords[1][3]);
+                residue2.setCkZ(coords[2][3]);
+            }
+        } 
 
         // set order numbers
         for (int i = 0; i < residues.size(); i++) {
@@ -268,7 +406,7 @@ public class ImportStructures {
     
     public static String calculateRegion(double phi, double psi, String grouping) {
 
-        if (phi == 360 || psi == 360 || grouping.isEmpty()) 
+        if (phi == Residue.NULL_ANGLE || psi == Residue.NULL_ANGLE || grouping.isEmpty()) 
             return "";
         
         // helix 0, 1, 2, 3
@@ -409,6 +547,65 @@ public class ImportStructures {
         }
             
         return region;
+    }
+    
+    public static double[][] getRotationX(double angle) {
+
+        double[][] r = { 
+            { 1.0, 0.0, 0.0 },
+            { 0.0, Math.cos(angle), -Math.sin(angle) },
+            { 0.0, Math.sin(angle), Math.cos(angle) }
+        };
+        
+        return r;
+    }
+
+    public static double[][] getRotationY(double angle) {
+
+        double[][] r = { 
+            { Math.cos(angle), 0.0, Math.sin(angle) },
+            { 0.0, 1.0, 0.0 },
+            { -Math.sin(angle), 0.0, Math.cos(angle) }
+        };
+        
+        return r;
+    }
+    
+    public static double[][] getRotationZ(double angle) {
+
+        double[][] r = { 
+            { Math.cos(angle), -Math.sin(angle), 0.0 },
+            { Math.sin(angle), Math.cos(angle), 0.0 },
+            { 0.0, 0.0, 1.0 }
+        };
+        
+        return r;
+    }
+
+    public static double[][] matmul(double[][] a, double[][] b) {
+
+        int aRows = a.length;
+        int aColumns = a[0].length;
+        int bColumns = b[0].length;
+
+        // initialize matrix
+        double[][] c = new double[aRows][bColumns];
+        for (int i = 0; i < aRows; i++) {
+            for (int j = 0; j < bColumns; j++) {
+                c[i][j] = 0.0;
+            }
+        }
+
+        // multiply matrices
+        for (int i = 0; i < aRows; i++) { 
+            for (int j = 0; j < bColumns; j++) { 
+                for (int k = 0; k < aColumns; k++) { 
+                    c[i][j] += a[i][k] * b[k][j];
+                }
+            }
+        }
+
+        return c;
     }
 }
 

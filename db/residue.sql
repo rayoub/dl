@@ -7,15 +7,18 @@ CREATE TABLE residue
     insert_code VARCHAR NULL,
     residue_code VARCHAR NOT NULL, 
     ssa VARCHAR NULL,
-    phi NUMERIC NULL,
-    psi NUMERIC NULL,
+    phi DOUBLE PRECISION NULL,
+    psi DOUBLE PRECISION NULL,
     descriptor VARCHAR NULL,
-    ca_x NUMERIC NOT NULL,
-    ca_y NUMERIC NOT NULL,
-    ca_z NUMERIC NOT NULL,
-    cb_x NUMERIC NULL,
-    cb_y NUMERIC NULL,
-    cb_z NUMERIC NULL
+    ca_x DOUBLE PRECISION NOT NULL,
+    ca_y DOUBLE PRECISION NOT NULL,
+    ca_z DOUBLE PRECISION NOT NULL,
+    cb_x DOUBLE PRECISION NULL,
+    cb_y DOUBLE PRECISION NULL,
+    cb_z DOUBLE PRECISION NULL,
+    ck_x DOUBLE PRECISION NULL,
+    ck_y DOUBLE PRECISION NULL,
+    ck_z DOUBLE PRECISION NULL
 );
 
 CREATE UNIQUE INDEX idx_residue_unique ON residue (scop_id, order_number);

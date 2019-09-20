@@ -55,13 +55,22 @@ public class Db {
                     residue.setSsa("_");
                 residue.setPhi(rs.getDouble("phi"));
                 if (rs.wasNull())
-                    residue.setPhi(360.0);
+                    residue.setPhi(Residue.NULL_ANGLE);
                 residue.setPsi(rs.getDouble("psi"));
                 if (rs.wasNull())
-                    residue.setPsi(360.0);
+                    residue.setPsi(Residue.NULL_ANGLE);
                 residue.setDescriptor(rs.getString("descriptor"));
                 if (rs.wasNull()) 
                     residue.setDescriptor("_");
+                residue.setCkX(rs.getDouble("ck_x"));
+                if (rs.wasNull())
+                    residue.setCkX(Residue.NULL_COORD);
+                residue.setCkY(rs.getDouble("ck_y"));
+                if (rs.wasNull())
+                    residue.setCkY(Residue.NULL_COORD);
+                residue.setCkZ(rs.getDouble("ck_z"));
+                if (rs.wasNull())
+                    residue.setCkZ(Residue.NULL_COORD);
 
                 residues.add(residue);
             }
