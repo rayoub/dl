@@ -1,4 +1,11 @@
+
+/* 
+ * when producing training items separate the fields by bars '|' using \f '|' command in psql
+ * also get rid of alignment with \a command
+*/
+
 /*
+-- this can be used for padding, which hopefully is deprecated with padded batches
 WITH arrs AS 
 (
     SELECT
@@ -27,12 +34,12 @@ SELECT
     ss.text
 FROM
     aa_sequence aa
-    INNER JOIN ss_sequence ss
+    INNER JOIN pp_sequence ss
         ON ss.scop_id = aa.scop_id
     INNER JOIN astral_40 a40
         ON a40.scop_id = aa.scop_id
 WHERE
-    ss.missing_len = 0
+    aa.len < 300
 ORDER BY
     aa.len ASC;
 
