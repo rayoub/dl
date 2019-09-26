@@ -5,7 +5,8 @@ import org.postgresql.util.PGobject;
 public class CkSequence extends PGobject {
 
     private String scopId;
-    private String text;
+    private String seq;
+    private String weights;
     private int len;
     private int missingLen;
 
@@ -17,12 +18,20 @@ public class CkSequence extends PGobject {
         this.scopId = scopId;
     }
 
-    public String getText() {
-        return text;
+    public String getSeq() {
+        return seq;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setSeq(String seq) {
+        this.seq = seq;
+    }
+
+    public String getWeights() {
+        return weights;
+    }
+
+    public void setWeights(String weights) {
+        this.weights = weights;
     }
 
     public int getLen() {
@@ -43,7 +52,7 @@ public class CkSequence extends PGobject {
 
     @Override
     public String getValue() {
-        String row = "(" + scopId + "," + text + "," + len + "," + missingLen + ")"; 
+        String row = "(" + scopId + "," + seq + "," + weights + "," + len + "," + missingLen + ")"; 
         return row;
     }
 }

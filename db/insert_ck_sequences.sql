@@ -6,13 +6,15 @@ BEGIN
 
 	INSERT INTO ck_sequence (
         scop_id, 
-        text,
+        seq,
+        weights,
         len,
         missing_len
     )
 	SELECT
         scop_id,
-        text,
+        seq,
+        weights,
         len,
         missing_len
     FROM

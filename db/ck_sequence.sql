@@ -2,7 +2,8 @@
 CREATE TABLE ck_sequence
 (
     scop_id VARCHAR NOT NULL,
-    text VARCHAR NOT NULL,
+    seq VARCHAR NOT NULL,
+    weights VARCHAR NOT NULL,
     len INTEGER NOT NULL,
     missing_len INTEGER NOT NULL
 );

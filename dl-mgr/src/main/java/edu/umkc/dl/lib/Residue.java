@@ -4,7 +4,7 @@ import org.postgresql.util.PGobject;
 
 public class Residue extends PGobject {
 
-    public static double NULL_ANGLE = 360.0;
+    public static double NULL_ANGLE = -9999.0;
     public static double NULL_COORD = -9999.0;
 
     private String scopId;
@@ -221,8 +221,8 @@ public class Residue extends PGobject {
             + scopId + "," + orderNumber + "," 
             + residueNumber + "," + (insertCode == null || insertCode.toLowerCase().equals("null") ? "" : insertCode) + "," + residueCode + "," 
             + ssa + "," 
-            + ((phi == 360.0) ? "" : phi) + "," 
-            + ((psi == 360.0) ? "" : psi) + "," 
+            + ((phi == NULL_ANGLE) ? "" : phi) + "," 
+            + ((psi == NULL_ANGLE) ? "" : psi) + "," 
             + descriptor + ","
             + caX + "," + caY + "," + caZ + ","
             + ((cbX == NULL_COORD) ? "" : cbX) + "," 

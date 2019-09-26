@@ -14,7 +14,7 @@ import org.apache.commons.cli.ParseException;
 
 import edu.umkc.dl.lib.Constants;
 import edu.umkc.dl.lib.ImportStructures;
-import edu.umkc.dl.lib.SetPpSequences;
+import edu.umkc.dl.lib.SetCkSequences;
 
 public class Main {
 
@@ -77,15 +77,23 @@ public class Main {
     private static void option_s(CommandLine line) {
 
         //SetSsSequences.set();
-        SetPpSequences.set();
-        //SetCkSequences.set();
+        //SetPpSequences.set();
+        SetCkSequences.set();
         //SetAaTypes.set();
     }
     
     private static void option_d(CommandLine line) {
-   
-        double a = 3423.623523523;
-        System.out.println(String.format("%.3f", a));
+  
+
+        StringBuilder b = new StringBuilder();
+        b.append("232332\\,23432\\,32532453\\,");
+
+        System.out.println(b.toString());
+
+        b.deleteCharAt(b.length() - 1);
+        b.deleteCharAt(b.length() - 1);
+        
+        System.out.println(b.toString());
     }
 
     private static void option_help(Options options) {

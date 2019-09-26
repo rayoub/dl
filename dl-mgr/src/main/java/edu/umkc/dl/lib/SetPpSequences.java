@@ -84,21 +84,46 @@ public class SetPpSequences {
                     sequenceText = rs.getString("sequence_text");
                     mapText = rs.getString("map_text");
 
-                    List<String> coordinates = calculateForScopId(scopId, coords1, coords2, sequenceText, mapText);
-
-                    String text = coordinates.stream().collect(Collectors.joining("\\,"));
+                    List<Double> coordinates = calculateForScopId(scopId, coords1, coords2, sequenceText, mapText);
+                    
                     int len = coordinates.size();
-                    int missingLen = (int)coordinates.stream().filter(a -> a.equals("_\\,_")).count();
+                    if (len > 0) {
 
-                    if (coordinates.size() > 0 && len > missingLen) {
+                        int missingLen = 0;
+                        StringBuilder seqB = new StringBuilder();
+                        StringBuilder weightsB = new StringBuilder();
+                        for (int i = 0; i < coordinates.size(); i++) {
+                          
+                            double c = coordinates.get(i); 
+                            seqB.append(String.format("%.3f\\,", c));
+                            if (i % 2 == 0) {
+                                if (c == Residue.NULL_ANGLE) {
+                                    weightsB.append("0.0\\,");
+                                    missingLen++;
+                                }
+                                else {
+                                    weightsB.append("1.0\\,");
+                                }
+                            }
+                        }
+                        seqB.deleteCharAt(seqB.length() - 1);
+                        seqB.deleteCharAt(seqB.length() - 1);
+                        weightsB.deleteCharAt(weightsB.length() - 1);
+                        weightsB.deleteCharAt(weightsB.length() - 1);
+                        String seq = seqB.toString(); 
+                        String weights = weightsB.toString(); 
 
-                        PpSequence sequence = new PpSequence();
-                        sequence.setScopId(scopId);
-                        sequence.setText(text);
-                        sequence.setLen(len);
-                        sequence.setMissingLen(missingLen);
+                        if (len > missingLen) {
 
-                        sequences.add(sequence);
+                            PpSequence sequence = new PpSequence();
+                            sequence.setScopId(scopId);
+                            sequence.setSeq(seq);
+                            sequence.setWeights(weights);
+                            sequence.setLen(len);
+                            sequence.setMissingLen(missingLen);
+
+                            sequences.add(sequence);
+                        }
                     }
 
                 } catch (Exception e) {
@@ -128,14 +153,14 @@ public class SetPpSequences {
         }
     }
 
-    private static List<String> calculateForScopId(
+    private static List<Double> calculateForScopId(
             String scopId, 
             Parsing.ResidueCoords coords1, 
             Parsing.ResidueCoords coords2, 
             String sequenceText, 
             String mapText) {
 
-        List<String> seq = new ArrayList<>();
+        List<Double> seq = new ArrayList<>();
 
         List<String> codes = Arrays.asList(sequenceText.toUpperCase().split(","));
         List<Parsing.MapCoords> maps = Arrays.asList(mapText.split(",")).stream().map(m -> Parsing.parseMapCoords(m)).collect(Collectors.toList());
@@ -201,17 +226,13 @@ public class SetPpSequences {
             if (check) {
 
                 if (!map.Code1.equals(".")) {
-                    if (residue.getPhi() == Residue.NULL_ANGLE && residue.getPsi() == Residue.NULL_ANGLE) {
-                        seq.add("_\\,_");
-                    }
-                    else {
-                        seq.add(String.format("%.3f", residue.getPhi()));
-                        seq.add(String.format("%.3f", residue.getPsi()));
-                    }
-                    k++; // we did have a residue
+                    seq.add(residue.getPhi());
+                    seq.add(residue.getPsi());
+                    k++; 
                 }
                 else {
-                    seq.add("_\\,_");
+                    seq.add(Residue.NULL_ANGLE);
+                    seq.add(Residue.NULL_ANGLE);
                 }
                 j++;
             }

@@ -84,21 +84,46 @@ public class SetCkSequences {
                     sequenceText = rs.getString("sequence_text");
                     mapText = rs.getString("map_text");
 
-                    List<String> coordinates = calculateForScopId(scopId, coords1, coords2, sequenceText, mapText);
+                    List<Double> coordinates = calculateForScopId(scopId, coords1, coords2, sequenceText, mapText);
 
-                    String text = coordinates.stream().collect(Collectors.joining("\\,"));
                     int len = coordinates.size();
-                    int missingLen = (int)coordinates.stream().filter(a -> a.equals("_\\,_\\,_")).count();
+                    if (len > 0) {
 
-                    if (coordinates.size() > 0 && len > missingLen) {
+                        int missingLen = 0;
+                        StringBuilder seqB = new StringBuilder();
+                        StringBuilder weightsB = new StringBuilder();
+                        for (int i = 0; i < coordinates.size(); i++) {
+                            
+                            double c = coordinates.get(i); 
+                            seqB.append(String.format("%.3f\\,", c));
+                            if (i % 3 == 0) {
+                                if (c == Residue.NULL_COORD) {
+                                    weightsB.append("0.0\\,");
+                                    missingLen++;
+                                }
+                                else {
+                                    weightsB.append("1.0\\,");
+                                }
+                            }
+                        }
+                        seqB.deleteCharAt(seqB.length() - 1);
+                        seqB.deleteCharAt(seqB.length() - 1);
+                        weightsB.deleteCharAt(weightsB.length() - 1);
+                        weightsB.deleteCharAt(weightsB.length() - 1);
+                        String seq = seqB.toString(); 
+                        String weights = weightsB.toString(); 
 
-                        CkSequence sequence = new CkSequence();
-                        sequence.setScopId(scopId);
-                        sequence.setText(text);
-                        sequence.setLen(len);
-                        sequence.setMissingLen(missingLen);
+                        if (len > missingLen) {
 
-                        sequences.add(sequence);
+                            CkSequence sequence = new CkSequence();
+                            sequence.setScopId(scopId);
+                            sequence.setSeq(seq);
+                            sequence.setWeights(weights);
+                            sequence.setLen(len);
+                            sequence.setMissingLen(missingLen);
+
+                            sequences.add(sequence);
+                        }
                     }
 
                 } catch (Exception e) {
@@ -128,14 +153,14 @@ public class SetCkSequences {
         }
     }
 
-    private static List<String> calculateForScopId(
+    private static List<Double> calculateForScopId(
             String scopId, 
             Parsing.ResidueCoords coords1, 
             Parsing.ResidueCoords coords2, 
             String sequenceText, 
             String mapText) {
 
-        List<String> seq = new ArrayList<>();
+        List<Double> seq = new ArrayList<>();
 
         List<String> codes = Arrays.asList(sequenceText.toUpperCase().split(","));
         List<Parsing.MapCoords> maps = Arrays.asList(mapText.split(",")).stream().map(m -> Parsing.parseMapCoords(m)).collect(Collectors.toList());
@@ -201,18 +226,15 @@ public class SetCkSequences {
             if (check) {
 
                 if (!map.Code1.equals(".")) {
-                    if (!(residue.getCkX() == Residue.NULL_COORD || residue.getCkY() == Residue.NULL_COORD || residue.getCkZ() == Residue.NULL_COORD)) {
-                        seq.add(String.format("%.3f", residue.getCkX()));
-                        seq.add(String.format("%.3f", residue.getCkY()));
-                        seq.add(String.format("%.3f", residue.getCkZ()));
-                    }
-                    else {
-                        seq.add("_\\,_\\,_");
-                    }
-                    k++; // we did have a residue
+                    seq.add(residue.getCkX());
+                    seq.add(residue.getCkY());
+                    seq.add(residue.getCkZ());
+                    k++;
                 }
                 else {
-                    seq.add("_\\,_\\,_");
+                    seq.add(Residue.NULL_COORD);
+                    seq.add(Residue.NULL_COORD);
+                    seq.add(Residue.NULL_COORD);
                 }
                 j++;
             }
