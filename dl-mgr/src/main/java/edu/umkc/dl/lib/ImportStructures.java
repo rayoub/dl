@@ -320,7 +320,10 @@ public class ImportStructures {
                     double cn = Math.sqrt(Math.pow(y,2) + Math.pow(z,2));
                     double pn = Math.sqrt(Math.pow(y,2));
                     double dot = Math.pow(y,2);
-                    double cos = dot / (pn * cn);
+                    double cos = 0;
+                    if (pn != 0) {
+                        cos = dot / (pn * cn);
+                    }
                     double angle = Math.acos(cos);
 
                     if (((z > 0) && (y > 0)) || ((z < 0) && (y < 0))) {
@@ -341,7 +344,10 @@ public class ImportStructures {
                     double cn = Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
                     double pn = Math.sqrt(Math.pow(x,2));
                     double dot = Math.pow(x,2);
-                    double cos = dot / (pn * cn);
+                    double cos = 0;
+                    if (pn != 0) {
+                        cos = dot / (pn * cn);
+                    }
                     double angle = Math.acos(cos);
                     
                     if (y < 0) {
@@ -370,7 +376,10 @@ public class ImportStructures {
                     double cn = Math.sqrt(Math.pow(y,2) + Math.pow(z,2));
                     double pn = Math.sqrt(Math.pow(y,2));
                     double dot = Math.pow(y,2);
-                    double cos = dot / (pn * cn);
+                    double cos = 0;
+                    if (pn != 0) {
+                        cos = dot / (pn * cn);
+                    }
                     double angle = Math.acos(cos);
 
                     if (y < 0) {
