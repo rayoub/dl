@@ -9,9 +9,9 @@ import tensorflow as tf
 import data
 
 # constants
-BATCH_SIZE = 32
+BATCH_SIZE = 8
 BUFFER_SIZE = 1000
-MAX_EPOCHS = 2
+MAX_EPOCHS = 1
 
 # inputs
 train_ds = data.get_data('../train/train_astral.txt', BUFFER_SIZE, BATCH_SIZE)
@@ -47,8 +47,10 @@ model = get_model()
 # train
 model.fit(train_ds, validation_data=val_ds, epochs=MAX_EPOCHS)
 
+##########################################################
+### save model
+##########################################################
 
-
-
+tf.saved_model.save(model, 'sm')
 
 
