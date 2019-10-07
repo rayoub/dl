@@ -15,10 +15,11 @@ MAP_AA = tf.lookup.StaticHashTable(MAP_AA_INIT, -1)
 def map_aa (elem):
     return tf.one_hot(MAP_AA.lookup(elem), MAP_AA_VALS_CNT, dtype=tf.float32)
 
-# mapping dataset -- ck data is at indices 3 and 4, ignore 1 and 2
+# mapping dataset 
 def map_ds (elem):
 
     a = tf.strings.split(elem, sep='|')
+    # ck data is at indices 3 and 4, ignore 1 and 2
     b = tf.strings.split(a[0], sep=',')             , tf.strings.split(a[3], sep=',')           , tf.strings.split(a[4], sep=',')
     c = b[0]                                        , tf.strings.to_number(b[1], tf.float32)    , tf.strings.to_number(b[2], tf.float32)
     d = tf.map_fn(map_aa, c[0], dtype=tf.float32)   , tf.reshape(c[1], [-1, COORD_CNT])         , c[2]

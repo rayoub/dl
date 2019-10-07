@@ -5,7 +5,7 @@ import data
 # constants
 BATCH_SIZE = 32
 BUFFER_SIZE = 1000
-MAX_EPOCHS = 3
+MAX_EPOCHS = 1
 
 # inputs
 train_ds = data.get_data('../train/train_astral.txt', BUFFER_SIZE, BATCH_SIZE)
