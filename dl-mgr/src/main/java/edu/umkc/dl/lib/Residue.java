@@ -8,6 +8,7 @@ public class Residue extends PGobject {
     public static double NULL_COORD = -9999.0;
 
     private String scopId;
+    private String pdbId;
     private int orderNumber;
     private int residueNumber;
     private String insertCode;
@@ -37,6 +38,14 @@ public class Residue extends PGobject {
 
     public void setScopId(String scopId) {
         this.scopId = scopId;
+    }
+
+    public String getPdbId() {
+        return pdbId;
+    }
+
+    public void setPdbId(String pdbId) {
+        this.pdbId = pdbId;
     }
 
     public int getOrderNumber() {
@@ -218,7 +227,7 @@ public class Residue extends PGobject {
     @Override
     public String getValue() {
         String row = "(" 
-            + scopId + "," + orderNumber + "," 
+            + scopId + "," + pdbId + "," + orderNumber + "," 
             + residueNumber + "," + (insertCode == null || insertCode.toLowerCase().equals("null") ? "" : insertCode) + "," + residueCode + "," 
             + ssa + "," 
             + ((phi == NULL_ANGLE) ? "" : phi) + "," 

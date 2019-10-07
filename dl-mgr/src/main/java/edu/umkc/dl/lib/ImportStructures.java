@@ -68,10 +68,13 @@ public class ImportStructures {
             while (rs.next()) {
                
                 String scopId = "";
+                String pdbId = "";
 
                 try {
                
                     scopId = rs.getString("scop_id").toLowerCase();
+                    pdbId = rs.getString("pdb_id").toLowerCase();
+
                     fileName = Constants.PDB_PATH + scopId + ".ent";
 
                     if (Files.notExists(Paths.get(fileName))) {
@@ -87,7 +90,7 @@ public class ImportStructures {
 
                     Structure structure = reader.getStructure(fileName);
                 
-                    List<Residue> residues = parseStructure(scopId, structure);
+                    List<Residue> residues = parseStructure(scopId, pdbId, structure);
 
                     saveResidues(residues, conn);
 
@@ -128,7 +131,7 @@ public class ImportStructures {
         updt.close();
     }
 
-    public static List<Residue> parseStructure(String scopId, Structure structure) {
+    public static List<Residue> parseStructure(String scopId, String pdbId, Structure structure) {
 
         // assign secondary structure
         SecStrucCalc ssCalc = new SecStrucCalc();
@@ -249,6 +252,7 @@ public class ImportStructures {
             Residue residue = new Residue();
 
             residue.setScopId(scopId);
+            residue.setPdbId(pdbId);
             residue.setResidueNumber(g.getResidueNumber().getSeqNum());
             residue.setInsertCode(String.valueOf(g.getResidueNumber().getInsCode()).toUpperCase());
             residue.setResidueCode(residueCode);
@@ -398,10 +402,18 @@ public class ImportStructures {
                     coords = matmul(r, coords);
                 }
                 
+                // get ca3 coords
+                x = coords[0][3]; 
+                y = coords[1][3]; 
+                z = coords[2][3]; 
+
+                // get norm
+                double norm = Math.sqrt(Math.pow(x,2) + Math.pow(y, 2) + Math.pow(z, 2));
+                
                 // assign the ca3 coords 
-                residue2.setCkX(coords[0][3]);
-                residue2.setCkY(coords[1][3]);
-                residue2.setCkZ(coords[2][3]);
+                residue2.setCkX(coords[0][3] / norm);
+                residue2.setCkY(coords[1][3] / norm);
+                residue2.setCkZ(coords[2][3] / norm);
             }
         } 
 

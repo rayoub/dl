@@ -2,6 +2,7 @@
 CREATE OR REPLACE FUNCTION get_split (p_split_index INTEGER, p_split_count INTEGER)
 RETURNS TABLE (
     scop_id VARCHAR,
+    pdb_id VARCHAR,
     residue_number_1 INTEGER,
     insert_code_1 VARCHAR,
     residue_number_2 INTEGER,
@@ -18,6 +19,7 @@ BEGIN
         SELECT
             ROW_NUMBER() OVER (ORDER BY s.scop_id) AS n,
             s.scop_id,
+            s.pdb_id,
             s.residue_number_1,
             s.insert_code_1,
             s.residue_number_2,
@@ -31,6 +33,7 @@ BEGIN
     )
     SELECT 
         ns.scop_id,
+        ns.pdb_id,
         ns.residue_number_1,
         ns.insert_code_1,
         ns.residue_number_2,

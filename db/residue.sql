@@ -2,6 +2,7 @@
 CREATE TABLE residue
 (
     scop_id VARCHAR NOT NULL,
+    pdb_id VARCHAR NOT NULL,
     order_number INTEGER NOT NULL,
     residue_number INTEGER NOT NULL,
     insert_code VARCHAR NULL,

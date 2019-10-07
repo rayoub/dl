@@ -6,6 +6,7 @@ BEGIN
 
 	INSERT INTO residue (
         scop_id,
+        pdb_id,
         order_number,
         residue_number, 
         insert_code, 
@@ -26,6 +27,7 @@ BEGIN
     )
 	SELECT
         scop_id,
+        pdb_id,
         order_number,
         residue_number, 
         insert_code, 
