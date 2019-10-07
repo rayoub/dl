@@ -31,17 +31,20 @@ ORDER BY
 
 SELECT
     aa.text,
-    ss.text
+    pp.seq,
+    ck.seq
 FROM
     aa_sequence aa
-    INNER JOIN pp_sequence ss
-        ON ss.scop_id = aa.scop_id
+    INNER JOIN pp_sequence pp
+        ON pp.scop_id = aa.scop_id
+    INNER JOIN ck_sequence ck
+        ON ck.scop_id = aa.scop_id
     INNER JOIN astral_40 a40
         ON a40.scop_id = aa.scop_id
 WHERE
-    aa.len < 300
+    aa.len < 400
 ORDER BY
-    aa.len ASC;
+    RANDOM();
 
 
 
