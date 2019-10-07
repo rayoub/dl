@@ -1,10 +1,4 @@
 
-# TODO
-# 1. saving model
-# 2. loading model
-# 3. optimization 
-# 4. regularization
-
 import tensorflow as tf
 import data
 
@@ -47,6 +41,11 @@ model = get_model()
 # train
 model.fit(train_ds, validation_data=val_ds, epochs=MAX_EPOCHS)
 
+##########################################################
+### save model
+##########################################################
+
+model.save('sm')
 
 
 
