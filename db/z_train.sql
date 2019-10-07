@@ -32,7 +32,9 @@ ORDER BY
 SELECT
     aa.text,
     pp.seq,
-    ck.seq
+    pp.weights,
+    ck.seq,
+    ck.weights
 FROM
     aa_sequence aa
     INNER JOIN pp_sequence pp
