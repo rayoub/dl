@@ -17,9 +17,10 @@ class TorsionLayer(layers.Layer):
         return tf.map_fn(self.map_inner, elem)
 
     def map_inner(self, elem):
-        x = elem[0]
-        y = elem[1]
-        z = elem[2]
+        norm = tf.norm(elem)
+        x = tf.divide(elem[0], norm)
+        y = tf.divide(elem[1], norm)
+        z = tf.divide(elem[2], norm)
         phi = tf.math.acos(z)
         rat = tf.divide(y, tf.sin(phi))
         rat = tf.minimum(1.0, tf.maximum(-1.0, rat))
