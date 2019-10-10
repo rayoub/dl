@@ -15,7 +15,6 @@ MAP_AA = tf.lookup.StaticHashTable(MAP_AA_INIT, -1)
 def map_aa (elem):
     return tf.one_hot(MAP_AA.lookup(elem), MAP_AA_VALS_CNT, dtype=tf.float32)
 
-# mapping dataset 
 def map_ds (elem):
 
     a = tf.strings.split(elem, sep='|')

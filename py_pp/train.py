@@ -3,9 +3,9 @@ import tensorflow as tf
 import data
 
 # constants
-BATCH_SIZE = 8
+BATCH_SIZE = 32
 BUFFER_SIZE = 1000
-MAX_EPOCHS = 1
+MAX_EPOCHS = 4
 
 # inputs
 train_ds = data.get_data('../train/train_astral.txt', BUFFER_SIZE, BATCH_SIZE)

@@ -4,11 +4,11 @@ import data
 import layers
 
 # constants
-BATCH_SIZE = 2
+BATCH_SIZE = 32
 BUFFER_SIZE = 1000
 
 # inputs
-val_ds = data.get_data('../train/val_astral.txt', BUFFER_SIZE, BATCH_SIZE).take(1)
+val_ds = data.get_test_data('../train/val_astral.txt', BUFFER_SIZE, BATCH_SIZE)
 
 ##########################################################
 ### model
@@ -22,6 +22,6 @@ model.add(layers.TorsionLayer())
 ##########################################################
 
 # evaluate
-result = model.predict(val_ds)
+result = model.evaluate(val_ds)
 
 

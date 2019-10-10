@@ -276,6 +276,30 @@ public class ImportStructures {
         }
 
         // calculate cossack coords
+        for (int i = 0; i < residues.size(); i++) {
+
+            Residue residue = residues.get(i);
+
+            // torsion angles present
+            if (residue.getPhi() != Residue.NULL_ANGLE && residue.getPhi() != Residue.NULL_ANGLE){
+              
+                double phi = Math.abs(Math.toRadians(residue.getPhi()));
+                double psi = Math.toRadians(residue.getPsi());
+               
+                // spherical coords with phi in 0 to pi
+                double x = Math.sin(phi) * Math.cos(psi);
+                double y = Math.sin(phi) * Math.sin(psi);
+                double z = Math.cos(phi);
+
+                // assign the ca3 coords 
+                residue.setCkX(x);
+                residue.setCkY(y);
+                residue.setCkZ(z);
+            }
+        } 
+        
+        /*
+        // calculate cossack coords
         for (int i = 1; i < residues.size() - 1; i++) {
 
             Residue residue1 = residues.get(i - 1);
@@ -416,6 +440,7 @@ public class ImportStructures {
                 residue2.setCkZ(coords[2][3] / norm);
             }
         } 
+        */
 
         // set order numbers
         for (int i = 0; i < residues.size(); i++) {

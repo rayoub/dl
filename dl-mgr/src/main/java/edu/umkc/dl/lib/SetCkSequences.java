@@ -226,16 +226,32 @@ public class SetCkSequences {
             if (check) {
 
                 if (!map.Code1.equals(".")) {
-                    seq.add(residue.getCkX());
-                    seq.add(residue.getCkY());
-                    seq.add(residue.getCkZ());
+                    if (residue.getPhi() > 0) {
+
+                        // filter out residues with phi > 0 for POC
+                        seq.add(Residue.NULL_COORD);
+                        seq.add(Residue.NULL_COORD);
+                        seq.add(Residue.NULL_COORD);
+                    }
+                    else {
+
+                        // NULL_COORD is possible even if the residue is present
+                        seq.add(residue.getCkX());
+                        seq.add(residue.getCkY());
+                        seq.add(residue.getCkZ());
+                    }
+
+                    // the residue is present
                     k++;
                 }
                 else {
+
+                    // the residue is not present
                     seq.add(Residue.NULL_COORD);
                     seq.add(Residue.NULL_COORD);
                     seq.add(Residue.NULL_COORD);
                 }
+
                 j++;
             }
             else {
