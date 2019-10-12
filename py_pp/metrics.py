@@ -4,10 +4,10 @@ import tensorflow.keras.backend as K
         
 # missing data is going to be weighted 0 so just calculate 
 
-class TorsionMSE(tf.keras.metrics.Metric):
+class torsion(tf.keras.metrics.Metric):
 
-    def __init__(self, name='torsion_mse', **kwargs):
-        super(TorsionMSE, self).__init__(name=name, **kwargs)
+    def __init__(self, name='torsion', **kwargs):
+        super(torsion, self).__init__(name=name, **kwargs)
       
         zeros_init = tf.zeros_initializer()
 
@@ -18,14 +18,15 @@ class TorsionMSE(tf.keras.metrics.Metric):
         self.count = tf.Variable(name='count', initial_value=zeros_init(shape=(), dtype=tf.float32), trainable=False)
 
     def update_state(self, y_true, y_pred, sample_weight=None):
-     
+
+        # absolute differences
+        vals = tf.math.abs(tf.math.subtract(y_true, y_pred))
+
         # mean squared differences
-        vals = K.mean(tf.math.squared_difference(y_true, y_pred), axis=-1)
+        vals = K.mean(tf.math.square(tf.where(tf.math.greater(vals, 180.0), tf.math.subtract(360.0, vals), vals)), axis=-1)
 
         # multiply difference by weights
         vals = tf.math.multiply(vals, sample_weight)
-
-        #diff = tf.math.square(tf.where(tf.math.greater(diff, 180.0), tf.math.subtract(360.0, diff), diff))
 
         # sum of squares
         self.total.assign_add(tf.reduce_sum(vals))
