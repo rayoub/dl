@@ -13,7 +13,7 @@ val_ds = data.get_data('../train/val_astral.txt', BUFFER_SIZE, BATCH_SIZE)
 
 # model evaluation
 m = model.get_model(BATCH_SIZE)
-m.load_weights('sm')
+m.load_weights('./checkpoints/e10')
 m.evaluate(val_ds)
 
 
