@@ -17,7 +17,7 @@ def get_model(BATCH_SIZE):
     m.compile(optimizer='adam',
             sample_weight_mode='temporal',
             loss=tf.keras.losses.MeanSquaredError(),
-            metrics=[metrics.TorsionMeanSquaredError(), tf.keras.metrics.MeanSquaredError()])
+            weighted_metrics=[tf.keras.metrics.MeanSquaredError(), metrics.TorsionMeanSquaredError()])
 
     return m
 

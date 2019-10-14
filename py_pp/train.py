@@ -2,7 +2,6 @@
 import tensorflow as tf
 import data
 import model
-import metrics
 
 # constants
 BATCH_SIZE = 32

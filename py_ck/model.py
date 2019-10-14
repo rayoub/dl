@@ -2,7 +2,6 @@
 import tensorflow as tf
 import data
 import metrics
-import layers
 
 def get_model(BATCH_SIZE):
 
