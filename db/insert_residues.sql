@@ -14,16 +14,17 @@ BEGIN
         ssa,
         phi,
         psi,
+        phi_x,
+        phi_y,
+        psi_x,
+        psi_y,
         descriptor,
         ca_x,
         ca_y, 
         ca_z, 
         cb_x, 
         cb_y,
-        cb_z,
-        ck_x, 
-        ck_y,
-        ck_z
+        cb_z
     )
 	SELECT
         scop_id,
@@ -35,16 +36,17 @@ BEGIN
         ssa,
         phi,
         psi,
+        phi_x,
+        phi_y,
+        psi_x,
+        psi_y,
         descriptor,
         ca_x,
         ca_y, 
         ca_z, 
         cb_x, 
         cb_y,
-        cb_z,
-        ck_x, 
-        ck_y,
-        ck_z
+        cb_z
 	FROM
 		UNNEST(p_tab);
 

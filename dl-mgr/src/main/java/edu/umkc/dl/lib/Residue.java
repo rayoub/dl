@@ -16,6 +16,10 @@ public class Residue extends PGobject {
     private String ssa;
     private double phi = NULL_ANGLE;
     private double psi = NULL_ANGLE;
+    private double phi_x = NULL_COORD;
+    private double phi_y = NULL_COORD;
+    private double psi_x = NULL_COORD;
+    private double psi_y = NULL_COORD;
     private String descriptor;
     private double caX;
     private double caY;
@@ -23,12 +27,6 @@ public class Residue extends PGobject {
     private double cbX = NULL_COORD;
     private double cbY = NULL_COORD;
     private double cbZ = NULL_COORD;
-    private double nX = NULL_COORD;
-    private double nY = NULL_COORD;
-    private double nZ = NULL_COORD;
-    private double ckX = NULL_COORD;
-    private double ckY = NULL_COORD;
-    private double ckZ = NULL_COORD;
     private boolean breakBefore;
     private boolean breakAfter;
 
@@ -104,6 +102,38 @@ public class Residue extends PGobject {
         this.psi = psi;
     }
 
+    public double getPhiX() {
+        return phi_x;
+    }
+
+    public void setPhiX(double phi_x) {
+        this.phi_x = phi_x;
+    }
+
+    public double getPhiY() {
+        return phi_y;
+    }
+
+    public void setPhiY(double phi_y) {
+        this.phi_y = phi_y;
+    }
+
+    public double getPsiX() {
+        return psi_x;
+    }
+
+    public void setPsiX(double psi_x) {
+        this.psi_x = psi_x;
+    }
+
+    public double getPsiY() {
+        return psi_y;
+    }
+
+    public void setPsiY(double psi_y) {
+        this.psi_y = psi_y;
+    }
+
     public String getDescriptor() {
         return descriptor;
     }
@@ -160,54 +190,6 @@ public class Residue extends PGobject {
         this.cbZ = cbZ;
     }
 
-    public double getNX() {
-        return nX;
-    }
-
-    public void setNX(double nX) {
-        this.nX = nX;
-    }
-
-    public double getNY() {
-        return nY;
-    }
-
-    public void setNY(double nY) {
-        this.nY = nY;
-    }
-
-    public double getNZ() {
-        return nZ;
-    }
-
-    public void setNZ(double nZ) {
-        this.nZ = nZ;
-    }
-
-    public double getCkX() {
-        return ckX;
-    }
-
-    public void setCkX(double ckX) {
-        this.ckX = ckX;
-    }
-
-    public double getCkY() {
-        return ckY;
-    }
-
-    public void setCkY(double ckY) {
-        this.ckY = ckY;
-    }
-
-    public double getCkZ() {
-        return ckZ;
-    }
-
-    public void setCkZ(double ckZ) {
-        this.ckZ = ckZ;
-    }
-
     public boolean isBreakBefore() {
         return breakBefore;
     }
@@ -232,14 +214,15 @@ public class Residue extends PGobject {
             + ssa + "," 
             + ((phi == NULL_ANGLE) ? "" : phi) + "," 
             + ((psi == NULL_ANGLE) ? "" : psi) + "," 
+            + ((phi_x == NULL_COORD) ? "" : phi_x) + "," 
+            + ((phi_y == NULL_COORD) ? "" : phi_y) + "," 
+            + ((psi_x == NULL_COORD) ? "" : psi_x) + "," 
+            + ((psi_y == NULL_COORD) ? "" : psi_y) + "," 
             + descriptor + ","
             + caX + "," + caY + "," + caZ + ","
             + ((cbX == NULL_COORD) ? "" : cbX) + "," 
             + ((cbY == NULL_COORD) ? "" : cbY) + "," 
-            + ((cbZ == NULL_COORD) ? "" : cbZ) + ","
-            + ((ckX == NULL_COORD) ? "" : ckX) + "," 
-            + ((ckY == NULL_COORD) ? "" : ckY) + "," 
-            + ((ckZ == NULL_COORD) ? "" : ckZ) 
+            + ((cbZ == NULL_COORD) ? "" : cbZ) 
             + ")";
         return row;
     }

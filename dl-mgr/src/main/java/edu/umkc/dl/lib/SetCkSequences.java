@@ -96,7 +96,7 @@ public class SetCkSequences {
                             
                             double c = coordinates.get(i); 
                             seqB.append(String.format("%.3f\\,", c));
-                            if (i % 3 == 0) {
+                            if (i % 4 == 0) {
                                 if (c == Residue.NULL_COORD) {
                                     weightsB.append("0.0\\,");
                                     missingLen++;
@@ -226,20 +226,12 @@ public class SetCkSequences {
             if (check) {
 
                 if (!map.Code1.equals(".")) {
-                    if (residue.getPhi() > 0) {
 
-                        // filter out residues with phi > 0 for POC
-                        seq.add(Residue.NULL_COORD);
-                        seq.add(Residue.NULL_COORD);
-                        seq.add(Residue.NULL_COORD);
-                    }
-                    else {
-
-                        // NULL_COORD is possible even if the residue is present
-                        seq.add(residue.getCkX());
-                        seq.add(residue.getCkY());
-                        seq.add(residue.getCkZ());
-                    }
+                    // NULL_COORD is possible even if the residue is present
+                    seq.add(residue.getPhiX());
+                    seq.add(residue.getPhiY());
+                    seq.add(residue.getPsiX());
+                    seq.add(residue.getPsiY());
 
                     // the residue is present
                     k++;
@@ -247,6 +239,7 @@ public class SetCkSequences {
                 else {
 
                     // the residue is not present
+                    seq.add(Residue.NULL_COORD);
                     seq.add(Residue.NULL_COORD);
                     seq.add(Residue.NULL_COORD);
                     seq.add(Residue.NULL_COORD);

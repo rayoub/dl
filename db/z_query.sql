@@ -1,12 +1,18 @@
 
 SELECT
-    s.scop_id,
-    s.text,
-    a.text
+    CASE 
+        WHEN ssa IN ('G','H','I','T') THEN 'Helix'
+        WHEN ssa IN ('E','B') THEN 'Strand'
+        ELSE 'Loop'
+    END AS sse,
+    phi_x,
+    phi_y,
+    psi_x,
+    psi_y,
+    residue_code As rc
 FROM
-    sequence s
-    INNER JOIN sequence_assignments a
-        ON a.scop_id = s.scop_id
+    residue 
 WHERE
-    LENGTH(s.text) = LENGTH(a.text)
-LIMIT 10000;
+    phi_x IS NOT NULL AND phi_y IS NOT NULL AND psi_x IS NOT NULL AND psi_y IS NOT NULL
+ORDER BY RANDOM()
+LIMIT 1000;

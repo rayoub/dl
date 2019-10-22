@@ -59,18 +59,21 @@ public class Db {
                 residue.setPsi(rs.getDouble("psi"));
                 if (rs.wasNull())
                     residue.setPsi(Residue.NULL_ANGLE);
+                residue.setPhiX(rs.getDouble("phi_x"));
+                if (rs.wasNull())
+                    residue.setPhiX(Residue.NULL_ANGLE);
+                residue.setPhiY(rs.getDouble("phi_y"));
+                if (rs.wasNull())
+                    residue.setPhiY(Residue.NULL_ANGLE);
+                residue.setPsiX(rs.getDouble("psi_x"));
+                if (rs.wasNull())
+                    residue.setPsiX(Residue.NULL_ANGLE);
+                residue.setPsiY(rs.getDouble("psi_y"));
+                if (rs.wasNull())
+                    residue.setPsiY(Residue.NULL_ANGLE);
                 residue.setDescriptor(rs.getString("descriptor"));
                 if (rs.wasNull()) 
                     residue.setDescriptor("_");
-                residue.setCkX(rs.getDouble("ck_x"));
-                if (rs.wasNull())
-                    residue.setCkX(Residue.NULL_COORD);
-                residue.setCkY(rs.getDouble("ck_y"));
-                if (rs.wasNull())
-                    residue.setCkY(Residue.NULL_COORD);
-                residue.setCkZ(rs.getDouble("ck_z"));
-                if (rs.wasNull())
-                    residue.setCkZ(Residue.NULL_COORD);
 
                 residues.add(residue);
             }

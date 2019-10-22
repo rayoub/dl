@@ -226,18 +226,10 @@ public class SetPpSequences {
             if (check) {
 
                 if (!map.Code1.equals(".")) {
-                    if (residue.getPhi() > 0) {
-                    
-                        // filter out residues with phi > 0 for POC
-                        seq.add(Residue.NULL_ANGLE);
-                        seq.add(Residue.NULL_ANGLE);
-                    }
-                    else {
 
-                        // NULL_ANGLE is possible even if the residue is present
-                        seq.add(residue.getPhi());
-                        seq.add(residue.getPsi());
-                    }
+                    // NULL_ANGLE is possible even if the residue is present
+                    seq.add(residue.getPhi());
+                    seq.add(residue.getPsi());
                     
                     // the residue is present
                     k++; 

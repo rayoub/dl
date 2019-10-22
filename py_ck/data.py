@@ -2,7 +2,7 @@
 import tensorflow as tf
 
 # constants
-COORD_CNT = 3
+COORD_CNT = 4
 TORSION_CNT = 2
 
 # one-hot lookup

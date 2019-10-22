@@ -14,8 +14,11 @@ train/entries.idx
 # build ignores
 dl-mgr/target/
 py_ck/__pycache__/
+py_ck/checkpoints/
 py_pp/__pycache__/
+py_pp/checkpoints/
 py_ss/__pycache__/
+py_ss/checkpoints/
 
 # copied data files
 py_ck/*.txt
