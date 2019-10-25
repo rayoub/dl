@@ -4,10 +4,10 @@ import tensorflow.keras.backend as K
         
 # missing data is going to be weighted 0 so just calculate 
 
-class TorsionMeanSquaredError(tf.keras.metrics.Metric):
+class PpMeanSquaredError(tf.keras.metrics.Metric):
 
-    def __init__(self, name='torsion_mean_squared_error', **kwargs):
-        super(TorsionMeanSquaredError, self).__init__(name=name, **kwargs)
+    def __init__(self, name='pp_mean_squared_error', **kwargs):
+        super(PpMeanSquaredError, self).__init__(name=name, **kwargs)
       
         zeros_init = tf.zeros_initializer()
 

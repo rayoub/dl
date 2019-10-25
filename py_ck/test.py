@@ -1,7 +1,7 @@
 
 import tensorflow as tf
 import data
-import model
+import models
 import layers
 
 # constants
@@ -12,9 +12,9 @@ BUFFER_SIZE = 1000
 val_ds = data.get_test_data('../train/val_astral.txt', BUFFER_SIZE, BATCH_SIZE)
 
 # model evaluation
-m = model.get_model(BATCH_SIZE)
-m.load_weights('./checkpoints/e10')
-m.add(layers.TorsionLayer())
+m = models.get_sp_model(BATCH_SIZE)
+m.load_weights('./checkpoints/sp1')
+m.add(layers.SpLayer())
 m.evaluate(val_ds)
 
 
