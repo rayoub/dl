@@ -7,7 +7,7 @@ from tensorflow.keras import layers
 class SpLayer(layers.Layer):
 
     def __init__(self):
-        super(TorsionLayer, self).__init__()
+        super(SpLayer, self).__init__()
         self.pi = tf.constant(math.pi, dtype='float32')
         self.factor = tf.constant(180.0 / self.pi, dtype='float32')
 
@@ -39,7 +39,7 @@ class SpLayer(layers.Layer):
 class CiLayer(layers.Layer):
 
     def __init__(self):
-        super(TorsionLayer, self).__init__()
+        super(CiLayer, self).__init__()
         self.pi = tf.constant(math.pi, dtype='float32')
         self.factor = tf.constant(180.0 / self.pi, dtype='float32')
 
