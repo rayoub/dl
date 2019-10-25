@@ -18,7 +18,7 @@ def get_sp_model(BATCH_SIZE):
     m.compile(optimizer='adam',
             sample_weight_mode='temporal',
             loss=tf.keras.losses.MeanSquaredError(),
-            weighted_metrics=[tf.keras.metrics.MeanSquaredError(), metrics.PpMeanSquaredError()])
+            weighted_metrics=[metrics.PpMeanAbsoluteError()])
 
     return m
 
@@ -37,7 +37,7 @@ def get_ci_model(BATCH_SIZE):
     m.compile(optimizer='adam',
             sample_weight_mode='temporal',
             loss=tf.keras.losses.MeanSquaredError(),
-            weighted_metrics=[tf.keras.metrics.MeanSquaredError(), metrics.PpMeanSquaredError()])
+            weighted_metrics=[metrics.PpMeanAbsoluteError()])
 
     return m
 
