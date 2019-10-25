@@ -20,13 +20,9 @@ public class Residue extends PGobject {
     private double phi_y = NULL_COORD;
     private double psi_x = NULL_COORD;
     private double psi_y = NULL_COORD;
-    private String descriptor;
-    private double caX;
-    private double caY;
-    private double caZ;
-    private double cbX = NULL_COORD;
-    private double cbY = NULL_COORD;
-    private double cbZ = NULL_COORD;
+    private double spX = NULL_COORD;
+    private double spY = NULL_COORD;
+    private double spZ = NULL_COORD;
     private boolean breakBefore;
     private boolean breakAfter;
 
@@ -133,61 +129,29 @@ public class Residue extends PGobject {
     public void setPsiY(double psi_y) {
         this.psi_y = psi_y;
     }
-
-    public String getDescriptor() {
-        return descriptor;
-    }
-
-    public void setDescriptor(String descriptor) {
-        this.descriptor = descriptor;
-    }
-
-    public double getCaX() {
-        return caX;
-    }
-
-    public void setCaX(double caX) {
-        this.caX = caX;
-    }
-
-    public double getCaY() {
-        return caY;
-    }
-
-    public void setCaY(double caY) {
-        this.caY = caY;
-    }
-
-    public double getCaZ() {
-        return caZ;
-    }
-
-    public void setCaZ(double caZ) {
-        this.caZ = caZ;
-    }
     
-    public double getCbX() {
-        return cbX;
+    public double getSpX() {
+        return spX;
     }
 
-    public void setCbX(double cbX) {
-        this.cbX = cbX;
+    public void setSpX(double spX) {
+        this.spX = spX;
     }
 
-    public double getCbY() {
-        return cbY;
+    public double getSpY() {
+        return spY;
     }
 
-    public void setCbY(double cbY) {
-        this.cbY = cbY;
+    public void setSpY(double spY) {
+        this.spY = spY;
     }
 
-    public double getCbZ() {
-        return cbZ;
+    public double getSpZ() {
+        return spZ;
     }
 
-    public void setCbZ(double cbZ) {
-        this.cbZ = cbZ;
+    public void setSpZ(double spZ) {
+        this.spZ = spZ;
     }
 
     public boolean isBreakBefore() {
@@ -218,11 +182,9 @@ public class Residue extends PGobject {
             + ((phi_y == NULL_COORD) ? "" : phi_y) + "," 
             + ((psi_x == NULL_COORD) ? "" : psi_x) + "," 
             + ((psi_y == NULL_COORD) ? "" : psi_y) + "," 
-            + descriptor + ","
-            + caX + "," + caY + "," + caZ + ","
-            + ((cbX == NULL_COORD) ? "" : cbX) + "," 
-            + ((cbY == NULL_COORD) ? "" : cbY) + "," 
-            + ((cbZ == NULL_COORD) ? "" : cbZ) 
+            + ((spX == NULL_COORD) ? "" : spX) + "," 
+            + ((spY == NULL_COORD) ? "" : spY) + "," 
+            + ((spZ == NULL_COORD) ? "" : spZ) 
             + ")";
         return row;
     }

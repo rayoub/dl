@@ -13,13 +13,9 @@ RETURNS TABLE (
     phi_y DOUBLE PRECISION,
     psi_x DOUBLE PRECISION,
     psi_y DOUBLE PRECISION,
-    descriptor VARCHAR,
-    ca_x DOUBLE PRECISION,
-    ca_y DOUBLE PRECISION,
-    ca_z DOUBLE PRECISION,
-    cb_x DOUBLE PRECISION,
-    cb_y DOUBLE PRECISION,
-    cb_z DOUBLE PRECISION
+    sp_x DOUBLE PRECISION,
+    sp_y DOUBLE PRECISION,
+    sp_z DOUBLE PRECISION
 )
 AS $$
 BEGIN
@@ -38,13 +34,9 @@ BEGIN
         r.phi_y,
         r.psi_x,
         r.psi_y,
-        r.descriptor,
-        r.ca_x,
-        r.ca_y,
-        r.ca_z,
-        r.cb_x,
-        r.cb_y,
-        r.cb_z
+        r.sp_x,
+        r.sp_y,
+        r.sp_z
     FROM 
         residue r
     WHERE

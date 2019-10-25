@@ -1,10 +1,10 @@
 
-CREATE OR REPLACE FUNCTION insert_ck_sequences (p_tab ck_sequence ARRAY)
+CREATE OR REPLACE FUNCTION insert_ci_sequences (p_tab ci_sequence ARRAY)
 RETURNS VOID
 AS $$
 BEGIN
 
-	INSERT INTO ck_sequence (
+	INSERT INTO ci_sequence (
         scop_id, 
         seq,
         weights,

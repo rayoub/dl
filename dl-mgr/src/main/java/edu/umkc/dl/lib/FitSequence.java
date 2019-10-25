@@ -2,7 +2,7 @@ package edu.umkc.dl.lib;
 
 import org.postgresql.util.PGobject;
 
-public class PpSequence extends PGobject {
+public class FitSequence extends PGobject {
 
     private String scopId;
     private String seq;

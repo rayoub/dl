@@ -18,13 +18,9 @@ BEGIN
         phi_y,
         psi_x,
         psi_y,
-        descriptor,
-        ca_x,
-        ca_y, 
-        ca_z, 
-        cb_x, 
-        cb_y,
-        cb_z
+        sp_x, 
+        sp_y,
+        sp_z
     )
 	SELECT
         scop_id,
@@ -40,13 +36,9 @@ BEGIN
         phi_y,
         psi_x,
         psi_y,
-        descriptor,
-        ca_x,
-        ca_y, 
-        ca_z, 
-        cb_x, 
-        cb_y,
-        cb_z
+        sp_x, 
+        sp_y,
+        sp_z
 	FROM
 		UNNEST(p_tab);
 

@@ -53,27 +53,36 @@ public class Db {
                 residue.setSsa(rs.getString("ssa"));
                 if (rs.wasNull()) 
                     residue.setSsa("_");
+
                 residue.setPhi(rs.getDouble("phi"));
                 if (rs.wasNull())
                     residue.setPhi(Residue.NULL_ANGLE);
                 residue.setPsi(rs.getDouble("psi"));
                 if (rs.wasNull())
                     residue.setPsi(Residue.NULL_ANGLE);
+                
                 residue.setPhiX(rs.getDouble("phi_x"));
                 if (rs.wasNull())
-                    residue.setPhiX(Residue.NULL_ANGLE);
+                    residue.setPhiX(Residue.NULL_COORD);
                 residue.setPhiY(rs.getDouble("phi_y"));
                 if (rs.wasNull())
-                    residue.setPhiY(Residue.NULL_ANGLE);
+                    residue.setPhiY(Residue.NULL_COORD);
                 residue.setPsiX(rs.getDouble("psi_x"));
                 if (rs.wasNull())
-                    residue.setPsiX(Residue.NULL_ANGLE);
+                    residue.setPsiX(Residue.NULL_COORD);
                 residue.setPsiY(rs.getDouble("psi_y"));
                 if (rs.wasNull())
-                    residue.setPsiY(Residue.NULL_ANGLE);
-                residue.setDescriptor(rs.getString("descriptor"));
-                if (rs.wasNull()) 
-                    residue.setDescriptor("_");
+                    residue.setPsiY(Residue.NULL_COORD);
+
+                residue.setSpX(rs.getDouble("sp_x"));
+                if (rs.wasNull())
+                    residue.setSpX(Residue.NULL_COORD);
+                residue.setSpY(rs.getDouble("sp_y"));
+                if (rs.wasNull())
+                    residue.setSpY(Residue.NULL_COORD);
+                residue.setSpZ(rs.getDouble("sp_z"));
+                if (rs.wasNull())
+                    residue.setSpZ(Residue.NULL_COORD);
 
                 residues.add(residue);
             }

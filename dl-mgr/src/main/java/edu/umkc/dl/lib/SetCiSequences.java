@@ -15,7 +15,7 @@ import java.util.stream.IntStream;
 import org.postgresql.PGConnection;
 import org.postgresql.ds.PGSimpleDataSource;
 
-public class SetCkSequences {
+public class SetCiSequences {
 
     public static void set() {
 
@@ -28,7 +28,7 @@ public class SetCkSequences {
     private static void setSplit(int splitIndex) {
 
         int processed = 0;
-        List<CkSequence> sequences = new ArrayList<>();
+        List<FitSequence> sequences = new ArrayList<>();
 
         PGSimpleDataSource ds = Db.getDataSource();
 
@@ -115,7 +115,7 @@ public class SetCkSequences {
 
                         if (len > missingLen) {
 
-                            CkSequence sequence = new CkSequence();
+                            FitSequence sequence = new FitSequence();
                             sequence.setScopId(scopId);
                             sequence.setSeq(seq);
                             sequence.setWeights(weights);
@@ -127,13 +127,13 @@ public class SetCkSequences {
                     }
 
                 } catch (Exception e) {
-                    Logger.getLogger(SetCkSequences.class.getName()).log(Level.SEVERE, scopId, e);
+                    Logger.getLogger(SetCiSequences.class.getName()).log(Level.SEVERE, scopId, e);
                 }
                 
                 // output
                 processed++;
                 if (processed % Constants.PROCESSED_INCREMENT == 0) {
-                    saveCkSequences(sequences);
+                    saveFitSequences(sequences);
                     sequences.clear();
                     System.out.println("Split: " + splitIndex + ", Processed: "
                             + (Constants.PROCESSED_INCREMENT * (processed / Constants.PROCESSED_INCREMENT)));
@@ -141,7 +141,7 @@ public class SetCkSequences {
             }
 
             if (sequences.size() > 0) {
-                saveCkSequences(sequences);
+                saveFitSequences(sequences);
             }
 
             rs.close();
@@ -149,7 +149,7 @@ public class SetCkSequences {
             conn.close();
 
         } catch (SQLException e) {
-            Logger.getLogger(SetCkSequences.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(SetCiSequences.class.getName()).log(Level.SEVERE, null, e);
         }
     }
 
@@ -262,20 +262,20 @@ public class SetCkSequences {
         System.out.println((char)27 + "[31m" + message + (char)27 + "[0m");
     }
     
-    private static void saveCkSequences(List<CkSequence> sequences) throws SQLException {
+    private static void saveFitSequences(List<FitSequence> sequences) throws SQLException {
 
         PGSimpleDataSource ds = Db.getDataSource();
 
         Connection conn = ds.getConnection();
         conn.setAutoCommit(true);
 
-        ((PGConnection) conn).addDataType("ck_sequence", CkSequence.class);
+        ((PGConnection) conn).addDataType("ci_sequence", FitSequence.class);
 
-        PreparedStatement updt = conn.prepareStatement("SELECT insert_ck_sequences(?);");
+        PreparedStatement updt = conn.prepareStatement("SELECT insert_ci_sequences(?);");
     
-        CkSequence a[] = new CkSequence[sequences.size()];
+        FitSequence a[] = new FitSequence[sequences.size()];
         sequences.toArray(a);
-        updt.setArray(1, conn.createArrayOf("ck_sequence", a));
+        updt.setArray(1, conn.createArrayOf("ci_sequence", a));
     
         updt.execute();
         updt.close();

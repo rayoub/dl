@@ -15,7 +15,7 @@ import java.util.stream.IntStream;
 import org.postgresql.PGConnection;
 import org.postgresql.ds.PGSimpleDataSource;
 
-public class SetPpSequences {
+public class SetSpSequences {
 
     public static void set() {
 
@@ -85,7 +85,7 @@ public class SetPpSequences {
                     mapText = rs.getString("map_text");
 
                     List<Double> coordinates = calculateForScopId(scopId, coords1, coords2, sequenceText, mapText);
-                    
+
                     int len = coordinates.size();
                     if (len > 0) {
 
@@ -93,11 +93,11 @@ public class SetPpSequences {
                         StringBuilder seqB = new StringBuilder();
                         StringBuilder weightsB = new StringBuilder();
                         for (int i = 0; i < coordinates.size(); i++) {
-                          
+                            
                             double c = coordinates.get(i); 
                             seqB.append(String.format("%.3f\\,", c));
-                            if (i % 2 == 0) {
-                                if (c == Residue.NULL_ANGLE) {
+                            if (i % 3 == 0) {
+                                if (c == Residue.NULL_COORD) {
                                     weightsB.append("0.0\\,");
                                     missingLen++;
                                 }
@@ -127,13 +127,13 @@ public class SetPpSequences {
                     }
 
                 } catch (Exception e) {
-                    Logger.getLogger(SetPpSequences.class.getName()).log(Level.SEVERE, scopId, e);
+                    Logger.getLogger(SetSpSequences.class.getName()).log(Level.SEVERE, scopId, e);
                 }
                 
                 // output
                 processed++;
                 if (processed % Constants.PROCESSED_INCREMENT == 0) {
-                    saveFitSequences(sequences);
+                    saveSpSequences(sequences);
                     sequences.clear();
                     System.out.println("Split: " + splitIndex + ", Processed: "
                             + (Constants.PROCESSED_INCREMENT * (processed / Constants.PROCESSED_INCREMENT)));
@@ -141,7 +141,7 @@ public class SetPpSequences {
             }
 
             if (sequences.size() > 0) {
-                saveFitSequences(sequences);
+                saveSpSequences(sequences);
             }
 
             rs.close();
@@ -149,7 +149,7 @@ public class SetPpSequences {
             conn.close();
 
         } catch (SQLException e) {
-            Logger.getLogger(SetPpSequences.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(SetSpSequences.class.getName()).log(Level.SEVERE, null, e);
         }
     }
 
@@ -227,19 +227,22 @@ public class SetPpSequences {
 
                 if (!map.Code1.equals(".")) {
 
-                    // NULL_ANGLE is possible even if the residue is present
-                    seq.add(residue.getPhi());
-                    seq.add(residue.getPsi());
-                    
+                    // NULL_COORD is possible even if the residue is present
+                    seq.add(residue.getSpX());
+                    seq.add(residue.getSpY());
+                    seq.add(residue.getSpZ());
+
                     // the residue is present
-                    k++; 
+                    k++;
                 }
                 else {
-                    
+
                     // the residue is not present
-                    seq.add(Residue.NULL_ANGLE);
-                    seq.add(Residue.NULL_ANGLE);
+                    seq.add(Residue.NULL_COORD);
+                    seq.add(Residue.NULL_COORD);
+                    seq.add(Residue.NULL_COORD);
                 }
+
                 j++;
             }
             else {
@@ -257,20 +260,20 @@ public class SetPpSequences {
         System.out.println((char)27 + "[31m" + message + (char)27 + "[0m");
     }
     
-    private static void saveFitSequences(List<FitSequence> sequences) throws SQLException {
+    private static void saveSpSequences(List<FitSequence> sequences) throws SQLException {
 
         PGSimpleDataSource ds = Db.getDataSource();
 
         Connection conn = ds.getConnection();
         conn.setAutoCommit(true);
 
-        ((PGConnection) conn).addDataType("pp_sequence", FitSequence.class);
+        ((PGConnection) conn).addDataType("sp_sequence", FitSequence.class);
 
-        PreparedStatement updt = conn.prepareStatement("SELECT insert_pp_sequences(?);");
+        PreparedStatement updt = conn.prepareStatement("SELECT insert_sp_sequences(?);");
     
         FitSequence a[] = new FitSequence[sequences.size()];
         sequences.toArray(a);
-        updt.setArray(1, conn.createArrayOf("pp_sequence", a));
+        updt.setArray(1, conn.createArrayOf("sp_sequence", a));
     
         updt.execute();
         updt.close();
