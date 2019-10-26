@@ -1,10 +1,10 @@
 
-CREATE OR REPLACE FUNCTION insert_sp_sequences (p_tab sp_sequence ARRAY)
+CREATE OR REPLACE FUNCTION insert_spl_sequences (p_tab spl_sequence ARRAY)
 RETURNS VOID
 AS $$
 BEGIN
 
-	INSERT INTO sp_sequence (
+	INSERT INTO spl_sequence (
         scop_id, 
         seq,
         weights,

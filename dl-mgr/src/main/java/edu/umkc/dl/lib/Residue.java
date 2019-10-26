@@ -4,8 +4,7 @@ import org.postgresql.util.PGobject;
 
 public class Residue extends PGobject {
 
-    public static double NULL_ANGLE = -9999.0;
-    public static double NULL_COORD = -9999.0;
+    public static double NULL_VAL = -9999.0;
 
     private String scopId;
     private String pdbId;
@@ -14,17 +13,20 @@ public class Residue extends PGobject {
     private String insertCode;
     private String residueCode;
     private String ssa;
-    private double phi = NULL_ANGLE;
-    private double psi = NULL_ANGLE;
-    private double phi_x = NULL_COORD;
-    private double phi_y = NULL_COORD;
-    private double psi_x = NULL_COORD;
-    private double psi_y = NULL_COORD;
-    private double spX = NULL_COORD;
-    private double spY = NULL_COORD;
-    private double spZ = NULL_COORD;
-    private boolean breakBefore;
-    private boolean breakAfter;
+    private double phi = NULL_VAL;
+    private double psi = NULL_VAL;
+    private double phiX = NULL_VAL;
+    private double phiY = NULL_VAL;
+    private double psiX = NULL_VAL;
+    private double psiY = NULL_VAL;
+    private double philX = NULL_VAL;
+    private double phirX = NULL_VAL;
+    private double splX = NULL_VAL;
+    private double splY = NULL_VAL;
+    private double splZ = NULL_VAL;
+    private double sprX = NULL_VAL;
+    private double sprY = NULL_VAL;
+    private double sprZ = NULL_VAL;
 
     public String getScopId() {
         return scopId;
@@ -99,75 +101,99 @@ public class Residue extends PGobject {
     }
 
     public double getPhiX() {
-        return phi_x;
+        return phiX;
     }
 
-    public void setPhiX(double phi_x) {
-        this.phi_x = phi_x;
+    public void setPhiX(double phiX) {
+        this.phiX = phiX;
     }
 
     public double getPhiY() {
-        return phi_y;
+        return phiY;
     }
 
-    public void setPhiY(double phi_y) {
-        this.phi_y = phi_y;
+    public void setPhiY(double phiY) {
+        this.phiY = phiY;
     }
 
     public double getPsiX() {
-        return psi_x;
+        return psiX;
     }
 
-    public void setPsiX(double psi_x) {
-        this.psi_x = psi_x;
+    public void setPsiX(double psiX) {
+        this.psiX = psiX;
     }
 
     public double getPsiY() {
-        return psi_y;
+        return psiY;
     }
 
-    public void setPsiY(double psi_y) {
-        this.psi_y = psi_y;
+    public void setPsiY(double psiY) {
+        this.psiY = psiY;
     }
     
-    public double getSpX() {
-        return spX;
+    public double getPhilX() {
+        return philX;
     }
 
-    public void setSpX(double spX) {
-        this.spX = spX;
+    public void setPhilX(double philX) {
+        this.philX = philX;
     }
 
-    public double getSpY() {
-        return spY;
+    public double getPhirX() {
+        return phirX;
     }
 
-    public void setSpY(double spY) {
-        this.spY = spY;
+    public void setPhirX(double phirX) {
+        this.phirX = phirX;
     }
 
-    public double getSpZ() {
-        return spZ;
+    public double getSplX() {
+        return splX;
     }
 
-    public void setSpZ(double spZ) {
-        this.spZ = spZ;
+    public void setSplX(double splX) {
+        this.splX = splX;
     }
 
-    public boolean isBreakBefore() {
-        return breakBefore;
+    public double getSplY() {
+        return splY;
     }
 
-    public void setBreakBefore(boolean breakBefore) {
-        this.breakBefore = breakBefore;
+    public void setSplY(double splY) {
+        this.splY = splY;
     }
 
-    public boolean isBreakAfter() {
-        return breakAfter;
+    public double getSplZ() {
+        return splZ;
     }
 
-    public void setBreakAfter(boolean breakAfter) {
-        this.breakAfter = breakAfter;
+    public void setSplZ(double splZ) {
+        this.splZ = splZ;
+    }
+
+    public double getSprX() {
+        return sprX;
+    }
+
+    public void setSprX(double sprX) {
+        this.sprX = sprX;
+    }
+
+    public double getSprY() {
+        return sprY;
+    }
+
+    public void setSprY(double sprY) {
+        this.sprY = sprY;
+    }
+
+    public double getSprZ() {
+        return sprZ;
+    }
+
+    public void setSprZ(double sprZ) {
+        this.sprZ = sprZ;
     }
 
     @Override
@@ -176,15 +202,24 @@ public class Residue extends PGobject {
             + scopId + "," + pdbId + "," + orderNumber + "," 
             + residueNumber + "," + (insertCode == null || insertCode.toLowerCase().equals("null") ? "" : insertCode) + "," + residueCode + "," 
             + ssa + "," 
-            + ((phi == NULL_ANGLE) ? "" : phi) + "," 
-            + ((psi == NULL_ANGLE) ? "" : psi) + "," 
-            + ((phi_x == NULL_COORD) ? "" : phi_x) + "," 
-            + ((phi_y == NULL_COORD) ? "" : phi_y) + "," 
-            + ((psi_x == NULL_COORD) ? "" : psi_x) + "," 
-            + ((psi_y == NULL_COORD) ? "" : psi_y) + "," 
-            + ((spX == NULL_COORD) ? "" : spX) + "," 
-            + ((spY == NULL_COORD) ? "" : spY) + "," 
-            + ((spZ == NULL_COORD) ? "" : spZ) 
+            + ((phi == NULL_VAL) ? "" : phi) + "," 
+            + ((psi == NULL_VAL) ? "" : psi) + "," 
+            
+            + ((phiX == NULL_VAL) ? "" : phiX) + "," 
+            + ((phiY == NULL_VAL) ? "" : phiY) + "," 
+            + ((psiX == NULL_VAL) ? "" : psiX) + "," 
+            + ((psiY == NULL_VAL) ? "" : psiY) + "," 
+
+            + ((philX == NULL_VAL) ? "" : philX) + "," 
+            + ((phirX == NULL_VAL) ? "" : phirX) + "," 
+
+            + ((splX == NULL_VAL) ? "" : splX) + "," 
+            + ((splY == NULL_VAL) ? "" : splY) + "," 
+            + ((splZ == NULL_VAL) ? "" : splZ) + ","
+
+            + ((sprX == NULL_VAL) ? "" : sprX) + "," 
+            + ((sprY == NULL_VAL) ? "" : sprY) + "," 
+            + ((sprZ == NULL_VAL) ? "" : sprZ) 
             + ")";
         return row;
     }

@@ -170,8 +170,8 @@ public class ImportStructures {
             }
 
             // calculate torsion angles
-            double phi = Residue.NULL_ANGLE;
-            double psi = Residue.NULL_ANGLE;
+            double phi = Residue.NULL_VAL;
+            double psi = Residue.NULL_VAL;
             boolean breakBefore = true;
             boolean breakAfter = true;
             if (i > 0 && i < groups.size() - 1) {
@@ -208,8 +208,6 @@ public class ImportStructures {
             residue.setSsa(ssa);
             residue.setPhi(phi);
             residue.setPsi(psi);
-            residue.setBreakBefore(breakBefore);
-            residue.setBreakAfter(breakAfter);
 
             residues.add(residue);
         }
@@ -220,7 +218,7 @@ public class ImportStructures {
             Residue residue = residues.get(i);
 
             // torsion angles present
-            if (residue.getPhi() != Residue.NULL_ANGLE && residue.getPsi() != Residue.NULL_ANGLE){
+            if (residue.getPhi() != Residue.NULL_VAL && residue.getPsi() != Residue.NULL_VAL){
              
                 double phi = Math.toRadians(residue.getPhi());
                 double psi = Math.toRadians(residue.getPsi());
@@ -230,6 +228,21 @@ public class ImportStructures {
 
                 residue.setPsiX(Math.cos(psi));
                 residue.setPsiY(Math.sin(psi));
+
+                phi = Math.abs(phi);
+                
+                if (residue.getPhi() < 0) {
+
+                    double x = ((2.0 * phi) / Math.PI) - 1;
+
+                    residue.setPhilX(x);
+                }
+                else { 
+                   
+                    double x = ((2.0 * phi) / Math.PI) - 1;
+                    
+                    residue.setPhirX(x);
+                }
             }
         } 
 
@@ -239,23 +252,26 @@ public class ImportStructures {
             Residue residue = residues.get(i);
  
             // torsion angles present
-            if (residue.getPhi() != Residue.NULL_ANGLE && residue.getPhi() != Residue.NULL_ANGLE){
+            if (residue.getPhi() != Residue.NULL_VAL && residue.getPhi() != Residue.NULL_VAL){
              
-                // phi < 0
+                double phi = Math.abs(Math.toRadians(residue.getPhi()));
+                double psi = Math.toRadians(residue.getPsi());
+
+                double x = Math.sin(phi) * Math.cos(psi);
+                double y = Math.sin(phi) * Math.sin(psi);
+                double z = Math.cos(phi);
+
                 if (residue.getPhi() < 0) {
 
-                    double phi = Math.abs(Math.toRadians(residue.getPhi()));
-                    double psi = Math.toRadians(residue.getPsi());
-                   
-                    // spherical coords with phi [-pi,0] mapped to [0,pi]
-                    double x = Math.sin(phi) * Math.cos(psi);
-                    double y = Math.sin(phi) * Math.sin(psi);
-                    double z = Math.cos(phi);
+                    residue.setSplX(x);
+                    residue.setSplY(y);
+                    residue.setSplZ(z);
+                }
+                else { 
 
-                    // assign the ca3 coords 
-                    residue.setSpX(x);
-                    residue.setSpY(y);
-                    residue.setSpZ(z);
+                    residue.setSprX(x);
+                    residue.setSprY(y);
+                    residue.setSprZ(z);
                 }
             }
         } 

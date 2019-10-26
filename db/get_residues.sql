@@ -13,9 +13,14 @@ RETURNS TABLE (
     phi_y DOUBLE PRECISION,
     psi_x DOUBLE PRECISION,
     psi_y DOUBLE PRECISION,
-    sp_x DOUBLE PRECISION,
-    sp_y DOUBLE PRECISION,
-    sp_z DOUBLE PRECISION
+    phil_x DOUBLE PRECISION,
+    phir_x DOUBLE PRECISION,
+    spl_x DOUBLE PRECISION,
+    spl_y DOUBLE PRECISION,
+    spl_z DOUBLE PRECISION,
+    spr_x DOUBLE PRECISION,
+    spr_y DOUBLE PRECISION,
+    spr_z DOUBLE PRECISION
 )
 AS $$
 BEGIN
@@ -34,9 +39,14 @@ BEGIN
         r.phi_y,
         r.psi_x,
         r.psi_y,
-        r.sp_x,
-        r.sp_y,
-        r.sp_z
+        r.phil_x,
+        r.phir_x,
+        r.spl_x,
+        r.spl_y,
+        r.spl_z,
+        r.spr_x,
+        r.spr_y,
+        r.spr_z
     FROM 
         residue r
     WHERE

@@ -1,5 +1,5 @@
 
-CREATE TABLE sp_sequence
+CREATE TABLE cil_sequence
 (
     scop_id VARCHAR NOT NULL,
     seq VARCHAR NOT NULL,
@@ -8,4 +8,4 @@ CREATE TABLE sp_sequence
     missing_len INTEGER NOT NULL
 );
 
-CREATE UNIQUE INDEX idx_sp_sequence_unique ON sp_sequence (scop_id);
+CREATE UNIQUE INDEX idx_cil_sequence_unique ON cil_sequence (scop_id);

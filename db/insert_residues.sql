@@ -18,9 +18,14 @@ BEGIN
         phi_y,
         psi_x,
         psi_y,
-        sp_x, 
-        sp_y,
-        sp_z
+        phil_x,
+        phir_x,
+        spl_x, 
+        spl_y,
+        spl_z,
+        spr_x, 
+        spr_y,
+        spr_z
     )
 	SELECT
         scop_id,
@@ -36,9 +41,14 @@ BEGIN
         phi_y,
         psi_x,
         psi_y,
-        sp_x, 
-        sp_y,
-        sp_z
+        phil_x,
+        phir_x,
+        spl_x, 
+        spl_y,
+        spl_z,
+        spr_x, 
+        spr_y,
+        spr_z
 	FROM
 		UNNEST(p_tab);
 

@@ -15,17 +15,17 @@ import java.util.stream.IntStream;
 import org.postgresql.PGConnection;
 import org.postgresql.ds.PGSimpleDataSource;
 
-public class SetCiSequences {
+public class SetFitSequences {
 
-    public static void set() {
+    public static void set(FitSequenceType type) {
 
         IntStream.range(0, Constants.SPLIT_COUNT)
             .boxed()
             .parallel()
-            .forEach(splitIndex -> setSplit(splitIndex));
+            .forEach(splitIndex -> setSplit(type, splitIndex));
     }
 
-    private static void setSplit(int splitIndex) {
+    private static void setSplit(FitSequenceType fitType, int splitIndex) {
 
         int processed = 0;
         List<FitSequence> sequences = new ArrayList<>();
@@ -84,7 +84,7 @@ public class SetCiSequences {
                     sequenceText = rs.getString("sequence_text");
                     mapText = rs.getString("map_text");
 
-                    List<Double> coordinates = calculateForScopId(scopId, coords1, coords2, sequenceText, mapText);
+                    List<Double> coordinates = calculateForScopId(fitType, scopId, coords1, coords2, sequenceText, mapText);
 
                     int len = coordinates.size();
                     if (len > 0) {
@@ -96,8 +96,8 @@ public class SetCiSequences {
                             
                             double c = coordinates.get(i); 
                             seqB.append(String.format("%.3f\\,", c));
-                            if (i % 4 == 0) {
-                                if (c == Residue.NULL_COORD) {
+                            if (i % fitType.getModBy() == 0) {
+                                if (c == Residue.NULL_VAL) {
                                     weightsB.append("0.0\\,");
                                     missingLen++;
                                 }
@@ -127,13 +127,13 @@ public class SetCiSequences {
                     }
 
                 } catch (Exception e) {
-                    Logger.getLogger(SetCiSequences.class.getName()).log(Level.SEVERE, scopId, e);
+                    Logger.getLogger(SetFitSequences.class.getName()).log(Level.SEVERE, scopId, e);
                 }
                 
                 // output
                 processed++;
                 if (processed % Constants.PROCESSED_INCREMENT == 0) {
-                    saveFitSequences(sequences);
+                    saveFitSequences(fitType, sequences);
                     sequences.clear();
                     System.out.println("Split: " + splitIndex + ", Processed: "
                             + (Constants.PROCESSED_INCREMENT * (processed / Constants.PROCESSED_INCREMENT)));
@@ -141,7 +141,7 @@ public class SetCiSequences {
             }
 
             if (sequences.size() > 0) {
-                saveFitSequences(sequences);
+                saveFitSequences(fitType, sequences);
             }
 
             rs.close();
@@ -149,11 +149,12 @@ public class SetCiSequences {
             conn.close();
 
         } catch (SQLException e) {
-            Logger.getLogger(SetCiSequences.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(SetFitSequences.class.getName()).log(Level.SEVERE, null, e);
         }
     }
 
     private static List<Double> calculateForScopId(
+            FitSequenceType fitType,
             String scopId, 
             Parsing.ResidueCoords coords1, 
             Parsing.ResidueCoords coords2, 
@@ -228,10 +229,36 @@ public class SetCiSequences {
                 if (!map.Code1.equals(".")) {
 
                     // NULL_COORD is possible even if the residue is present
-                    seq.add(residue.getPhiX());
-                    seq.add(residue.getPhiY());
-                    seq.add(residue.getPsiX());
-                    seq.add(residue.getPsiY());
+                    if (fitType == FitSequenceType.PP) {
+                        seq.add(residue.getPhi());
+                        seq.add(residue.getPsi());
+                    }
+                    else if (fitType == FitSequenceType.SPL) {
+                        seq.add(residue.getSplX());
+                        seq.add(residue.getSplY());
+                        seq.add(residue.getSplZ());
+                    }
+                    else if (fitType == FitSequenceType.SPR) {
+                        seq.add(residue.getSprX());
+                        seq.add(residue.getSprY());
+                        seq.add(residue.getSprZ());
+                    }
+                    else if (fitType == FitSequenceType.CIL) {
+                        seq.add(residue.getPhilX());
+                        seq.add(residue.getPsiX());
+                        seq.add(residue.getPsiY());
+                    }
+                    else if (fitType == FitSequenceType.CIR) {
+                        seq.add(residue.getPhirX());
+                        seq.add(residue.getPsiX());
+                        seq.add(residue.getPsiY());
+                    }
+                    else { // if (fitType == FitSequenceType.CI)
+                        seq.add(residue.getPhiX());
+                        seq.add(residue.getPhiY());
+                        seq.add(residue.getPsiX());
+                        seq.add(residue.getPsiY());
+                    }
 
                     // the residue is present
                     k++;
@@ -239,10 +266,9 @@ public class SetCiSequences {
                 else {
 
                     // the residue is not present
-                    seq.add(Residue.NULL_COORD);
-                    seq.add(Residue.NULL_COORD);
-                    seq.add(Residue.NULL_COORD);
-                    seq.add(Residue.NULL_COORD);
+                    for (int l = 0; l < fitType.getModBy(); l++) {
+                        seq.add(Residue.NULL_VAL);
+                    }
                 }
 
                 j++;
@@ -256,28 +282,28 @@ public class SetCiSequences {
 
         return seq;
     }
-
-    private static void printlnError(String message) {
-
-        System.out.println((char)27 + "[31m" + message + (char)27 + "[0m");
-    }
     
-    private static void saveFitSequences(List<FitSequence> sequences) throws SQLException {
+    private static void saveFitSequences(FitSequenceType fitType, List<FitSequence> sequences) throws SQLException {
 
         PGSimpleDataSource ds = Db.getDataSource();
 
         Connection conn = ds.getConnection();
         conn.setAutoCommit(true);
 
-        ((PGConnection) conn).addDataType("ci_sequence", FitSequence.class);
+        ((PGConnection) conn).addDataType(fitType.getDbName() + "_sequence", FitSequence.class);
 
-        PreparedStatement updt = conn.prepareStatement("SELECT insert_ci_sequences(?);");
+        PreparedStatement updt = conn.prepareStatement("SELECT insert_" + fitType.getDbName() + "_sequences(?);");
     
         FitSequence a[] = new FitSequence[sequences.size()];
         sequences.toArray(a);
-        updt.setArray(1, conn.createArrayOf("ci_sequence", a));
+        updt.setArray(1, conn.createArrayOf(fitType.getDbName() + "_sequence", a));
     
         updt.execute();
         updt.close();
+    }
+
+    private static void printlnError(String message) {
+
+        System.out.println((char)27 + "[31m" + message + (char)27 + "[0m");
     }
 }

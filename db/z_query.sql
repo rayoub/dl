@@ -9,6 +9,8 @@ SELECT
     phi_y,
     psi_x,
     psi_y,
+    phil_x,
+    phir_x,
     residue_code As rc
 FROM
     residue 

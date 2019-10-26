@@ -56,33 +56,50 @@ public class Db {
 
                 residue.setPhi(rs.getDouble("phi"));
                 if (rs.wasNull())
-                    residue.setPhi(Residue.NULL_ANGLE);
+                    residue.setPhi(Residue.NULL_VAL);
                 residue.setPsi(rs.getDouble("psi"));
                 if (rs.wasNull())
-                    residue.setPsi(Residue.NULL_ANGLE);
+                    residue.setPsi(Residue.NULL_VAL);
                 
                 residue.setPhiX(rs.getDouble("phi_x"));
                 if (rs.wasNull())
-                    residue.setPhiX(Residue.NULL_COORD);
+                    residue.setPhiX(Residue.NULL_VAL);
                 residue.setPhiY(rs.getDouble("phi_y"));
                 if (rs.wasNull())
-                    residue.setPhiY(Residue.NULL_COORD);
+                    residue.setPhiY(Residue.NULL_VAL);
                 residue.setPsiX(rs.getDouble("psi_x"));
                 if (rs.wasNull())
-                    residue.setPsiX(Residue.NULL_COORD);
+                    residue.setPsiX(Residue.NULL_VAL);
                 residue.setPsiY(rs.getDouble("psi_y"));
                 if (rs.wasNull())
-                    residue.setPsiY(Residue.NULL_COORD);
+                    residue.setPsiY(Residue.NULL_VAL);
 
-                residue.setSpX(rs.getDouble("sp_x"));
+                residue.setPhilX(rs.getDouble("phil_x"));
                 if (rs.wasNull())
-                    residue.setSpX(Residue.NULL_COORD);
-                residue.setSpY(rs.getDouble("sp_y"));
+                    residue.setPhilX(Residue.NULL_VAL);
+                residue.setPhirX(rs.getDouble("phir_x"));
                 if (rs.wasNull())
-                    residue.setSpY(Residue.NULL_COORD);
-                residue.setSpZ(rs.getDouble("sp_z"));
+                    residue.setPhirX(Residue.NULL_VAL);
+
+                residue.setSplX(rs.getDouble("spl_x"));
                 if (rs.wasNull())
-                    residue.setSpZ(Residue.NULL_COORD);
+                    residue.setSplX(Residue.NULL_VAL);
+                residue.setSplY(rs.getDouble("spl_y"));
+                if (rs.wasNull())
+                    residue.setSplY(Residue.NULL_VAL);
+                residue.setSplZ(rs.getDouble("spl_z"));
+                if (rs.wasNull())
+                    residue.setSplZ(Residue.NULL_VAL);
+
+                residue.setSprX(rs.getDouble("spr_x"));
+                if (rs.wasNull())
+                    residue.setSprX(Residue.NULL_VAL);
+                residue.setSprY(rs.getDouble("spr_y"));
+                if (rs.wasNull())
+                    residue.setSprY(Residue.NULL_VAL);
+                residue.setSprZ(rs.getDouble("spr_z"));
+                if (rs.wasNull())
+                    residue.setSprZ(Residue.NULL_VAL);
 
                 residues.add(residue);
             }
