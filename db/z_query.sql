@@ -9,8 +9,8 @@ SELECT
     phi_y,
     psi_x,
     psi_y,
-    phil_x,
-    phir_x,
+    CASE WHEN phil_x IS NULL THEN 0 ELSE phil_x END AS phil_x,
+    CASE WHEN phir_x IS NULL THEN 0 ELSE phir_x END AS phir_x,
     residue_code As rc
 FROM
     residue 
