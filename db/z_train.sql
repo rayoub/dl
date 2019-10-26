@@ -13,11 +13,11 @@ SELECT
     spr.seq,
     spr.weights,
     ci.seq,
-    ci.weights
+    ci.weights,
     cil.seq,
     cil.weights,
     cir.seq,
-    cir.weights,
+    cir.weights
 FROM
     aa_sequence aa
     INNER JOIN pp_sequence pp
