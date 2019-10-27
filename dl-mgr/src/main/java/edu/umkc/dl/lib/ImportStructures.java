@@ -253,8 +253,9 @@ public class ImportStructures {
  
             // torsion angles present
             if (residue.getPhi() != Residue.NULL_VAL && residue.getPhi() != Residue.NULL_VAL){
-             
-                double phi = Math.abs(Math.toRadians(residue.getPhi()));
+            
+                double transformedPhi = Math.abs(residue.getPhi()) - 15.0;
+                double phi = Math.toRadians(transformedPhi);
                 double psi = Math.toRadians(residue.getPsi());
 
                 double x = Math.sin(phi) * Math.cos(psi);

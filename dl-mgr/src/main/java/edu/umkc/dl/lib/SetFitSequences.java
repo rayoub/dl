@@ -244,14 +244,28 @@ public class SetFitSequences {
                         seq.add(residue.getSprZ());
                     }
                     else if (fitType == FitSequenceType.CIL) {
-                        seq.add(residue.getPhilX());
-                        seq.add(residue.getPsiX());
-                        seq.add(residue.getPsiY());
+                        if (residue.getPhilX() != Residue.NULL_VAL) {
+                            seq.add(residue.getPhilX());
+                            seq.add(residue.getPsiX());
+                            seq.add(residue.getPsiY());
+                        }
+                        else {
+                            seq.add(Residue.NULL_VAL);
+                            seq.add(Residue.NULL_VAL);
+                            seq.add(Residue.NULL_VAL);
+                        }
                     }
                     else if (fitType == FitSequenceType.CIR) {
-                        seq.add(residue.getPhirX());
-                        seq.add(residue.getPsiX());
-                        seq.add(residue.getPsiY());
+                        if (residue.getPhirX() != Residue.NULL_VAL) {
+                            seq.add(residue.getPhirX());
+                            seq.add(residue.getPsiX());
+                            seq.add(residue.getPsiY());
+                        }
+                        else {
+                            seq.add(Residue.NULL_VAL);
+                            seq.add(Residue.NULL_VAL);
+                            seq.add(Residue.NULL_VAL);
+                        }
                     }
                     else { // if (fitType == FitSequenceType.CI)
                         seq.add(residue.getPhiX());
