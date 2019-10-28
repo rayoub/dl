@@ -12,9 +12,9 @@ BUFFER_SIZE = 1000
 val_ds = data.get_test_data('../train/val_astral.txt', BUFFER_SIZE, BATCH_SIZE)
 
 # model evaluation
-m = models.get_model(BATCH_SIZE, data.CIL_CNT)
-m.load_weights('./checkpoints/cil2')
-m.add(layers.CilLayer())
+m = models.get_model(BATCH_SIZE, data.CI_CNT)
+m.load_weights('./checkpoints/ci1')
+m.add(layers.CiLayer())
 m.evaluate(val_ds)
 
 

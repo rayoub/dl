@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import java.util.stream.IntStream;
 
 import org.biojava.nbio.structure.AminoAcid;
+import org.biojava.nbio.structure.Atom;
 import org.biojava.nbio.structure.Calc;
 import org.biojava.nbio.structure.Chain;
 import org.biojava.nbio.structure.Group;
@@ -157,6 +158,18 @@ public class ImportStructures {
                 continue;
             }
 
+            // calculate max tf
+            double maxTf = 1000.0; // it will definitely be filtered out
+            if (g.hasAminoAtoms()) {
+
+                Atom n = g.getAtom("N");
+                Atom ca = g.getAtom("CA");
+                Atom c = g.getAtom("C");
+                Atom o = g.getAtom("O");
+
+                maxTf = Math.max(Math.max(Math.max(n.getTempFactor(), ca.getTempFactor()), c.getTempFactor()), o.getTempFactor());
+            } 
+
             // get secondary structure assignment 
             // empty strings will be converted to _ when getting
             String ssa = "";
@@ -205,6 +218,7 @@ public class ImportStructures {
             residue.setResidueNumber(g.getResidueNumber().getSeqNum());
             residue.setInsertCode(String.valueOf(g.getResidueNumber().getInsCode()).toUpperCase());
             residue.setResidueCode(residueCode);
+            residue.setMaxTf(maxTf);
             residue.setSsa(ssa);
             residue.setPhi(phi);
             residue.setPsi(psi);
@@ -228,51 +242,6 @@ public class ImportStructures {
 
                 residue.setPsiX(Math.cos(psi));
                 residue.setPsiY(Math.sin(psi));
-
-                phi = Math.abs(phi);
-                
-                if (residue.getPhi() < 0) {
-
-                    double x = ((2.0 * phi) / Math.PI) - 1;
-
-                    residue.setPhilX(x);
-                }
-                else { 
-                   
-                    double x = ((2.0 * phi) / Math.PI) - 1;
-                    
-                    residue.setPhirX(x);
-                }
-            }
-        } 
-
-        // calculate spherical coords
-        for (int i = 0; i < residues.size(); i++) {
- 
-            Residue residue = residues.get(i);
- 
-            // torsion angles present
-            if (residue.getPhi() != Residue.NULL_VAL && residue.getPhi() != Residue.NULL_VAL){
-            
-                double phi = Math.toRadians(Math.abs(residue.getPhi()));
-                double psi = Math.toRadians(residue.getPsi());
-
-                double x = Math.sin(phi) * Math.cos(psi);
-                double y = Math.sin(phi) * Math.sin(psi);
-                double z = Math.cos(phi);
-
-                if (residue.getPhi() < 0) {
-
-                    residue.setSplX(x);
-                    residue.setSplY(y);
-                    residue.setSplZ(z);
-                }
-                else { 
-
-                    residue.setSprX(x);
-                    residue.setSprY(y);
-                    residue.setSprZ(z);
-                }
             }
         } 
 

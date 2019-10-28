@@ -3,11 +3,7 @@ package edu.umkc.dl.lib;
 public enum FitSequenceType {
 
     PP("pp", 2),
-    SPL("spl", 3),
-    SPR("spr", 3),
-    CI("ci", 4),
-    CIL("cil", 3),
-    CIR("cir", 3);
+    CI("ci", 4);
     
     private String dbName;
     private int modBy;

@@ -50,6 +50,7 @@ public class Db {
                 if (rs.wasNull()) 
                     residue.setInsertCode("");
                 residue.setResidueCode(rs.getString("residue_code"));
+                residue.setMaxTf(rs.getDouble("max_tf"));
                 residue.setSsa(rs.getString("ssa"));
                 if (rs.wasNull()) 
                     residue.setSsa("_");
@@ -73,33 +74,6 @@ public class Db {
                 residue.setPsiY(rs.getDouble("psi_y"));
                 if (rs.wasNull())
                     residue.setPsiY(Residue.NULL_VAL);
-
-                residue.setPhilX(rs.getDouble("phil_x"));
-                if (rs.wasNull())
-                    residue.setPhilX(Residue.NULL_VAL);
-                residue.setPhirX(rs.getDouble("phir_x"));
-                if (rs.wasNull())
-                    residue.setPhirX(Residue.NULL_VAL);
-
-                residue.setSplX(rs.getDouble("spl_x"));
-                if (rs.wasNull())
-                    residue.setSplX(Residue.NULL_VAL);
-                residue.setSplY(rs.getDouble("spl_y"));
-                if (rs.wasNull())
-                    residue.setSplY(Residue.NULL_VAL);
-                residue.setSplZ(rs.getDouble("spl_z"));
-                if (rs.wasNull())
-                    residue.setSplZ(Residue.NULL_VAL);
-
-                residue.setSprX(rs.getDouble("spr_x"));
-                if (rs.wasNull())
-                    residue.setSprX(Residue.NULL_VAL);
-                residue.setSprY(rs.getDouble("spr_y"));
-                if (rs.wasNull())
-                    residue.setSprY(Residue.NULL_VAL);
-                residue.setSprZ(rs.getDouble("spr_z"));
-                if (rs.wasNull())
-                    residue.setSprZ(Residue.NULL_VAL);
 
                 residues.add(residue);
             }

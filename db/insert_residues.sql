@@ -11,21 +11,14 @@ BEGIN
         residue_number, 
         insert_code, 
         residue_code, 
+        max_tf,
         ssa,
         phi,
         psi,
         phi_x,
         phi_y,
         psi_x,
-        psi_y,
-        phil_x,
-        phir_x,
-        spl_x, 
-        spl_y,
-        spl_z,
-        spr_x, 
-        spr_y,
-        spr_z
+        psi_y
     )
 	SELECT
         scop_id,
@@ -34,21 +27,14 @@ BEGIN
         residue_number, 
         insert_code, 
         residue_code, 
+        max_tf,
         ssa,
         phi,
         psi,
         phi_x,
         phi_y,
         psi_x,
-        psi_y,
-        phil_x,
-        phir_x,
-        spl_x, 
-        spl_y,
-        spl_z,
-        spr_x, 
-        spr_y,
-        spr_z
+        psi_y
 	FROM
 		UNNEST(p_tab);
 

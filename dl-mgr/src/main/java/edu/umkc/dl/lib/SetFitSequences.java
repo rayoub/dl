@@ -230,22 +230,16 @@ public class SetFitSequences {
 
                     // NULL_COORD is possible even if the residue is present
                     if (fitType == FitSequenceType.PP) {
+
+                        // always used for final testing
                         seq.add(residue.getPhi());
                         seq.add(residue.getPsi());
                     }
-                    else if (fitType == FitSequenceType.SPL) {
-                        seq.add(residue.getSplX());
-                        seq.add(residue.getSplY());
-                        seq.add(residue.getSplZ());
-                    }
-                    else if (fitType == FitSequenceType.SPR) {
-                        seq.add(residue.getSprX());
-                        seq.add(residue.getSprY());
-                        seq.add(residue.getSprZ());
-                    }
-                    else if (fitType == FitSequenceType.CIL) {
-                        if (residue.getPhilX() != Residue.NULL_VAL) {
-                            seq.add(residue.getPhilX());
+                    else { // FitSequenceType.CI
+
+                        if (residue.getMaxTf() < 40) {
+                            seq.add(residue.getPhiX());
+                            seq.add(residue.getPhiY());
                             seq.add(residue.getPsiX());
                             seq.add(residue.getPsiY());
                         }
@@ -253,25 +247,8 @@ public class SetFitSequences {
                             seq.add(Residue.NULL_VAL);
                             seq.add(Residue.NULL_VAL);
                             seq.add(Residue.NULL_VAL);
-                        }
-                    }
-                    else if (fitType == FitSequenceType.CIR) {
-                        if (residue.getPhirX() != Residue.NULL_VAL) {
-                            seq.add(residue.getPhirX());
-                            seq.add(residue.getPsiX());
-                            seq.add(residue.getPsiY());
-                        }
-                        else {
-                            seq.add(Residue.NULL_VAL);
-                            seq.add(Residue.NULL_VAL);
                             seq.add(Residue.NULL_VAL);
                         }
-                    }
-                    else { // if (fitType == FitSequenceType.CI)
-                        seq.add(residue.getPhiX());
-                        seq.add(residue.getPhiY());
-                        seq.add(residue.getPsiX());
-                        seq.add(residue.getPsiY());
                     }
 
                     // the residue is present
