@@ -159,7 +159,7 @@ public class ImportStructures {
             }
 
             // calculate max tf
-            double maxTf = 1000.0; // it will definitely be filtered out
+            double maxTf = 1000.0; // it will definitely be filtered out if we filter
             if (g.hasAminoAtoms()) {
 
                 Atom n = g.getAtom("N");
@@ -226,7 +226,7 @@ public class ImportStructures {
             residues.add(residue);
         }
         
-        // calculate circle coords
+        // calculate circular coords
         for (int i = 0; i < residues.size(); i++) {
 
             Residue residue = residues.get(i);
@@ -239,7 +239,6 @@ public class ImportStructures {
               
                 residue.setPhiX(Math.cos(phi));
                 residue.setPhiY(Math.sin(phi));
-
                 residue.setPsiX(Math.cos(psi));
                 residue.setPsiY(Math.sin(psi));
             }

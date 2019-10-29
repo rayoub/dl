@@ -13,8 +13,9 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import edu.umkc.dl.lib.Constants;
+import edu.umkc.dl.lib.FitSequenceType;
 import edu.umkc.dl.lib.ImportStructures;
-import edu.umkc.dl.lib.SetCkSequences;
+import edu.umkc.dl.lib.SetFitSequences;
 
 public class Main {
 
@@ -76,24 +77,15 @@ public class Main {
     
     private static void option_s(CommandLine line) {
 
-        //SetSsSequences.set();
-        //SetPpSequences.set();
-        SetCkSequences.set();
-        //SetAaTypes.set();
+        SetFitSequences.set(FitSequenceType.PP);
+        SetFitSequences.set(FitSequenceType.CI);
     }
     
     private static void option_d(CommandLine line) {
-  
+ 
 
-        StringBuilder b = new StringBuilder();
-        b.append("232332\\,23432\\,32532453\\,");
+        System.out.println("sin 45 = " + Math.sin(Math.toRadians((90))));
 
-        System.out.println(b.toString());
-
-        b.deleteCharAt(b.length() - 1);
-        b.deleteCharAt(b.length() - 1);
-        
-        System.out.println(b.toString());
     }
 
     private static void option_help(Options options) {

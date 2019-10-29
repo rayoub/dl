@@ -2,7 +2,7 @@
 import tensorflow as tf
 
 # constants
-TORSION_CNT = 2
+PP_CNT = 2
 
 # one-hot lookup
 MAP_AA_KEYS = ['A','B','C','D','E','F','G','H','J','I','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
@@ -18,19 +18,15 @@ def map_aa (elem):
 def map_ds (elem):
 
     a = tf.strings.split(elem, sep='|')
-    # pp data is at indices 1 and 2, ignore 3 and 4
+    # pp data is at indices 1 and 2
     b = tf.strings.split(a[0], sep=',')             , tf.strings.split(a[1], sep=',')           , tf.strings.split(a[2], sep=',')
     c = b[0]                                        , tf.strings.to_number(b[1], tf.float32)    , tf.strings.to_number(b[2], tf.float32)
-    d = tf.map_fn(map_aa, c[0], dtype=tf.float32)   , tf.reshape(c[1], [-1, TORSION_CNT])       , c[2]
+    d = tf.map_fn(map_aa, c[0], dtype=tf.float32)   , tf.reshape(c[1], [-1, PP_CNT])       , c[2]
 
     return d
 
 def get_data(file_name, buffer_size, batch_size):
 
-    # skip shuffle for method comparisons
-    return tf.data.TextLineDataset([file_name]).map(map_ds).padded_batch(
-            batch_size, padded_shapes=([-1, MAP_AA_VALS_CNT], [-1, TORSION_CNT], [-1]), drop_remainder=True)
-    
-    #return tf.data.TextLineDataset([file_name]).shuffle(buffer_size).map(map_ds).padded_batch(
-    #        batch_size, padded_shapes=([-1, MAP_AA_VALS_CNT], [-1, TORSION_CNT], [-1]), drop_remainder=True)
+    return tf.data.TextLineDataset([file_name]).shuffle(buffer_size).map(map_ds).padded_batch(
+            batch_size, padded_shapes=([-1, MAP_AA_VALS_CNT], [-1, PP_CNT], [-1]), drop_remainder=True)
 

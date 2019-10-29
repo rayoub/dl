@@ -3,7 +3,7 @@ import math
 import tensorflow as tf
 from tensorflow.keras import layers
 
-# circle coordinates
+# circular coordinates
 class CiLayer(layers.Layer):
 
     def __init__(self):

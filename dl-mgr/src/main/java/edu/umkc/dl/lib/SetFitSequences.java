@@ -235,20 +235,12 @@ public class SetFitSequences {
                         seq.add(residue.getPhi());
                         seq.add(residue.getPsi());
                     }
-                    else { // FitSequenceType.CI
+                    else { // FitSequenceType.CI 
 
-                        if (residue.getMaxTf() < 40) {
-                            seq.add(residue.getPhiX());
-                            seq.add(residue.getPhiY());
-                            seq.add(residue.getPsiX());
-                            seq.add(residue.getPsiY());
-                        }
-                        else {
-                            seq.add(Residue.NULL_VAL);
-                            seq.add(Residue.NULL_VAL);
-                            seq.add(Residue.NULL_VAL);
-                            seq.add(Residue.NULL_VAL);
-                        }
+                        seq.add(residue.getPhiX());
+                        seq.add(residue.getPhiY());
+                        seq.add(residue.getPsiX());
+                        seq.add(residue.getPsiY());
                     }
 
                     // the residue is present

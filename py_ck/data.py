@@ -45,7 +45,7 @@ def map_test_ds (elem):
 
     return d
 
-def get_ci_train_data(file_name, buffer_size, batch_size):
+def get_pp_train_data(file_name, buffer_size, batch_size):
 
     return tf.data.TextLineDataset([file_name]).shuffle(buffer_size).map(map_pp_train_ds).padded_batch(
             batch_size, padded_shapes=([-1, MAP_AA_VALS_CNT], [-1, PP_CNT], [-1]), drop_remainder=True)
