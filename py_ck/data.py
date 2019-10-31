@@ -15,6 +15,9 @@ MAP_AA = tf.lookup.StaticHashTable(MAP_AA_INIT, -1)
 def map_aa (elem):
     return tf.one_hot(MAP_AA.lookup(elem), MAP_AA_VALS_CNT, dtype=tf.float32)
 
+def map_aa_reverse(elem):
+    return MAP_AA_KEYS[elem];
+
 def map_pp_train_ds (elem):
 
     a = tf.strings.split(elem, sep='|')
