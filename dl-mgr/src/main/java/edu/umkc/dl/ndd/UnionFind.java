@@ -32,12 +32,14 @@ public class UnionFind {
 
     public void iterate() {
 
+        // get the initial set of pairs to work with
         List<NddPair> pairs = getPairs();
      
         for (double threshold = 0.75; threshold >= MIN_SIMILARITY_THRESHOLD; threshold = threshold - 0.01) {
 
             double efThreshold = threshold;
-           
+          
+            // filter pairs beyond the similarity threshold 
             List<NddPair> filteredPairs = pairs.stream()
                 .filter(p -> p.getSimilarity() >= efThreshold)
                 .collect(Collectors.toList());
@@ -46,8 +48,10 @@ public class UnionFind {
 
                 System.out.println("Filtered Pair Count = " + filteredPairs.size() + " at Threshold = " + threshold); 
 
+                // filters pairs that don't belong to a set
                 pairs = iteration(pairs, filteredPairs);
 
+                // filter pairs beyond the similarity threshold - will get the others as we lower the threshold
                 filteredPairs = pairs.stream()
                     .filter(p -> p.getSimilarity() >= efThreshold)
                     .collect(Collectors.toList());
@@ -58,8 +62,11 @@ public class UnionFind {
     }
 
     private List<NddPair> iteration(List<NddPair> pairs, List<NddPair> filteredPairs) {
-       
+   
+        // set member pointers to parents and rank
         Map<String, Member> setMembers = new HashMap<>();
+
+        // store similarities as they are encountered 
         Map<String, Double> pairSims = new HashMap<>();
 
         boolean start;
@@ -173,7 +180,7 @@ public class UnionFind {
         
         System.out.println("Set Member Count = " + _setRecords.size());
         
-        // filter pairs and return
+        // filter pairs where both members don't belong to a set
         HashSet<String> dbIds = _setRecords.stream().map(s -> s.getMemberDbId()).collect(Collectors.toCollection(HashSet::new)); 
         return pairs.stream()
             .filter(p -> !dbIds.contains(p.getDbId1()) && !dbIds.contains(p.getDbId2()))
