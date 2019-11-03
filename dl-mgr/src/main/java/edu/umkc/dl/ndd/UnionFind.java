@@ -28,13 +28,13 @@ public class UnionFind {
 
     private List<NddSet> _setRecords = new ArrayList<>();
 
-    private final static double MIN_SIMILARITY_THRESHOLD = 0.70;
+    private final static double MIN_SIMILARITY_THRESHOLD = 0.60;
 
     public void iterate() {
 
         List<NddPair> pairs = getPairs();
      
-        for (double threshold = 0.95; threshold >= MIN_SIMILARITY_THRESHOLD; threshold = threshold - 0.01) {
+        for (double threshold = 0.75; threshold >= MIN_SIMILARITY_THRESHOLD; threshold = threshold - 0.01) {
 
             double efThreshold = threshold;
            

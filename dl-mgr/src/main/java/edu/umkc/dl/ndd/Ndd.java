@@ -14,10 +14,6 @@ import edu.umkc.dl.lib.Db;
 
 public class Ndd {
 
-    // ******************************************************************************
-    // import grams and hashes
-    // ******************************************************************************
-
     public static void importGramsAndHashes() {
 
         IntStream.range(0, Constants.SPLIT_COUNT)

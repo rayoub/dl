@@ -20,7 +20,7 @@ public class Pairing {
 
     private final static int MAX_CACHED_PAIRS = 1000;
     
-    public void pair() {
+    public static void pair() {
 
         IntStream
             .range(0, Constants.BAND_HASH_COUNT)
@@ -29,7 +29,7 @@ public class Pairing {
             .forEach(bandIndex -> pairOnBand(bandIndex));
     }
 
-    private void pairOnBand(int bandIndex) {
+    private static void pairOnBand(int bandIndex) {
         
         try {
             
@@ -88,7 +88,7 @@ public class Pairing {
         }
     }
 
-    private void unwindTile(List<Hashes> tile, int band, List<NddPair> pairs) {
+    private static void unwindTile(List<Hashes> tile, int band, List<NddPair> pairs) {
 
         //unwind tile
         if(tile.size() >= 2){
@@ -110,7 +110,7 @@ public class Pairing {
         tile.clear();
     }
 
-    private boolean lowerBandMatch(Integer[] bandHashes1, Integer[] bandHashes2, int band) {
+    private static boolean lowerBandMatch(Integer[] bandHashes1, Integer[] bandHashes2, int band) {
 
         for (int i = 0; i < band; i++) {
             if (Objects.equals(bandHashes1[i], bandHashes2[i])) {
@@ -120,7 +120,7 @@ public class Pairing {
         return false;
     }
             
-    private void savePairs(List<NddPair> pairs, Connection conn) throws SQLException {
+    private static void savePairs(List<NddPair> pairs, Connection conn) throws SQLException {
         
         PreparedStatement updt;
 
