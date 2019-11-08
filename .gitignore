@@ -6,7 +6,7 @@ test_ss/CB513
 
 # big data files from astral
 train/astral-rapid-access-2.07-stable.raf
-train/astral-scopedom-seqres-gd-all-2.07-stable.fa
+train/astral-scopedom-seqres-gd-*
 
 # big data files from pdb
 train/entries.idx

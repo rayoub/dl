@@ -16,6 +16,8 @@ import edu.umkc.dl.lib.Constants;
 import edu.umkc.dl.lib.FitSequenceType;
 import edu.umkc.dl.lib.ImportStructures;
 import edu.umkc.dl.lib.SetFitSequences;
+import edu.umkc.dl.ndd.Pairing;
+import edu.umkc.dl.ndd.UnionFind;
 
 public class Main {
 
@@ -82,10 +84,10 @@ public class Main {
     }
     
     private static void option_d(CommandLine line) {
- 
 
-        System.out.println("sin 45 = " + Math.sin(Math.toRadians((90))));
-
+        //Pairing.pair(); 
+        UnionFind uf = new UnionFind();
+        uf.iterate();
     }
 
     private static void option_help(Options options) {
