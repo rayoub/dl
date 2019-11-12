@@ -12,6 +12,7 @@ public class Residue extends PGobject {
     private int residueNumber;
     private String insertCode;
     private String residueCode;
+    private String gram;
     private double maxTf;
     private String ssa;
     private double phi = NULL_VAL;
@@ -67,6 +68,14 @@ public class Residue extends PGobject {
 
     public void setResidueCode(String residueCode) {
         this.residueCode = residueCode;
+    }
+
+    public String getGram() {
+        return gram;
+    }
+
+    public void setGram(String gram) {
+        this.gram = gram;
     }
 
     public double getMaxTf() {
@@ -138,6 +147,7 @@ public class Residue extends PGobject {
         String row = "(" 
             + scopId + "," + pdbId + "," + orderNumber + "," 
             + residueNumber + "," + (insertCode == null || insertCode.toLowerCase().equals("null") ? "" : insertCode) + "," + residueCode + "," 
+            + gram + ","
             + maxTf + ","
             + ssa + "," 
 

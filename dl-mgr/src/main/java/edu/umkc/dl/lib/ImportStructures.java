@@ -9,7 +9,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.IntStream;
@@ -29,6 +31,32 @@ import org.postgresql.PGConnection;
 import org.postgresql.ds.PGSimpleDataSource;
 
 public class ImportStructures {
+
+    private static Set<String> validCodes = new HashSet<>();
+
+    static {
+
+        validCodes.add("A");
+        validCodes.add("C");
+        validCodes.add("D");
+        validCodes.add("E");
+        validCodes.add("F");
+        validCodes.add("G");
+        validCodes.add("H");
+        validCodes.add("I");
+        validCodes.add("K");
+        validCodes.add("L");
+        validCodes.add("M");
+        validCodes.add("N");
+        validCodes.add("P");
+        validCodes.add("Q");
+        validCodes.add("R");
+        validCodes.add("S");
+        validCodes.add("T");
+        validCodes.add("V");
+        validCodes.add("W");
+        validCodes.add("Y");
+    }
 
     public static void importStructures() {
 
@@ -185,29 +213,42 @@ public class ImportStructures {
             // calculate torsion angles
             double phi = Residue.NULL_VAL;
             double psi = Residue.NULL_VAL;
-            boolean breakBefore = true;
-            boolean breakAfter = true;
-            if (i > 0 && i < groups.size() - 1) {
+            String gram = "";
 
-                Group g1 = groups.get(i - 1);
-                Group g3 = groups.get(i + 1);
-                try {
-                    if (g1 instanceof AminoAcid && g instanceof AminoAcid && g3 instanceof AminoAcid) {
-                        
-                        AminoAcid a1 = (AminoAcid) g1;
-                        AminoAcid a2 = (AminoAcid) g;
-                        AminoAcid a3 = (AminoAcid) g3;
-                       
-                        // check connectivity
-                        breakBefore = !Calc.isConnected(a1,a2);
-                        breakAfter = !Calc.isConnected(a2,a3);
-                        if (!breakBefore && !breakAfter) {
-                            phi = Calc.getPhi(a1,a2);
-                            psi = Calc.getPsi(a2,a3);
+            if (validCodes.contains(residueCode)) {
+
+                boolean breakBefore = true;
+                boolean breakAfter = true;
+                if (i > 0 && i < groups.size() - 1) {
+
+                    Group g1 = groups.get(i - 1);
+                    Group g3 = groups.get(i + 1);
+                    try {
+                        if (g1 instanceof AminoAcid && g instanceof AminoAcid && g3 instanceof AminoAcid) {
+                            
+                            AminoAcid a1 = (AminoAcid) g1;
+                            AminoAcid a2 = (AminoAcid) g;
+                            AminoAcid a3 = (AminoAcid) g3;
+                           
+                            // check connectivity
+                            breakBefore = !Calc.isConnected(a1,a2);
+                            breakAfter = !Calc.isConnected(a2,a3);
+                            if (!breakBefore && !breakAfter) {
+                                phi = Calc.getPhi(a1,a2);
+                                psi = Calc.getPsi(a2,a3);
+
+                                // a valid gram
+                                String rc1 = a1.getChemComp().getOne_letter_code().toUpperCase();
+                                String rc2 = a2.getChemComp().getOne_letter_code().toUpperCase();
+                                String rc3 = a3.getChemComp().getOne_letter_code().toUpperCase();
+                                if (validCodes.contains(rc1) && validCodes.contains(rc3)) {
+                                    gram = rc1 + rc2 + rc3;
+                                }
+                            }
                         }
+                    } catch (StructureException e) {
+                        // do nothing
                     }
-                } catch (StructureException e) {
-                    // do nothing
                 }
             }
 
@@ -218,6 +259,7 @@ public class ImportStructures {
             residue.setResidueNumber(g.getResidueNumber().getSeqNum());
             residue.setInsertCode(String.valueOf(g.getResidueNumber().getInsCode()).toUpperCase());
             residue.setResidueCode(residueCode);
+            residue.setGram(gram);
             residue.setMaxTf(maxTf);
             residue.setSsa(ssa);
             residue.setPhi(phi);

@@ -7,6 +7,7 @@ CREATE TABLE residue
     residue_number INTEGER NOT NULL,
     insert_code VARCHAR NULL,
     residue_code VARCHAR NOT NULL, 
+    gram VARCHAR NULL, 
     max_tf DOUBLE PRECISION NOT NULL,
     ssa VARCHAR NULL,
     phi DOUBLE PRECISION NULL,
