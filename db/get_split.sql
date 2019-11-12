@@ -27,7 +27,7 @@ BEGIN
             s.text AS sequence_text,
             m.text AS map_text
         FROM
-            astral_40 a
+            astral_95 a
             INNER JOIN aa_sequence s
                 ON s.scop_id = a.scop_id
             INNER JOIN map m
