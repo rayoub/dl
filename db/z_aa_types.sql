@@ -10,11 +10,9 @@ GROUP BY
 */
 
 SELECT 
-    name,
-    three_code,
     one_code,
-    CASE WHEN polarity = 'polar' THEN 1 ELSE 0 END AS polar, 
-    CASE WHEN polarity = 'nonpolar' THEN 1 ELSE 0 END AS not_polar, 
+    polar,
+    not_polar,
     acidic, 
     not_acidic, 
     basic, 
@@ -30,8 +28,9 @@ SELECT
     flexible, 
     not_flexible,
     rigid, 
-    not_rigid
+    not_rigid,
+    hydrophobicity
 FROM
     aa_type
 ORDER BY
-    name;
+    one_code;
