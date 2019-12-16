@@ -199,7 +199,6 @@ public class ImportStructures {
             } 
 
             // get secondary structure assignment 
-            // empty strings will be converted to _ when getting
             String ssa = "";
             Object obj = g.getProperty(Group.SEC_STRUC);
             if (obj instanceof SecStrucInfo) {
@@ -209,11 +208,32 @@ public class ImportStructures {
                    ssa = "C";
                 }
             }
+                
+            // map to extension coding
+            String sse;
+            switch(ssa) {
+                case "G":
+                case "H":
+                case "I":
+                case "T":
+                    sse = "Helix";
+                    break;
+                case "E":
+                case "B":
+                    sse = "Strand";
+                    break;
+                case "S":
+                case "C":
+                    sse = "Loop";
+                    break;
+                default:
+                    sse = "";
+            }
 
             // calculate torsion angles
+            String descriptor = "";
             double phi = Residue.NULL_VAL;
             double psi = Residue.NULL_VAL;
-            String gram = "";
 
             if (validCodes.contains(residueCode)) {
 
@@ -237,13 +257,7 @@ public class ImportStructures {
                                 phi = Calc.getPhi(a1,a2);
                                 psi = Calc.getPsi(a2,a3);
 
-                                // a valid gram
-                                String rc1 = a1.getChemComp().getOne_letter_code().toUpperCase();
-                                String rc2 = a2.getChemComp().getOne_letter_code().toUpperCase();
-                                String rc3 = a3.getChemComp().getOne_letter_code().toUpperCase();
-                                if (validCodes.contains(rc1) && validCodes.contains(rc3)) {
-                                    gram = rc1 + rc2 + rc3;
-                                }
+                                descriptor = Integer.toString(calculateRegion(phi, psi, sse));
                             }
                         }
                     } catch (StructureException e) {
@@ -259,9 +273,10 @@ public class ImportStructures {
             residue.setResidueNumber(g.getResidueNumber().getSeqNum());
             residue.setInsertCode(String.valueOf(g.getResidueNumber().getInsCode()).toUpperCase());
             residue.setResidueCode(residueCode);
-            residue.setGram(gram);
             residue.setMaxTf(maxTf);
             residue.setSsa(ssa);
+            residue.setSse(sse);
+            residue.setDescriptor(descriptor);
             residue.setPhi(phi);
             residue.setPsi(psi);
 
@@ -292,6 +307,148 @@ public class ImportStructures {
         }
 
         return residues;
+    }
+    
+    public static int calculateRegion(double phi, double psi, String sse) {
+
+        // helix 0, 1, 2, 3
+        if (sse.equals("Helix")) {
+            return calculateHelixRegion(phi, psi);
+        }
+
+        // strand 4, 5, 6
+        else if (sse.equals("Strand")) {
+            return calculateStrandRegion(phi, psi);
+        }
+     
+        // loop 7, 8, 9
+        else { 
+            return calculateLoopRegion(phi, psi);
+        }
+    }
+
+    public static int calculateHelixRegion(double phi, double psi) {
+
+        int region = -1;
+
+        if (psi >= -180 && psi < -135) {
+            if (phi >= 0 && phi < 180) {
+                region = 3;
+            }
+            else {
+                region = 0; 
+            }
+        }
+        else if (psi >= -135 && psi < -75) {
+            if (phi >= 0 && phi < 180) {
+                region = 3;
+            }
+            else {
+                region = 2;
+            }
+        }
+        else if (psi >= -75 && psi < 90) {
+            if (phi >= 0 && phi < 180) {
+                region = 1;
+            }
+            else {
+                region = 2;
+            }
+        }
+        else if (psi >= 90 && psi < 120) {
+            if (phi >= 0 && phi < 180) {
+                region = 1;
+            }
+            else {
+                region = 0;
+            }
+        }
+        else if (psi >= 120 && psi < 180) {
+            if (phi >= 0 && phi < 180) {
+                region = 3;
+            }
+            else {
+                region = 0;
+            }
+        }
+        
+        return region;
+    }
+
+    public static int calculateStrandRegion(double phi, double psi) {
+
+        int region = -1;
+
+        if (psi >= -180 && psi < -110) {
+            region = 4;
+        }
+        else if (psi >= -110 && psi < -60) {
+            if (phi >= 0 && phi < 180) {
+                region = 4;
+            }
+            else {
+                region = 6;
+            }
+        }
+        else if (psi >= -60 && psi < 60) {
+            if (phi >= 0 && phi < 180) {
+                region = 5;
+            }
+            else {
+                region = 6;
+            }
+        }
+        else if (psi >= 60 && psi < 90) {
+            if (phi >= 0 && phi < 180) {
+                region = 5;
+            }
+            else {
+                region = 4;
+            }
+        }
+        else if (psi >= 90 && psi < 180) {
+            region = 4;
+        }
+
+        return region;
+    }
+    
+    public static int calculateLoopRegion(double phi, double psi) {
+
+        int region = -1;
+
+        if (psi >= -180 && psi < -100) {
+            region = 7;
+        }
+        else if (psi >= -100 && psi < -90) {
+            if (phi >= 0 && phi < 180) {
+                region = 7;
+            }
+            else {
+                region = 9;
+            }
+        }
+        else if (psi >= -90 && psi < 60) {
+            if (phi >= 0 && phi < 180) {
+                region = 8;
+            }
+            else {
+                region = 9;
+            }
+        }
+        else if (psi >= 60 && psi < 90) {
+            if (phi >= 0 && phi < 180) {
+                region = 8;
+            }
+            else {
+                region = 7;
+            }
+        }
+        else if (psi >= 90 && psi < 180) {
+            region = 7;
+        }
+            
+        return region;
     }
 }
 

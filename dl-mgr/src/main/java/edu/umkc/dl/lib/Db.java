@@ -54,6 +54,12 @@ public class Db {
                 residue.setSsa(rs.getString("ssa"));
                 if (rs.wasNull()) 
                     residue.setSsa("_");
+                residue.setSse(rs.getString("sse"));
+                if (rs.wasNull()) 
+                    residue.setSse("_");
+                residue.setDescriptor(rs.getString("descriptor"));
+                if (rs.wasNull()) 
+                    residue.setDescriptor("_");
 
                 residue.setPhi(rs.getDouble("phi"));
                 if (rs.wasNull())

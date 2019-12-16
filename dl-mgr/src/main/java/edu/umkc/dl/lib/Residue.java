@@ -12,9 +12,10 @@ public class Residue extends PGobject {
     private int residueNumber;
     private String insertCode;
     private String residueCode;
-    private String gram;
     private double maxTf;
     private String ssa;
+    private String sse;
+    private String descriptor;
     private double phi = NULL_VAL;
     private double psi = NULL_VAL;
     private double phiX = NULL_VAL;
@@ -70,14 +71,6 @@ public class Residue extends PGobject {
         this.residueCode = residueCode;
     }
 
-    public String getGram() {
-        return gram;
-    }
-
-    public void setGram(String gram) {
-        this.gram = gram;
-    }
-
     public double getMaxTf() {
         return maxTf;
     }
@@ -92,6 +85,22 @@ public class Residue extends PGobject {
 
     public void setSsa(String ssa) {
         this.ssa = ssa;
+    }
+
+    public String getSse() {
+        return sse;
+    }
+
+    public void setSse(String sse) {
+        this.sse = sse;
+    }
+
+    public String getDescriptor() {
+        return descriptor;
+    }
+
+    public void setDescriptor(String descriptor) {
+        this.descriptor = descriptor;
     }
 
     public double getPhi() {
@@ -147,9 +156,8 @@ public class Residue extends PGobject {
         String row = "(" 
             + scopId + "," + pdbId + "," + orderNumber + "," 
             + residueNumber + "," + (insertCode == null || insertCode.toLowerCase().equals("null") ? "" : insertCode) + "," + residueCode + "," 
-            + gram + ","
             + maxTf + ","
-            + ssa + "," 
+            + ssa + "," + sse + "," + descriptor + ","
 
             + ((phi == NULL_VAL) ? "" : phi) + "," 
             + ((psi == NULL_VAL) ? "" : psi) + "," 
