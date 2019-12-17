@@ -14,9 +14,9 @@ public class Descriptor {
             return calculateStrandRegion(phi, psi);
         }
      
-        // loop 7, 8, 9
+        // coil 7, 8, 9
         else { 
-            return calculateLoopRegion(phi, psi);
+            return calculateCoilRegion(phi, psi);
         }
     }
 
@@ -32,7 +32,7 @@ public class Descriptor {
                 region = 0; 
             }
         }
-        else if (psi >= -135 && psi < -75) {
+        else if (psi >= -135 && psi < -90) {
             if (phi >= 0 && phi < 180) {
                 region = 3;
             }
@@ -40,7 +40,7 @@ public class Descriptor {
                 region = 2;
             }
         }
-        else if (psi >= -75 && psi < 90) {
+        else if (psi >= -90 && psi < 90) {
             if (phi >= 0 && phi < 180) {
                 region = 1;
             }
@@ -48,15 +48,7 @@ public class Descriptor {
                 region = 2;
             }
         }
-        else if (psi >= 90 && psi < 120) {
-            if (phi >= 0 && phi < 180) {
-                region = 1;
-            }
-            else {
-                region = 0;
-            }
-        }
-        else if (psi >= 120 && psi < 180) {
+        else if (psi >= 90 && psi < 180) {
             if (phi >= 0 && phi < 180) {
                 region = 3;
             }
@@ -72,10 +64,10 @@ public class Descriptor {
 
         int region = -1;
 
-        if (psi >= -180 && psi < -110) {
+        if (psi >= -180 && psi < -100) {
             region = 4;
         }
-        else if (psi >= -110 && psi < -60) {
+        else if (psi >= -100 && psi < -90) {
             if (phi >= 0 && phi < 180) {
                 region = 4;
             }
@@ -83,7 +75,7 @@ public class Descriptor {
                 region = 6;
             }
         }
-        else if (psi >= -60 && psi < 60) {
+        else if (psi >= -90 && psi < 40) {
             if (phi >= 0 && phi < 180) {
                 region = 5;
             }
@@ -91,7 +83,7 @@ public class Descriptor {
                 region = 6;
             }
         }
-        else if (psi >= 60 && psi < 90) {
+        else if (psi >= 40 && psi < 90) {
             if (phi >= 0 && phi < 180) {
                 region = 5;
             }
@@ -106,7 +98,7 @@ public class Descriptor {
         return region;
     }
     
-    public static int calculateLoopRegion(double phi, double psi) {
+    public static int calculateCoilRegion(double phi, double psi) {
 
         int region = -1;
 
@@ -121,7 +113,7 @@ public class Descriptor {
                 region = 9;
             }
         }
-        else if (psi >= -90 && psi < 60) {
+        else if (psi >= -90 && psi < 40) {
             if (phi >= 0 && phi < 180) {
                 region = 8;
             }
@@ -129,7 +121,7 @@ public class Descriptor {
                 region = 9;
             }
         }
-        else if (psi >= 60 && psi < 90) {
+        else if (psi >= 40 && psi < 90) {
             if (phi >= 0 && phi < 180) {
                 region = 8;
             }
@@ -140,7 +132,7 @@ public class Descriptor {
         else if (psi >= 90 && psi < 180) {
             region = 7;
         }
-            
+
         return region;
     }
 }

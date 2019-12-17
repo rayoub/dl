@@ -1,0 +1,11 @@
+ss3,phi,psi,label
+Helix,480,-170,0
+Helix,140,0,1
+Helix,480,-80,2
+Helix,140,180,3
+Strand,140,180,4
+Strand,140,0,5
+Strand,480,-80,6
+Coil,140,180,7
+Coil,140,0,8
+Coil,480,-80,9
