@@ -51,12 +51,12 @@ public class Db {
                     residue.setInsertCode("");
                 residue.setResidueCode(rs.getString("residue_code"));
                 residue.setMaxTf(rs.getDouble("max_tf"));
-                residue.setSsa(rs.getString("ssa"));
+                residue.setSs8(rs.getString("ssa"));
                 if (rs.wasNull()) 
-                    residue.setSsa("_");
-                residue.setSse(rs.getString("sse"));
+                    residue.setSs8("_");
+                residue.setSs3(rs.getString("sse"));
                 if (rs.wasNull()) 
-                    residue.setSse("_");
+                    residue.setSs3("_");
                 residue.setDescriptor(rs.getString("descriptor"));
                 if (rs.wasNull()) 
                     residue.setDescriptor("_");

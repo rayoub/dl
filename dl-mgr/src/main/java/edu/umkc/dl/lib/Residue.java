@@ -83,7 +83,7 @@ public class Residue extends PGobject {
         return ssa;
     }
 
-    public void setSsa(String ssa) {
+    public void setSs8(String ssa) {
         this.ssa = ssa;
     }
 
@@ -91,7 +91,7 @@ public class Residue extends PGobject {
         return sse;
     }
 
-    public void setSse(String sse) {
+    public void setSs3(String sse) {
         this.sse = sse;
     }
 

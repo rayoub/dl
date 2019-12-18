@@ -199,35 +199,35 @@ public class ImportStructures {
             } 
 
             // get secondary structure assignment 
-            String ssa = "";
+            String ss8 = "";
             Object obj = g.getProperty(Group.SEC_STRUC);
             if (obj instanceof SecStrucInfo) {
                SecStrucInfo info = (SecStrucInfo)obj;
-               ssa = String.valueOf(info.getType().type).trim();
-               if (ssa.isEmpty()) {
-                   ssa = "C";
+               ss8 = String.valueOf(info.getType().type).trim();
+               if (ss8.isEmpty()) {
+                   ss8 = "C";
                 }
             }
                 
-            // map to extension coding
-            String sse;
-            switch(ssa) {
+            // map ss8 to ss3
+            String ss3;
+            switch(ss8) {
                 case "G":
                 case "H":
                 case "I":
                 case "T":
-                    sse = "Helix";
+                    ss3 = "H";
                     break;
                 case "E":
                 case "B":
-                    sse = "Strand";
+                    ss3 = "S";
                     break;
                 case "S":
                 case "C":
-                    sse = "Loop";
+                    ss3 = "C";
                     break;
                 default:
-                    sse = "";
+                    ss3 = "";
             }
 
             // calculate torsion angles
@@ -257,7 +257,7 @@ public class ImportStructures {
                                 phi = Calc.getPhi(a1,a2);
                                 psi = Calc.getPsi(a2,a3);
 
-                                descriptor = Integer.toString(Descriptor.calculateRegion(phi, psi, sse));
+                                descriptor = Integer.toString(Descriptor.calculateRegion(phi, psi, ss3));
                             }
                         }
                     } catch (StructureException e) {
@@ -274,8 +274,8 @@ public class ImportStructures {
             residue.setInsertCode(String.valueOf(g.getResidueNumber().getInsCode()).toUpperCase());
             residue.setResidueCode(residueCode);
             residue.setMaxTf(maxTf);
-            residue.setSsa(ssa);
-            residue.setSse(sse);
+            residue.setSs8(ss8);
+            residue.setSs3(ss3);
             residue.setDescriptor(descriptor);
             residue.setPhi(phi);
             residue.setPsi(psi);

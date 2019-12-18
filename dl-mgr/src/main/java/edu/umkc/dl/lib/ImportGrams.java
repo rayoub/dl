@@ -227,24 +227,20 @@ public class ImportGrams {
                 continue;
             }
 
+            // get secondary structure 8
+            String ss8 = getSecStruct8(g2);
+                
+            // map to secondary structure 3
+            String ss3 = getSecStruct3(ss8);
+                              
+            // get the descriptor  
+            String descriptor = Integer.toString(Descriptor.calculateRegion(phi, psi, ss3));
+
             // get max temp factor
             double maxTf1 = getMaxTf(g1);
             double maxTf2 = getMaxTf(g2);
             double maxTf3 = getMaxTf(g3);
             double maxTf = Math.max(maxTf1, Math.max(maxTf2, maxTf3));
-
-            // get secondary structure 8
-            String ss81 = getSecStruct8(g1);
-            String ss82 = getSecStruct8(g2);
-            String ss83 = getSecStruct8(g3);
-                
-            // map to secondary structure 3
-            String ss31 = getSecStruct3(ss81);
-            String ss32 = getSecStruct3(ss82);
-            String ss33 = getSecStruct3(ss83);
-                              
-            // get the descriptor  
-            String descriptor = Integer.toString(Descriptor.calculateRegion(phi, psi, ss32));
 
             Gram gram = new Gram();
 
@@ -252,25 +248,15 @@ public class ImportGrams {
             gram.setPdbId(pdbId);
             gram.setResidueNumber(g2.getResidueNumber().getSeqNum());
             gram.setInsertCode(String.valueOf(g2.getResidueNumber().getInsCode()).toUpperCase());
+            gram.setResidueCode1(residueCode1);
+            gram.setResidueCode2(residueCode2);
+            gram.setResidueCode3(residueCode3);
+            gram.setMaxTf(maxTf);
             gram.setPhi(phi);
             gram.setPsi(psi);
+            gram.setSs8(ss8);
+            gram.setSs3(ss3);
             gram.setDescriptor(descriptor);
-            gram.setMaxTf(maxTf);
-            
-            gram.setResidueCode1(residueCode1);
-            gram.setMaxTf1(maxTf1);
-            gram.setSs81(ss81);
-            gram.setSs31(ss31);
-
-            gram.setResidueCode2(residueCode2);
-            gram.setMaxTf2(maxTf2);
-            gram.setSs82(ss82);
-            gram.setSs32(ss32);
-
-            gram.setResidueCode3(residueCode3);
-            gram.setMaxTf3(maxTf3);
-            gram.setSs83(ss83);
-            gram.setSs33(ss33);
 
             grams.add(gram);
         }
@@ -318,18 +304,18 @@ public class ImportGrams {
             case "H":
             case "I":
             case "T":
-                ss3 = "Helix";
+                ss3 = "H";
                 break;
             case "E":
             case "B":
-                ss3 = "Strand";
+                ss3 = "S";
                 break;
             case "S":
             case "C":
-                ss3 = "Coil";
+                ss3 = "C";
                 break;
             default:
-                ss3 = "Coil";
+                ss3 = "C";
         }
         return ss3;
     }    

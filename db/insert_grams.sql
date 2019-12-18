@@ -10,25 +10,15 @@ BEGIN
         order_number,
         residue_number, 
         insert_code, 
+        residue_code_1, 
+        residue_code_2, 
+        residue_code_3,
+        max_tf,
         phi,
         psi,
-        descriptor,
-        max_tf,
-
-        residue_code_1, 
-        max_tf_1,
-        ss8_1,
-        ss3_1,
-
-        residue_code_2, 
-        max_tf_2,
-        ss8_2,
-        ss3_2,
-
-        residue_code_3, 
-        max_tf_3,
-        ss8_3,
-        ss3_3
+        ss8,
+        ss3,
+        descriptor
     )
 	SELECT
         scop_id,
@@ -36,25 +26,15 @@ BEGIN
         order_number,
         residue_number, 
         insert_code, 
+        residue_code_1, 
+        residue_code_2, 
+        residue_code_3,
+        max_tf,
         phi,
         psi,
-        descriptor,
-        max_tf,
-
-        residue_code_1, 
-        max_tf_1,
-        ss8_1,
-        ss3_1,
-   
-        residue_code_2, 
-        max_tf_2,
-        ss8_2,
-        ss3_2,
-    
-        residue_code_3, 
-	    max_tf_3,
-        ss8_3,
-        ss3_3
+        ss8,
+        ss3,
+        descriptor
 	FROM
 		UNNEST(p_tab);
 

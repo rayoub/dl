@@ -5,12 +5,12 @@ public class Descriptor {
     public static int calculateRegion(double phi, double psi, String sse) {
 
         // helix 0, 1, 2, 3
-        if (sse.equals("Helix")) {
+        if (sse.equals("H")) {
             return calculateHelixRegion(phi, psi);
         }
 
         // strand 4, 5, 6
-        else if (sse.equals("Strand")) {
+        else if (sse.equals("S")) {
             return calculateStrandRegion(phi, psi);
         }
      
