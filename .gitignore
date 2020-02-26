@@ -43,4 +43,5 @@ py_ss/*.txt
 dl-mgr/.settings/
 dl-mgr/.classpath
 dl-mgr/.project
+dl-mgr/.gitignore
 
