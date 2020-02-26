@@ -42,4 +42,5 @@ py_ss/*.txt
 **/workbench.xmi
 dl-mgr/.settings/
 dl-mgr/.classpath
+dl-mgr/.project
 
