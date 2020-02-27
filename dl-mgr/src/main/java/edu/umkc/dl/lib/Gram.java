@@ -12,11 +12,15 @@ public class Gram extends PGobject {
     private String residueCode1;
     private String residueCode2;
     private String residueCode3;
+    private String ss31;
+    private String ss32;
+    private String ss33;
+    private String ss81;
+    private String ss82;
+    private String ss83;
     private double maxTf;
     private double phi;
     private double psi;
-    private String ss8;
-    private String ss3;
     private String descriptor;
 
     public String getScopId() {
@@ -83,6 +87,54 @@ public class Gram extends PGobject {
         this.residueCode3 = residueCode3;
     }
 
+    public String getSs31() {
+        return ss31;
+    }
+
+    public void setSs31(String ss31) {
+        this.ss31 = ss31;
+    }
+
+    public String getSs32() {
+        return ss32;
+    }
+
+    public void setSs32(String ss32) {
+        this.ss32 = ss32;
+    }
+
+    public String getSs33() {
+        return ss33;
+    }
+
+    public void setSs33(String ss33) {
+        this.ss33 = ss33;
+    }
+
+    public String getSs81() {
+        return ss81;
+    }
+
+    public void setSs81(String ss81) {
+        this.ss81 = ss81;
+    }
+
+    public String getSs82() {
+        return ss82;
+    }
+
+    public void setSs82(String ss82) {
+        this.ss82 = ss82;
+    }
+
+    public String getSs83() {
+        return ss83;
+    }
+
+    public void setSs83(String ss83) {
+        this.ss83 = ss83;
+    }
+
     public double getMaxTf() {
         return maxTf;
     }
@@ -107,22 +159,6 @@ public class Gram extends PGobject {
         this.psi = psi;
     }
 
-    public String getSs8() {
-        return ss8;
-    }
-
-    public void setSs8(String ss8) {
-        this.ss8 = ss8;
-    }
-
-    public String getSs3() {
-        return ss3;
-    }
-
-    public void setSs3(String ss3) {
-        this.ss3 = ss3;
-    }
-
     public String getDescriptor() {
         return descriptor;
     }
@@ -139,9 +175,10 @@ public class Gram extends PGobject {
             + residueCode1 + "," 
             + residueCode2 + "," 
             + residueCode3 + ","
+            + ss31 + "," + ss32 + "," + ss33 + "," 
+            + ss81 + "," + ss82 + "," + ss83 + "," 
             + maxTf + ","
-            + phi + "," + psi + "," 
-            + ss8 + "," + ss3 + "," + descriptor 
+            + phi + "," + psi + "," + descriptor 
             + ")";
         return row;
     }

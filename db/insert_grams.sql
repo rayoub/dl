@@ -13,11 +13,15 @@ BEGIN
         residue_code_1, 
         residue_code_2, 
         residue_code_3,
+        ss3_1,
+        ss3_2,
+        ss3_3,
+        ss8_1,
+        ss8_2,
+        ss8_3,
         max_tf,
         phi,
         psi,
-        ss8,
-        ss3,
         descriptor
     )
 	SELECT
@@ -29,11 +33,15 @@ BEGIN
         residue_code_1, 
         residue_code_2, 
         residue_code_3,
+        ss3_1,
+        ss3_2,
+        ss3_3,
+        ss8_1,
+        ss8_2,
+        ss8_3,
         max_tf,
         phi,
         psi,
-        ss8,
-        ss3,
         descriptor
 	FROM
 		UNNEST(p_tab);

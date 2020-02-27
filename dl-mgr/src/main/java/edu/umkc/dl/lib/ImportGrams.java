@@ -197,7 +197,17 @@ public class ImportGrams {
             String residueCode1 = g1.getChemComp().getOne_letter_code().toUpperCase();
             String residueCode2 = g2.getChemComp().getOne_letter_code().toUpperCase();
             String residueCode3 = g3.getChemComp().getOne_letter_code().toUpperCase();
-            
+
+            // get secondary structure 8
+            String ss81 = getSecStruct8(g1);
+            String ss82 = getSecStruct8(g2);
+            String ss83 = getSecStruct8(g3);
+                
+            // map to secondary structure 3
+            String ss31 = getSecStruct3(ss81);
+            String ss32 = getSecStruct3(ss82);
+            String ss33 = getSecStruct3(ss83);
+
             // we need valid residue codes
             if (!(validCodes.contains(residueCode1) && validCodes.contains(residueCode2) && validCodes.contains(residueCode3))) {
                 continue;
@@ -226,15 +236,9 @@ public class ImportGrams {
             if (phi == Residue.NULL_VAL || psi == Residue.NULL_VAL) {
                 continue;
             }
-
-            // get secondary structure 8
-            String ss8 = getSecStruct8(g2);
-                
-            // map to secondary structure 3
-            String ss3 = getSecStruct3(ss8);
                               
             // get the descriptor  
-            String descriptor = Integer.toString(Descriptor.calculateRegion(phi, psi, ss3));
+            String descriptor = Integer.toString(Descriptor.calculateRegion(phi, psi, ss32));
 
             // get max temp factor
             double maxTf1 = getMaxTf(g1);
@@ -251,11 +255,15 @@ public class ImportGrams {
             gram.setResidueCode1(residueCode1);
             gram.setResidueCode2(residueCode2);
             gram.setResidueCode3(residueCode3);
+            gram.setSs31(ss31);
+            gram.setSs32(ss32);
+            gram.setSs33(ss33);
+            gram.setSs81(ss81);
+            gram.setSs82(ss82);
+            gram.setSs83(ss83);
             gram.setMaxTf(maxTf);
             gram.setPhi(phi);
             gram.setPsi(psi);
-            gram.setSs8(ss8);
-            gram.setSs3(ss3);
             gram.setDescriptor(descriptor);
 
             grams.add(gram);
