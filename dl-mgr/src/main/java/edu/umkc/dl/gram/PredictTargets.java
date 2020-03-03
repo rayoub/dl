@@ -27,7 +27,6 @@ public class PredictTargets {
 
     public static void predict(List<Target> targets) {
 
-
         System.out.println(targets.size());
     }
 

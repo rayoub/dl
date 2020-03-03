@@ -243,7 +243,7 @@ public class ImportGrams {
             }
                               
             // get the descriptor  
-            String descriptor = Integer.toString(Descriptor.calculateRegion(phi, psi, ss32));
+            String descriptor = Integer.toString(Descriptor.toDescriptor(phi, psi, ss32));
 
             // get max temp factor
             double maxTf1 = getMaxTf(g1);

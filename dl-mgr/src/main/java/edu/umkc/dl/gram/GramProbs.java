@@ -1,5 +1,7 @@
 package edu.umkc.dl.gram;
 
+import edu.umkc.dl.lib.Descriptor;
+
 public class GramProbs {
 
     private int[] descrs;
@@ -41,7 +43,6 @@ public class GramProbs {
     }
 
     /* call this in order */
-    /* this is not very pretty */
     public void updateDescrProb(int descr, double descrProb) {
 
         this.descrs[descrIndex] = descr;
@@ -49,19 +50,10 @@ public class GramProbs {
         this.descrIndex++;
 
         // update working probs
-        int i;
-        if (descr <= 3) { // H
-            i = 0;
-        }
-        else if (descr <= 6) { // S
-            i = 1;
-        }
-        else { // C
-            i = 2;
-        }
-        this.ssWorkingProbs[i] += descrProb; 
+        this.ssWorkingProbs[Descriptor.toIndex(descr)] += descrProb; 
 
         // update ss probs
+        // this is not very pretty
         int i1, i2, i3;
         if (this.ssWorkingProbs[0] >= this.ssWorkingProbs[1]) {
 

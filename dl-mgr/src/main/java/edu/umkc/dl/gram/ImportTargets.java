@@ -205,7 +205,7 @@ public class ImportTargets {
                             phi = Calc.getPhi(a1,a2);
                             psi = Calc.getPsi(a2,a3);
 
-                            descriptor = Integer.toString(Descriptor.calculateRegion(phi, psi, ss3));
+                            descriptor = Integer.toString(Descriptor.toDescriptor(phi, psi, ss3));
                         }
                     }
                 }

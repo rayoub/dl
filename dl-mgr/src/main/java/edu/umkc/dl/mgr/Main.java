@@ -17,6 +17,7 @@ import edu.umkc.dl.gram.GramProbs;
 import edu.umkc.dl.gram.ImportTargets;
 import edu.umkc.dl.gram.PredictTargets;
 import edu.umkc.dl.lib.Constants;
+import edu.umkc.dl.lib.Descriptor;
 import edu.umkc.dl.lib.FitSequenceType;
 import edu.umkc.dl.lib.SetFitSequences;
 
@@ -123,15 +124,7 @@ public class Main {
 
     private static String getSs(int descr) {
 
-        if (descr <= 3) {
-            return "H";
-        }
-        else if (descr <= 6) { 
-            return "S";
-        }
-        else {
-            return "C";
-        }
+        return Descriptor.toSs(descr);
     }
 
     private static void option_help(Options options) {
