@@ -1,17 +1,19 @@
-package edu.umkc.dl.lib;
+package edu.umkc.dl.gram;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.postgresql.ds.PGSimpleDataSource;
+
+import edu.umkc.dl.lib.Db;
 
 public class PredictTargets { 
 

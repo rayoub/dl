@@ -1,4 +1,4 @@
-package edu.umkc.dl.lib;
+package edu.umkc.dl.gram;
 
 public class GramProbs {
 

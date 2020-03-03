@@ -1,4 +1,4 @@
-package edu.umkc.dl.lib;
+package edu.umkc.dl.gram;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -29,6 +29,11 @@ import org.biojava.nbio.structure.secstruc.SecStrucCalc;
 import org.biojava.nbio.structure.secstruc.SecStrucInfo;
 import org.postgresql.PGConnection;
 import org.postgresql.ds.PGSimpleDataSource;
+
+import edu.umkc.dl.lib.Constants;
+import edu.umkc.dl.lib.Db;
+import edu.umkc.dl.lib.Descriptor;
+import edu.umkc.dl.lib.Residue;
 
 public class ImportGrams {
 

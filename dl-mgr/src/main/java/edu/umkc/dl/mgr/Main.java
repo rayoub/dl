@@ -1,5 +1,6 @@
 package edu.umkc.dl.mgr;
 
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,9 +13,11 @@ import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import edu.umkc.dl.gram.GramProbs;
+import edu.umkc.dl.gram.ImportTargets;
+import edu.umkc.dl.gram.PredictTargets;
 import edu.umkc.dl.lib.Constants;
 import edu.umkc.dl.lib.FitSequenceType;
-import edu.umkc.dl.lib.ImportStructures;
 import edu.umkc.dl.lib.SetFitSequences;
 
 public class Main {
@@ -72,7 +75,9 @@ public class Main {
 
         //ImportAaSequences.importAaSequences();
         //ImportMaps.importMaps();
-        ImportStructures.importStructures();
+        //ImportStructures.importStructures();
+        //ImportGrams.importGrams();
+        ImportTargets.importTargets();
     }
     
     private static void option_s(CommandLine line) {
@@ -83,6 +88,50 @@ public class Main {
     
     private static void option_d(CommandLine line) {
 
+        Map<String, GramProbs> map = PredictTargets.getGramProbs();
+       
+        int total = 0;
+        int diff = 0; 
+        for(String key : map.keySet()) {
+
+            GramProbs probs = map.get(key);
+
+            String descrOrder = getSs(probs.getDescr(1)).toString() + getSs(probs.getDescr(2)) + getSs(probs.getDescr(3));
+            String ssOrder = probs.getSs(1) + probs.getSs(2) + probs.getSs(3);
+            
+            total++;
+            if (!descrOrder.equals(ssOrder)) {
+                diff++;
+           
+                System.out.println(key + " 1 " + probs.getDescr(1) + " " + probs.getDescrProb(1));
+                System.out.println(key + " 2 " + probs.getDescr(2) + " " + probs.getDescrProb(2));
+                System.out.println(key + " 3 " + probs.getDescr(3) + " " + probs.getDescrProb(3));
+                System.out.println(key + " 1 " + probs.getSs(1) + " " + probs.getSsProb(1));
+                System.out.println(key + " 2 " + probs.getSs(2) + " " + probs.getSsProb(2));
+                System.out.println(key + " 3 " + probs.getSs(3) + " " + probs.getSsProb(3));
+                System.out.println(descrOrder);
+                System.out.println(ssOrder);
+
+                System.out.println("");
+                System.out.println("------------------------------------------------------");
+                System.out.println("");
+            }
+        }
+
+        System.out.println(diff + "/" + total);
+    }
+
+    private static String getSs(int descr) {
+
+        if (descr <= 3) {
+            return "H";
+        }
+        else if (descr <= 6) { 
+            return "S";
+        }
+        else {
+            return "C";
+        }
     }
 
     private static void option_help(Options options) {
