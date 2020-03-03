@@ -15,7 +15,7 @@ public class Descriptor {
         }
     }
     
-    public static int toIndex(int descr) {
+    public static int toSsIndex(int descr) {
 
         if (descr <= 3) {
             return 0;

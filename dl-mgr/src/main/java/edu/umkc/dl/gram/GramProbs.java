@@ -50,7 +50,7 @@ public class GramProbs {
         this.descrIndex++;
 
         // update working probs
-        this.ssWorkingProbs[Descriptor.toIndex(descr)] += descrProb; 
+        this.ssWorkingProbs[Descriptor.toSsIndex(descr)] += descrProb; 
 
         // update ss probs
         // this is not very pretty
