@@ -26,7 +26,6 @@ import org.biojava.nbio.structure.StructureException;
 import org.biojava.nbio.structure.io.LocalPDBDirectory.FetchBehavior;
 import org.biojava.nbio.structure.io.PDBFileReader;
 import org.biojava.nbio.structure.secstruc.SecStrucCalc;
-import org.biojava.nbio.structure.secstruc.SecStrucInfo;
 import org.postgresql.PGConnection;
 import org.postgresql.ds.PGSimpleDataSource;
 
@@ -123,9 +122,7 @@ public class ImportGrams {
 
                     Structure structure = reader.getStructure(fileName);
                 
-                    List<Gram> grams = parseStructure(scopId, pdbId, structure);
-
-                    saveGrams(grams, conn);
+                    parseStructure(scopId, pdbId, structure, conn);
 
                     inputStream.close();
 
@@ -164,7 +161,21 @@ public class ImportGrams {
         updt.close();
     }
 
-    public static List<Gram> parseStructure(String scopId, String pdbId, Structure structure) {
+    public static void savePairs(List<Pair> pairs, Connection conn) throws SQLException {
+
+        ((PGConnection) conn).addDataType("pair", Pair.class);
+
+        PreparedStatement updt = conn.prepareStatement("SELECT insert_pairs(?);");
+     
+        Pair a[] = new Pair[pairs.size()];
+        pairs.toArray(a);
+        updt.setArray(1, conn.createArrayOf("pair", a));
+    
+        updt.execute();
+        updt.close();
+    }
+
+    public static void parseStructure(String scopId, String pdbId, Structure structure, Connection conn) throws SQLException {
 
         // assign secondary structure
         SecStrucCalc ssCalc = new SecStrucCalc();
@@ -204,14 +215,10 @@ public class ImportGrams {
             String residueCode3 = g3.getChemComp().getOne_letter_code().toUpperCase();
 
             // get secondary structure 8
-            String ss81 = getSecStruct8(g1);
-            String ss82 = getSecStruct8(g2);
-            String ss83 = getSecStruct8(g3);
+            String ss8 = SecStruct.getSecStruct8(g2);
                 
             // map to secondary structure 3
-            String ss31 = getSecStruct3(ss81);
-            String ss32 = getSecStruct3(ss82);
-            String ss33 = getSecStruct3(ss83);
+            String ss3 = SecStruct.getSecStruct3(ss8);
 
             // we need valid residue codes
             if (!(validCodes.contains(residueCode1) && validCodes.contains(residueCode2) && validCodes.contains(residueCode3))) {
@@ -243,7 +250,7 @@ public class ImportGrams {
             }
                               
             // get the descriptor  
-            String descriptor = Integer.toString(Descriptor.toDescriptor(phi, psi, ss32));
+            String descriptor = Descriptor.toDescriptor(phi, psi, ss3);
 
             // get max temp factor
             double maxTf1 = getMaxTf(g1);
@@ -260,12 +267,6 @@ public class ImportGrams {
             gram.setResidueCode1(residueCode1);
             gram.setResidueCode2(residueCode2);
             gram.setResidueCode3(residueCode3);
-            gram.setSs31(ss31);
-            gram.setSs32(ss32);
-            gram.setSs33(ss33);
-            gram.setSs81(ss81);
-            gram.setSs82(ss82);
-            gram.setSs83(ss83);
             gram.setMaxTf(maxTf);
             gram.setPhi(phi);
             gram.setPsi(psi);
@@ -279,7 +280,13 @@ public class ImportGrams {
             grams.get(i).setOrderNumber(i+1);
         }
 
-        return grams;
+        // gather pairs
+        for (int i = 1; i < grams.size() - 1; i++) {
+
+//            Gram gram = grams.get(i);
+        }
+
+        saveGrams(grams, conn);
     }
     
     private static double getMaxTf(Group g) {
@@ -294,43 +301,5 @@ public class ImportGrams {
 
         return maxTf; 
     } 
-
-    private static String getSecStruct8(Group g) {
-
-        String ss8 = "C";
-        Object obj = g.getProperty(Group.SEC_STRUC);
-        if (obj instanceof SecStrucInfo) {
-           SecStrucInfo info = (SecStrucInfo)obj;
-           ss8 = String.valueOf(info.getType().type).trim();
-           if (ss8.isEmpty()) {
-               ss8 = "C";
-            }
-        }
-        return ss8;
-    }
-   
-    private static String getSecStruct3(String ss8) {
-
-        String ss3;
-        switch(ss8) {
-            case "G":
-            case "H":
-            case "I":
-            case "T":
-                ss3 = "H";
-                break;
-            case "E":
-            case "B":
-                ss3 = "S";
-                break;
-            case "S":
-            case "C":
-                ss3 = "C";
-                break;
-            default:
-                ss3 = "C";
-        }
-        return ss3;
-    }    
 }
 

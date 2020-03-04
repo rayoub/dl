@@ -39,7 +39,12 @@ public class PredictTargets {
         for (int i = 0; i < targets.size(); i++) {
 
             Target target = targets.get(i);
-            actual.append(target.getSs3()); 
+            String ss = "_";
+            String descr = target.getDescriptor();
+            if (!descr.equals("_")) {
+                ss = SecStruct.toSs(Integer.parseInt(descr)); 
+            }
+            actual.append(ss); 
         }
 
         StringBuilder predicted = new StringBuilder();
@@ -48,12 +53,13 @@ public class PredictTargets {
             Target target = targets.get(i);
            
             String ss = "_"; 
-            if (!target.getDescriptor().isEmpty()) {
+            if (!target.getDescriptor().equals("_")) {
 
+                // we check for descriptor because we know data is good and there will be a prev and a next
                 Target prev = targets.get(i - 1);
                 Target next = targets.get(i + 1);
+
                 String gram = prev.getResidueCode() + target.getResidueCode() + next.getResidueCode();
-              
                 if (map.containsKey(gram)) { 
                     GramProbs probs = map.get(gram);
                     ss = probs.getSs(1);
@@ -116,12 +122,6 @@ public class PredictTargets {
                 if (rs.wasNull()) 
                     target.setInsertCode("");
                 target.setResidueCode(rs.getString("residue_code"));
-                target.setSs3(rs.getString("ss3"));
-                if (rs.wasNull()) 
-                    target.setSs3("");
-                target.setSs8(rs.getString("ss8"));
-                if (rs.wasNull()) 
-                    target.setSs8("");
 
                 target.setPhi(rs.getDouble("phi"));
                 if (rs.wasNull())
@@ -131,8 +131,6 @@ public class PredictTargets {
                     target.setPsi(Target.NULL_VAL);
 
                 target.setDescriptor(rs.getString("descriptor"));
-                if (rs.wasNull()) 
-                    target.setDescriptor("");
 
                 if (!lastTargetId.isEmpty() && !target.getTargetId().equals(lastTargetId)) {
                     groups.add(targets);
@@ -167,6 +165,8 @@ public class PredictTargets {
             Connection conn = ds.getConnection();
             conn.setAutoCommit(false);
        
+            // descriptors from gram_counts table are always non-null integers
+        
             PreparedStatement stmt = conn.prepareCall(
                 "select substr(group_id,2) as group_id, descriptor, group_prob " + 
                 "from gram_counts " + 

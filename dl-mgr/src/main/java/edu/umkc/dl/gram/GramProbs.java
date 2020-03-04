@@ -1,6 +1,6 @@
 package edu.umkc.dl.gram;
 
-import edu.umkc.dl.lib.Descriptor;
+// descriptors from gram_counts table are always non-null integers
 
 public class GramProbs {
 
@@ -50,7 +50,7 @@ public class GramProbs {
         this.descrIndex++;
 
         // update working probs
-        this.ssWorkingProbs[Descriptor.toSsIndex(descr)] += descrProb; 
+        this.ssWorkingProbs[SecStruct.toSsIndex(descr)] += descrProb; 
 
         // update ss probs
         // this is not very pretty

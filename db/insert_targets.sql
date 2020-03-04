@@ -10,8 +10,6 @@ BEGIN
         residue_number, 
         insert_code, 
         residue_code, 
-        ss3,
-        ss8,
         phi,
         psi,
         descriptor
@@ -22,8 +20,6 @@ BEGIN
         residue_number, 
         insert_code, 
         residue_code, 
-        ss3,
-        ss8,
         phi,
         psi,
         descriptor

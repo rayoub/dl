@@ -11,8 +11,6 @@ public class Target extends PGobject {
     private int residueNumber;
     private String insertCode;
     private String residueCode;
-    private String ss3;
-    private String ss8;
     private double phi = NULL_VAL;
     private double psi = NULL_VAL;
     private String descriptor;
@@ -57,22 +55,6 @@ public class Target extends PGobject {
         this.residueCode = residueCode;
     }
 
-    public String getSs3() {
-        return ss3;
-    }
-
-    public void setSs3(String ss3) {
-        this.ss3 = ss3;
-    }
-
-    public String getSs8() {
-        return ss8;
-    }
-
-    public void setSs8(String ss8) {
-        this.ss8 = ss8;
-    }
-
     public double getPhi() {
         return phi;
     }
@@ -102,7 +84,6 @@ public class Target extends PGobject {
         String row = "(" 
             + targetId + "," + orderNumber + "," 
             + residueNumber + "," + (insertCode == null || insertCode.toLowerCase().equals("null") ? "" : insertCode) + "," + residueCode + "," 
-            + ss3 + "," + ss8 + "," 
 
             + ((phi == NULL_VAL) ? "" : phi) + "," 
             + ((psi == NULL_VAL) ? "" : psi) + "," 

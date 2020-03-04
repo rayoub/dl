@@ -24,7 +24,6 @@ import org.biojava.nbio.structure.StructureException;
 import org.biojava.nbio.structure.io.LocalPDBDirectory.FetchBehavior;
 import org.biojava.nbio.structure.io.PDBFileReader;
 import org.biojava.nbio.structure.secstruc.SecStrucCalc;
-import org.biojava.nbio.structure.secstruc.SecStrucInfo;
 import org.postgresql.PGConnection;
 import org.postgresql.ds.PGSimpleDataSource;
 
@@ -62,7 +61,6 @@ public class ImportTargets {
     }
 
     public static void importTargets() {
-
 
         try {
 
@@ -137,91 +135,58 @@ public class ImportTargets {
         for (int i = 0; i < groups.size(); i++) {
 
             Group g = groups.get(i);
-           
-            String residueCode = g.getChemComp().getOne_letter_code().toUpperCase();
 
             // we need the carbon alpha
             if (!g.hasAtom("CA")) {
-                continue;
+                // we expect good target data 
+                throw new StructureException("missing carbon alpha");
             }
+           
+            String residueCode = g.getChemComp().getOne_letter_code().toUpperCase();
 
-            // get secondary structure assignment 
-            String ss8 = "_";
-            Object obj = g.getProperty(Group.SEC_STRUC);
-            if (obj instanceof SecStrucInfo) {
-               SecStrucInfo info = (SecStrucInfo)obj;
-               ss8 = String.valueOf(info.getType().type).trim();
-               if (ss8.isEmpty()) {
-                   ss8 = "C";
-                }
-            }
+            // get secondary structure 8
+            String ss8 = SecStruct.getSecStruct8(g);
                 
-            // map ss8 to ss3
-            String ss3;
-            switch(ss8) {
-                case "G":
-                case "H":
-                case "I":
-                case "T":
-                    ss3 = "H";
-                    break;
-                case "E":
-                case "B":
-                    ss3 = "S";
-                    break;
-                case "S":
-                case "C":
-                    ss3 = "C";
-                    break;
-                default:
-                    ss3 = "_";
-            }
+            // map to secondary structure 3
+            String ss3 = SecStruct.getSecStruct3(ss8);
+            
+            // we need valid residue codes
+            if (!validCodes.contains(residueCode)) {
+                // we expect good target data 
+                throw new StructureException("invalid residue code: " + residueCode);
+            }                
 
             // calculate torsion angles
-            String descriptor = "";
             double phi = Target.NULL_VAL;
             double psi = Target.NULL_VAL;
-
-            if (!ss3.isEmpty() && validCodes.contains(residueCode)) {
-
-                boolean breakBefore = true;
-                boolean breakAfter = true;
-
-                if (i > 0 && i < groups.size() - 1) {
+            String descriptor = "_";
+            if (i > 0 && i < groups.size() - 1) {
+                
+                Group g1 = groups.get(i - 1);
+                Group g3 = groups.get(i + 1);
+                if (g1 instanceof AminoAcid && g instanceof AminoAcid && g3 instanceof AminoAcid) {
                     
-                    Group g1 = groups.get(i - 1);
-                    Group g3 = groups.get(i + 1);
-
-                    if (g1 instanceof AminoAcid && g instanceof AminoAcid && g3 instanceof AminoAcid) {
-                        
-                        AminoAcid a1 = (AminoAcid) g1;
-                        AminoAcid a2 = (AminoAcid) g;
-                        AminoAcid a3 = (AminoAcid) g3;
-                       
-                        // check connectivity
-                        breakBefore = !Calc.isConnected(a1,a2);
-                        breakAfter = !Calc.isConnected(a2,a3);
-                        if (!breakBefore && !breakAfter) {
-                            phi = Calc.getPhi(a1,a2);
-                            psi = Calc.getPsi(a2,a3);
-
-                            descriptor = Integer.toString(Descriptor.toDescriptor(phi, psi, ss3));
-                        }
+                    AminoAcid a1 = (AminoAcid) g1;
+                    AminoAcid a2 = (AminoAcid) g;
+                    AminoAcid a3 = (AminoAcid) g3;
+                   
+                    // check connectivity
+                    boolean breakBefore = !Calc.isConnected(a1,a2);
+                    boolean breakAfter = !Calc.isConnected(a2,a3);
+                    if (!breakBefore && !breakAfter) {
+                        phi = Calc.getPhi(a1,a2);
+                        psi = Calc.getPsi(a2,a3);
+                        descriptor = Descriptor.toDescriptor(phi, psi, ss3);
                     }
                 }
             }
-            else {
-                throw new StructureException("invalid residue code in " + targetId);
-            }
-
+                              
             Target target = new Target();
 
             target.setTargetId(targetId);
             target.setResidueNumber(g.getResidueNumber().getSeqNum());
             target.setInsertCode(String.valueOf(g.getResidueNumber().getInsCode()).toUpperCase());
             target.setResidueCode(residueCode);
-            target.setSs3(ss3);
-            target.setSs8(ss8);
             target.setPhi(phi);
             target.setPsi(psi);
             target.setDescriptor(descriptor);

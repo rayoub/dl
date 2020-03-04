@@ -6,11 +6,9 @@ CREATE TABLE target
     residue_number INTEGER NOT NULL,
     insert_code VARCHAR NULL,
     residue_code VARCHAR NOT NULL, 
-    ss3 VARCHAR NULL,
-    ss8 VARCHAR NULL,
     phi DOUBLE PRECISION NULL,
     psi DOUBLE PRECISION NULL,
-    descriptor VARCHAR NULL
+    descriptor VARCHAR NOT NULL
 );
 
 CREATE UNIQUE INDEX idx_target_unique ON target (target_id, order_number);
