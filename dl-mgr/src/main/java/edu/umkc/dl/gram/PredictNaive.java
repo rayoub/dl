@@ -3,7 +3,7 @@ package edu.umkc.dl.gram;
 import java.util.List;
 import java.util.Map;
 
-public class PredictTargets { 
+public class PredictNaive { 
 
     public static void predict() {
 
