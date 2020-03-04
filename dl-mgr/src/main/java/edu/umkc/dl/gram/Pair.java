@@ -5,6 +5,8 @@ import org.postgresql.util.PGobject;
 public class Pair extends PGobject {
 
     private String scopId;
+    private String pdbId;
+    private double maxTf;
     private String descriptor1;
     private String descriptor2;
 
@@ -16,6 +18,22 @@ public class Pair extends PGobject {
         this.scopId = scopId;
     }
     
+    public String getPdbId() {
+        return pdbId;
+    }
+
+    public void setPdbId(String pdbId) {
+        this.pdbId = pdbId;
+    }
+
+    public double getMaxTf() {
+        return maxTf;
+    }
+
+    public void setMaxTf(double maxTf) {
+        this.maxTf = maxTf;
+    }
+
     public String getDescriptor1() {
         return descriptor1;
     }
@@ -34,7 +52,7 @@ public class Pair extends PGobject {
 
     @Override
     public String getValue() {
-        String row = "(" + scopId + "," + descriptor1 + "," + descriptor2 + ")";
+        String row = "(" + scopId + "," + pdbId + "," + maxTf + "," + descriptor1 + "," + descriptor2 + ")";
         return row;
     }
 }

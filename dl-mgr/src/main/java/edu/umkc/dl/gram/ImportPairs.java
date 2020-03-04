@@ -34,7 +34,7 @@ import edu.umkc.dl.lib.Db;
 import edu.umkc.dl.lib.Descriptor;
 import edu.umkc.dl.lib.Residue;
 
-public class ImportGrams {
+public class ImportPairs {
 
     private static Set<String> validCodes = new HashSet<>();
 
@@ -62,15 +62,15 @@ public class ImportGrams {
         validCodes.add("Y");
     }
 
-    public static void importGrams() {
+    public static void importPairs() {
 
         IntStream.range(0, Constants.SPLIT_COUNT)
             .boxed()
             .parallel()
-            .forEach(splitIndex -> importGramsSplit(splitIndex));
+            .forEach(splitIndex -> importPairsSplit(splitIndex));
     }
 
-    private static void importGramsSplit(int splitIndex) {
+    private static void importPairsSplit(int splitIndex) {
 
         int processed = 0;
 
@@ -122,9 +122,9 @@ public class ImportGrams {
 
                     Structure structure = reader.getStructure(fileName);
                 
-                    List<Gram> grams = parseStructure(scopId, pdbId, structure, conn);
+                    List<Pair> pairs = parseStructure(scopId, pdbId, structure, conn);
 
-                    saveGrams(grams, conn);
+                    savePairs(pairs, conn);
 
                     inputStream.close();
 
@@ -149,7 +149,7 @@ public class ImportGrams {
         }
     }
 
-    public static List<Gram> parseStructure(String scopId, String pdbId, Structure structure, Connection conn) throws SQLException {
+    public static List<Pair> parseStructure(String scopId, String pdbId, Structure structure, Connection conn) throws SQLException {
 
         // assign secondary structure
         SecStrucCalc ssCalc = new SecStrucCalc();
@@ -163,98 +163,89 @@ public class ImportGrams {
         Chain chain = structure.getChainByIndex(0);
 
         // gather grams 
-        List<Gram> grams = new ArrayList<>();
+        List<Pair> pairs = new ArrayList<>();
         List<Group> groups = chain.getAtomGroups();
-        for (int i = 1; i < groups.size() - 1; i++) {
+        for (int i = 1; i < groups.size() - 2; i++) {
 
-            // we should expect everyhing of g1 and g3 except torsion angles
-            // because we do not need to worry about grams of descriptors (for now)
+            // we should expect everyhing of g2, g3 including torsion angles because we need descriptors
 
             Group g1 = groups.get(i-1);
             Group g2 = groups.get(i);
             Group g3 = groups.get(i+1);
+            Group g4 = groups.get(i+2);
                     
             // we need amino acids 
-            if (!(g1 instanceof AminoAcid && g2 instanceof AminoAcid && g3 instanceof AminoAcid)) {
+            if (!(g1 instanceof AminoAcid && g2 instanceof AminoAcid && g3 instanceof AminoAcid && g4 instanceof AminoAcid)) {
                 continue;
             }
 
             // we need the amino atoms
-            if (!(g1.hasAminoAtoms() && g2.hasAminoAtoms() && g3.hasAminoAtoms())) {
+            if (!(g1.hasAminoAtoms() && g2.hasAminoAtoms() && g3.hasAminoAtoms() && g4.hasAminoAtoms())) {
                 continue;
             }
-           
-            String residueCode1 = g1.getChemComp().getOne_letter_code().toUpperCase();
-            String residueCode2 = g2.getChemComp().getOne_letter_code().toUpperCase();
-            String residueCode3 = g3.getChemComp().getOne_letter_code().toUpperCase();
 
             // get secondary structure 8
-            String ss8 = SecStruct.getSecStruct8(g2);
+            String ss8_2 = SecStruct.getSecStruct8(g2);
+            String ss8_3 = SecStruct.getSecStruct8(g3);
                 
             // map to secondary structure 3
-            String ss3 = SecStruct.getSecStruct3(ss8);
-
-            // we need valid residue codes
-            if (!(validCodes.contains(residueCode1) && validCodes.contains(residueCode2) && validCodes.contains(residueCode3))) {
-                continue;
-            }
+            String ss3_2 = SecStruct.getSecStruct3(ss8_2);
+            String ss3_3 = SecStruct.getSecStruct3(ss8_3);
             
             // calculate torsion angles
-            double phi = Residue.NULL_VAL;
-            double psi = Residue.NULL_VAL;
+            double phi_2 = Residue.NULL_VAL;
+            double psi_2 = Residue.NULL_VAL;
+            double phi_3 = Residue.NULL_VAL;
+            double psi_3 = Residue.NULL_VAL;
             try {
                     AminoAcid a1 = (AminoAcid) g1;
                     AminoAcid a2 = (AminoAcid) g2;
                     AminoAcid a3 = (AminoAcid) g3;
+                    AminoAcid a4 = (AminoAcid) g4;
                    
                     // check connectivity
-                    boolean breakBefore = !Calc.isConnected(a1,a2);
-                    boolean breakAfter = !Calc.isConnected(a2,a3);
-                    if (!breakBefore && !breakAfter) {
-                        phi = Calc.getPhi(a1,a2);
-                        psi = Calc.getPsi(a2,a3);
+                    boolean break1 = !Calc.isConnected(a1,a2);
+                    boolean break2 = !Calc.isConnected(a2,a3);
+                    boolean break3 = !Calc.isConnected(a3,a4);
+                    if (!break1 && !break2 && !break3) {
+                        phi_2 = Calc.getPhi(a1,a2);
+                        psi_2 = Calc.getPsi(a2,a3);
+                        phi_3 = Calc.getPhi(a2,a3);
+                        psi_3 = Calc.getPsi(a3,a4);
                     }
             } catch (StructureException e) {
                 // do nothing
             }
 
             // we need torsion angles
-            if (phi == Residue.NULL_VAL || psi == Residue.NULL_VAL) {
+            if (phi_2 == Residue.NULL_VAL || psi_2 == Residue.NULL_VAL || 
+                phi_3 == Residue.NULL_VAL || psi_3 == Residue.NULL_VAL) {
                 continue;
             }
                               
-            // get the descriptor  
-            String descriptor = Descriptor.toDescriptor(phi, psi, ss3);
+            // get the descriptors
+            String descriptor1 = Descriptor.toDescriptor(phi_2, psi_2, ss3_2);
+            String descriptor2 = Descriptor.toDescriptor(phi_3, psi_3, ss3_3);
 
             // get max temp factor
             double maxTf1 = getMaxTf(g1);
             double maxTf2 = getMaxTf(g2);
             double maxTf3 = getMaxTf(g3);
-            double maxTf = Math.max(maxTf1, Math.max(maxTf2, maxTf3));
+            double maxTf4 = getMaxTf(g4);
+            double maxTf = Math.max(maxTf1, Math.max(maxTf2, Math.max(maxTf3, maxTf4)));
 
-            Gram gram = new Gram();
+            Pair pair = new Pair();
 
-            gram.setScopId(scopId);
-            gram.setPdbId(pdbId);
-            gram.setResidueNumber(g2.getResidueNumber().getSeqNum());
-            gram.setInsertCode(String.valueOf(g2.getResidueNumber().getInsCode()).toUpperCase());
-            gram.setResidueCode1(residueCode1);
-            gram.setResidueCode2(residueCode2);
-            gram.setResidueCode3(residueCode3);
-            gram.setMaxTf(maxTf);
-            gram.setPhi(phi);
-            gram.setPsi(psi);
-            gram.setDescriptor(descriptor);
+            pair.setScopId(scopId);
+            pair.setPdbId(pdbId);
+            pair.setMaxTf(maxTf);
+            pair.setDescriptor1(descriptor1);
+            pair.setDescriptor2(descriptor2);
 
-            grams.add(gram);
+            pairs.add(pair);
         }
 
-        // set order numbers
-        for (int i = 0; i < grams.size(); i++) {
-            grams.get(i).setOrderNumber(i+1);
-        }
-
-        return grams;
+        return pairs;
     }
     
     private static double getMaxTf(Group g) {
@@ -270,15 +261,15 @@ public class ImportGrams {
         return maxTf; 
     } 
 
-    public static void saveGrams(List<Gram> grams, Connection conn) throws SQLException {
+    public static void savePairs(List<Pair> pairs, Connection conn) throws SQLException {
 
-        ((PGConnection) conn).addDataType("gram", Gram.class);
+        ((PGConnection) conn).addDataType("pair", Pair.class);
 
-        PreparedStatement updt = conn.prepareStatement("SELECT insert_grams(?);");
+        PreparedStatement updt = conn.prepareStatement("SELECT insert_pairs(?);");
      
-        Gram a[] = new Gram[grams.size()];
-        grams.toArray(a);
-        updt.setArray(1, conn.createArrayOf("gram", a));
+        Pair a[] = new Pair[pairs.size()];
+        pairs.toArray(a);
+        updt.setArray(1, conn.createArrayOf("pair", a));
     
         updt.execute();
         updt.close();
