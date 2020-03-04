@@ -1,8 +1,8 @@
 package edu.umkc.dl.gram;
 
-// descriptors from gram_counts table are always non-null integers
+// descriptors from *_counts tables are always non-null integers
 
-public class GramProbs {
+public class DescrProbs {
 
     private int[] descrs;
     private double[] descrProbs;
@@ -13,7 +13,7 @@ public class GramProbs {
     private String[] ssWorking;
     private double[] ssWorkingProbs;
     
-    public GramProbs() {
+    public DescrProbs() {
 
         this.descrs = new int[] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
         this.descrProbs = new double[] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 }; 
