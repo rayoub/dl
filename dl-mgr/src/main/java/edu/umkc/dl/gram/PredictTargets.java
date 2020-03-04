@@ -19,15 +19,73 @@ public class PredictTargets {
 
     public static void predict() {
 
+        PredictResults results = new PredictResults();
+
         List<List<Target>> groups = getGroupedTargets();
         for (List<Target> targets : groups) {
-            predict(targets);
+            PredictResults r = predict(targets);
+            results.incrementTotalCount(r.getTotal());
+            results.incrementCorrectCount(r.getTotalCorrect());
         }
+        
+        System.out.println(((double)results.getTotalCorrect()) / results.getTotal());
     }
 
-    public static void predict(List<Target> targets) {
+    public static PredictResults predict(List<Target> targets) {
 
-        System.out.println(targets.size());
+        Map<String, GramProbs> map = PredictTargets.getGramProbs();
+
+        StringBuilder actual = new StringBuilder();
+        for (int i = 0; i < targets.size(); i++) {
+
+            Target target = targets.get(i);
+            actual.append(target.getSs3()); 
+        }
+
+        StringBuilder predicted = new StringBuilder();
+        for (int i = 0; i < targets.size(); i++) {
+            
+            Target target = targets.get(i);
+           
+            String ss = "_"; 
+            if (!target.getDescriptor().isEmpty()) {
+
+                Target prev = targets.get(i - 1);
+                Target next = targets.get(i + 1);
+                String gram = prev.getResidueCode() + target.getResidueCode() + next.getResidueCode();
+              
+                if (map.containsKey(gram)) { 
+                    GramProbs probs = map.get(gram);
+                    ss = probs.getSs(1);
+                }
+            }
+            predicted.append(ss);
+        }
+
+        int total = 0;
+        int correct = 0;
+        for (int i = 0; i < actual.length(); i++) {
+            
+            char a = actual.charAt(i);
+            char p = predicted.charAt(i);
+           
+            if (a != '_' && p != '_') {
+                total++;
+                if (a == p) {
+                    correct++;
+                }
+            } 
+        }
+
+        System.out.println(actual.toString());
+        System.out.println(predicted.toString());
+        System.out.println("");
+        
+        PredictResults results = new PredictResults();
+        results.incrementTotalCount(total);
+        results.incrementCorrectCount(correct);
+
+        return results;
     }
 
     public static List<List<Target>> getGroupedTargets() {

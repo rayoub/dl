@@ -146,7 +146,7 @@ public class ImportTargets {
             }
 
             // get secondary structure assignment 
-            String ss8 = "";
+            String ss8 = "_";
             Object obj = g.getProperty(Group.SEC_STRUC);
             if (obj instanceof SecStrucInfo) {
                SecStrucInfo info = (SecStrucInfo)obj;
@@ -174,7 +174,7 @@ public class ImportTargets {
                     ss3 = "C";
                     break;
                 default:
-                    ss3 = "";
+                    ss3 = "_";
             }
 
             // calculate torsion angles
@@ -182,7 +182,7 @@ public class ImportTargets {
             double phi = Target.NULL_VAL;
             double psi = Target.NULL_VAL;
 
-            if (validCodes.contains(residueCode)) {
+            if (!ss3.isEmpty() && validCodes.contains(residueCode)) {
 
                 boolean breakBefore = true;
                 boolean breakAfter = true;
