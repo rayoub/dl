@@ -1,25 +1,22 @@
 package edu.umkc.dl.gram;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class PredictNaive { 
 
-    public static void predict() {
+    public static List<PredictResult> predict() {
 
-        PredictResults results = new PredictResults();
-
+        List<PredictResult> results = new ArrayList<>();
         List<List<Target>> groups = Db.getGroupedTargets();
         for (List<Target> targets : groups) {
-            PredictResults r = predict(targets);
-            results.incrementTotalCount(r.getTotal());
-            results.incrementCorrectCount(r.getTotalCorrect());
+            results.add(predict(targets));
         }
-        
-        System.out.println(((double)results.getTotalCorrect()) / results.getTotal());
+        return results;    
     }
 
-    public static PredictResults predict(List<Target> targets) {
+    public static PredictResult predict(List<Target> targets) {
 
         Map<String, DescrProbs> map = Db.getGramProbs();
 
@@ -55,29 +52,8 @@ public class PredictNaive {
             }
             predicted.append(ss);
         }
-
-        int total = 0;
-        int correct = 0;
-        for (int i = 0; i < actual.length(); i++) {
-            
-            char a = actual.charAt(i);
-            char p = predicted.charAt(i);
-           
-            if (a != '_' && p != '_') {
-                total++;
-                if (a == p) {
-                    correct++;
-                }
-            } 
-        }
-
-        System.out.println(actual.toString());
-        System.out.println(predicted.toString());
-        System.out.println("");
         
-        PredictResults results = new PredictResults();
-        results.incrementTotalCount(total);
-        results.incrementCorrectCount(correct);
+        PredictResult results = new PredictResult(actual, predicted);
 
         return results;
     }
