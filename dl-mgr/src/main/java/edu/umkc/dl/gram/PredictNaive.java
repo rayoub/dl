@@ -47,7 +47,7 @@ public class PredictNaive {
                 String gram = prev.getResidueCode() + target.getResidueCode() + next.getResidueCode();
                 if (map.containsKey(gram)) { 
                     DescrProbs probs = map.get(gram);
-                    ss = probs.getSs(1);
+                    ss = probs.getSsByRank(1);
                 }
             }
             predicted.append(ss);

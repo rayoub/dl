@@ -26,20 +26,42 @@ public class DescrProbs {
         this.ssWorkingProbs = new double[] { 0, 0, 0 };
     }
 
-    public int getDescr(int rank) {
+    public int getDescrByRank(int rank) {
         return this.descrs[rank - 1];
     }
 
-    public double getDescrProb(int rank) {
+    public double getDescrProbByRank(int rank) {
         return this.descrProbs[rank - 1];
     }
     
-    public String getSs(int rank) {
+    public String getSsByRank(int rank) {
         return this.ss[rank - 1];
     }
 
-    public double getSsProb(int rank) {
+    public double getSsProbByRank(int rank) {
         return this.ssProbs[rank - 1];
+    }
+
+    public double getProbByDescr(int descr) {
+
+        int i;
+        for (i = 0; i < this.descrs.length; i++) {
+            if (this.descrs[i] == descr) {
+                break;
+            }
+        }
+        return  this.descrProbs[i];
+    }
+
+    public double getProbBySs(String ss) {
+
+        int i;
+        for (i = 0; i < this.ss.length; i++) {
+            if (this.ss[i].equals(ss)) {
+                break;
+            }
+        }
+        return  this.ssProbs[i];
     }
 
     /* call this in order */
