@@ -225,11 +225,9 @@ public class Db {
         return map; 
     }
 
-    // TODO finish this function
-    /*
-    public static Map<Integer, DescrProbs> getDescrProbs() {
+    public static double[] getPriorProbs() {
 
-        Map<Integer, DescrProbs> map = new HashMap<>();
+        double[] priors = new double[10];
 
         PGSimpleDataSource ds = Db.getDataSource();
 
@@ -241,31 +239,18 @@ public class Db {
             // descriptors from pair_counts table are always non-null integers
         
             PreparedStatement stmt = conn.prepareCall(
-                "select descriptor_1, descriptor_2, group_prob " + 
+                "select group_prob " + 
                 "from pair_counts " + 
-                "where group_set = '_d1' " + 
-                "order by descriptor_1, group_rank;"
+                "where group_set = '_' " + 
+                "order by descriptor_1;"
             );
-           
-            int lastDescr1 = -1;
-            DescrProbs probs = new DescrProbs(); 
-
+         
+            int i = 0; 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-
-                int descr1 = rs.getInt("descriptor_1");
-                int descr2 = rs.getInt("descriptor_2");
-                double prob = rs.getDouble("group_prob");
-
-                if (lastDescr1 != -1 && descr1 != lastDescr1) {
-                    map.put(lastDescr1, probs);
-                    probs = new DescrProbs();
-                }
-                lastDescr1 = descr1; 
-                
-                probs.updateDescrProb(descr2, prob);
+                priors[i] = rs.getDouble("group_prob");
+                i++;
             }
-            map.put(lastDescr1, probs);
 
             rs.close();
             stmt.close();
@@ -275,9 +260,8 @@ public class Db {
             Logger.getLogger(Db.class.getName()).log(Level.SEVERE, null, e);
         }
 
-        return map; 
+        return priors; 
     }
-    */
 }
 
 
