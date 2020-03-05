@@ -118,13 +118,65 @@ public class Db {
                 double prob = rs.getDouble("group_prob");
 
                 if (!lastGram.isEmpty() && !gram.equals(lastGram)) {
-                    map.put(gram, probs);
+                    map.put(lastGram, probs);
                     probs = new DescrProbs();
                 }
                 lastGram = gram; 
                 
                 probs.updateDescrProb(descr, prob);
             }
+            map.put(lastGram, probs);
+
+            rs.close();
+            stmt.close();
+            conn.close();
+        
+        } catch (SQLException e) {
+            Logger.getLogger(Db.class.getName()).log(Level.SEVERE, null, e);
+        }
+
+        return map; 
+    }
+
+    public static Map<Integer, DescrProbs> getPairProbs() {
+
+        Map<Integer, DescrProbs> map = new HashMap<>();
+
+        PGSimpleDataSource ds = Db.getDataSource();
+
+        try {
+       
+            Connection conn = ds.getConnection();
+            conn.setAutoCommit(false);
+       
+            // descriptors from pair_counts table are always non-null integers
+        
+            PreparedStatement stmt = conn.prepareCall(
+                "select descriptor_1, descriptor_2, group_prob " + 
+                "from pair_counts " + 
+                "where group_set = '_d1' " + 
+                "order by descriptor_1, group_rank;"
+            );
+           
+            int lastDescr1 = -1;
+            DescrProbs probs = new DescrProbs(); 
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+
+                int descr1 = rs.getInt("descriptor_1");
+                int descr2 = rs.getInt("descriptor_2");
+                double prob = rs.getDouble("group_prob");
+
+                if (lastDescr1 != -1 && descr1 != lastDescr1) {
+                    map.put(lastDescr1, probs);
+                    probs = new DescrProbs();
+                }
+                lastDescr1 = descr1; 
+                
+                probs.updateDescrProb(descr2, prob);
+            }
+            map.put(lastDescr1, probs);
 
             rs.close();
             stmt.close();

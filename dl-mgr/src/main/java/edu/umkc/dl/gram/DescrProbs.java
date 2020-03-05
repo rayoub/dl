@@ -16,10 +16,10 @@ public class DescrProbs {
     public DescrProbs() {
 
         this.descrs = new int[] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
-        this.descrProbs = new double[] { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 }; 
+        this.descrProbs = new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; 
 
         this.ss = new String[] { "", "", "" };
-        this.ssProbs = new double[] { -1, -1, -1 };
+        this.ssProbs = new double[] { 0, 0, 0 };
        
         this.descrIndex = 0;
         this.ssWorking = new String[] { "H", "S", "C" }; 
