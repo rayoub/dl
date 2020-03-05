@@ -88,7 +88,7 @@ public class Db {
         return groups; 
     }
 
-    public static Map<String, DescrProbs> getGramProbs() {
+    public static Map<String, DescrProbs> getGramDescrProbs() {
 
         Map<String, DescrProbs> map = new HashMap<>();
 
@@ -111,7 +111,7 @@ public class Db {
             String lastGram = "";
             DescrProbs probs = new DescrProbs(); 
 
-            boolean[] flags = new boolean[10];
+            boolean[] flags = new boolean[DescrProbs.DESCR_COUNT];
             Arrays.fill(flags, false);
 
             ResultSet rs = stmt.executeQuery();
@@ -125,7 +125,7 @@ public class Db {
                     
                     for (int i = 0; i < flags.length; i++) {
                         if (!flags[i]) {
-                            probs.updateDescrProb(i,0);
+                            probs.updateDescrProbs(i,0);
                         }
                     }
                     Arrays.fill(flags, false);
@@ -135,13 +135,13 @@ public class Db {
                 }
                 lastGram = gram; 
                 
-                probs.updateDescrProb(descr, prob);
+                probs.updateDescrProbs(descr, Math.log(prob));
                 flags[descr] = true;
             }
             
             for (int i = 0; i < flags.length; i++) {
                 if (!flags[i]) {
-                    probs.updateDescrProb(i,0);
+                    probs.updateDescrProbs(i,0);
                 }
             }
             map.put(lastGram, probs);
@@ -157,7 +157,7 @@ public class Db {
         return map; 
     }
 
-    public static Map<Integer, DescrProbs> getPairProbs() {
+    public static Map<Integer, DescrProbs> getPairDescrProbs() {
 
         Map<Integer, DescrProbs> map = new HashMap<>();
 
@@ -179,7 +179,7 @@ public class Db {
             int lastDescr2 = -1;
             DescrProbs probs = new DescrProbs(); 
 
-            boolean[] flags = new boolean[10];
+            boolean[] flags = new boolean[DescrProbs.DESCR_COUNT];
             Arrays.fill(flags, false);
 
             ResultSet rs = stmt.executeQuery();
@@ -193,7 +193,7 @@ public class Db {
 
                     for (int i = 0; i < flags.length; i++) {
                         if (!flags[i]) {
-                            probs.updateDescrProb(i,0);
+                            probs.updateDescrProbs(i,0);
                         }
                     }
                     Arrays.fill(flags, false);
@@ -203,13 +203,13 @@ public class Db {
                 }
                 lastDescr2 = descr2; 
                 
-                probs.updateDescrProb(descr1, prob);
+                probs.updateDescrProbs(descr1, Math.log(prob));
                 flags[descr1] = true;
             }
 
             for (int i = 0; i < flags.length; i++) {
                 if (!flags[i]) {
-                    probs.updateDescrProb(i,0);
+                    probs.updateDescrProbs(i,0);
                 }
             }
             map.put(lastDescr2, probs);
@@ -225,9 +225,9 @@ public class Db {
         return map; 
     }
 
-    public static double[] getPriorProbs() {
+    public static double[] getPriorDescrProbs() {
 
-        double[] priors = new double[10];
+        double[] priors = new double[DescrProbs.DESCR_COUNT];
 
         PGSimpleDataSource ds = Db.getDataSource();
 
@@ -248,7 +248,7 @@ public class Db {
             int i = 0; 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                priors[i] = rs.getDouble("group_prob");
+                priors[i] = Math.log(rs.getDouble("group_prob"));
                 i++;
             }
 

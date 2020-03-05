@@ -18,18 +18,14 @@ public class PredictNaive {
 
     public static PredictResult predict(List<Target> targets) {
 
-        Map<String, DescrProbs> map = Db.getGramProbs();
+        Map<String, DescrProbs> map = Db.getGramDescrProbs();
 
         StringBuilder actual = new StringBuilder();
         for (int i = 0; i < targets.size(); i++) {
 
             Target target = targets.get(i);
-            String ss = "_";
             String descr = target.getDescriptor();
-            if (!descr.equals("_")) {
-                ss = SecStruct.toSs(Integer.parseInt(descr)); 
-            }
-            actual.append(ss); 
+            actual.append(descr); 
         }
 
         StringBuilder predicted = new StringBuilder();
@@ -37,7 +33,7 @@ public class PredictNaive {
             
             Target target = targets.get(i);
            
-            String ss = "_"; 
+            int descr = -1; 
             if (!target.getDescriptor().equals("_")) {
 
                 // we check for descriptor because we know data is good and there will be a prev and a next
@@ -47,10 +43,15 @@ public class PredictNaive {
                 String gram = prev.getResidueCode() + target.getResidueCode() + next.getResidueCode();
                 if (map.containsKey(gram)) { 
                     DescrProbs probs = map.get(gram);
-                    ss = probs.getSsByRank(1);
+                    descr = probs.getDescrByRank(1);
                 }
             }
-            predicted.append(ss);
+            if (descr == -1) {
+                predicted.append("_");
+            }
+            else {
+                predicted.append(descr);
+            }
         }
         
         PredictResult results = new PredictResult(actual, predicted);
