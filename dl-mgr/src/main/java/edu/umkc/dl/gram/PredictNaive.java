@@ -1,11 +1,7 @@
 package edu.umkc.dl.gram;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 public class PredictNaive { 
-
+/*
     public static List<PredictResult> predict() {
 
         List<PredictResult> results = new ArrayList<>();
@@ -58,5 +54,6 @@ public class PredictNaive {
 
         return results;
     }
+*/
 }
 

@@ -23,8 +23,9 @@ public class PredictHMM {
 
     public static PredictResult predict(List<Target> targets) {
 
-        Map<String, DescrProbs> gramProbsMap = Db.getGramDescrProbs();
-        Map<Integer, DescrProbs> pairProbsMap = Db.getPairDescrProbs();
+        Map<String, DescrProbs> descrProbsMap = Db.getDescrProbs();
+        Map<Integer, GramProbs> gramProbsMap = Db.getGramProbs();
+        Map<Integer, PairProbs> pairProbsMap = Db.getPairProbs();
 
         double[][] score = new double[targets.size()][DESCR_COUNT];
         int[][] path = new int[targets.size()][DESCR_COUNT];
@@ -41,10 +42,10 @@ public class PredictHMM {
             Target last = targets.get(i - 1);
             Target current = targets.get(i);
             Target next = targets.get(i + 1);
-                
-            // get emission probs for current gram 
+               
+            // get descr probs for current gram 
             String gram = last.getResidueCode() + current.getResidueCode() + next.getResidueCode();
-            DescrProbs gramProbs = gramProbsMap.get(gram);
+            DescrProbs descrProbs = descrProbsMap.get(gram);
             
             if (current.getDescriptor().equals("_")) {
 
@@ -57,7 +58,7 @@ public class PredictHMM {
 
                 // score using prior probs to start segment
                 for (int j = 0; j < DESCR_COUNT; j++) {
-                    score[i][j] = gramProbs.getProbByDescr(j);
+                    score[i][j] = descrProbs.getProbByDescr(j);
                 }
             }
             else {
@@ -66,7 +67,8 @@ public class PredictHMM {
                 for (int j = 0; j < DESCR_COUNT; j++) {
 
                     // get prob of descriptor j for gram
-                    double gramProb = gramProbs.getProbByDescr(j);
+                    GramProbs gramProbs = gramProbsMap.get(j);
+                    double gramProb = gramProbs.getProbByGram(gram); // this look very inefficient
 
                     // break on flag
                     if (gramProb == 0.0) {
@@ -74,14 +76,14 @@ public class PredictHMM {
                     }
 
                     // get transition probs to descriptor j
-                    DescrProbs pairProbs = pairProbsMap.get(j);
+                    PairProbs pairProbs = pairProbsMap.get(j);
                     
                     int maxK = -1;
                     double maxScore = -999_999.999;
                     for (int k = 0; k < DESCR_COUNT; k++) {
                         
                         // get prob to descriptor j from descriptor k 
-                        double pairProb = pairProbs.getProbByDescr(k); 
+                        double pairProb = pairProbs.getProbByDescr1(k); 
                         
                         // break on flag
                         if (pairProb != 0.0 && score[i-1][k] != 0.0) {
@@ -100,31 +102,32 @@ public class PredictHMM {
             }
         }        
 
+        System.out.println("target id = " + targets.get(0).getTargetId());
         System.out.println("target length = " + targets.size());
         printScoresLeft(targets, score);
         printPathLeft(targets, path);
         printScoresRight(targets, score);
         printPathRight(targets, path);
-        printScoresRange(targets, score, 160, 180);
-        printPathRange(targets, path, 160, 180);
 
         System.out.println("---------------------------------------------------");
 
         return null;
     }
 
+    private static int LEAD = 20;
+
     public static void printScoresLeft(List<Target> targets, double[][] score) {
-        printScoresRange(targets, score, 0, 25);
+        printScoresRange(targets, score, 0, LEAD);
     }
 
     public static void printScoresRight(List<Target> targets, double[][] score) {
-        printScoresRange(targets, score, score.length - 25, score.length);
+        printScoresRange(targets, score, score.length - LEAD, score.length);
     }
 
     public static void printScoresRange(List<Target> targets, double[][] score, int start, int end) {
 
         DecimalFormat formatter = (DecimalFormat)NumberFormat.getNumberInstance(Locale.US);
-        formatter.applyPattern("000.00");
+        formatter.applyPattern("0000.00"); // 7 chars
         formatter.setNegativePrefix("");
 
         System.out.println("range: " + start + ", " + end);
@@ -135,7 +138,7 @@ public class PredictHMM {
             System.out.print(" ");
         }
         for (int i = start; i < end; i++) {
-            System.out.print("      " + targets.get(i).getResidueCode());
+            System.out.print("       " + targets.get(i).getResidueCode());
         }
         System.out.println("");
         for (int j = 0; j < score[0].length; j++) {
@@ -154,11 +157,11 @@ public class PredictHMM {
     }
 
     public static void printPathLeft(List<Target> targets, int[][] path) {
-        printPathRange(targets, path, 0, 25);
+        printPathRange(targets, path, 0, LEAD);
     }
 
     public static void printPathRight(List<Target> targets, int[][] path) {
-        printPathRange(targets, path, path.length - 25, path.length);
+        printPathRange(targets, path, path.length - LEAD, path.length);
     }
 
     public static void printPathRange(List<Target> targets, int[][] path, int start, int end) {
@@ -171,7 +174,7 @@ public class PredictHMM {
             System.out.print(" ");
         }
         for (int i = start; i < end; i++) {
-            System.out.print("      " + targets.get(i).getResidueCode());
+            System.out.print("       " + targets.get(i).getResidueCode());
         }
         System.out.println("");
         for (int j = 0; j < path[0].length; j++) {
@@ -180,7 +183,7 @@ public class PredictHMM {
                 System.out.print("... ");
             }
             for (int i = start; i < end; i++) {
-                System.out.print(String.format("%6d", path[i][j]) + " ");
+                System.out.print(String.format("%7d", path[i][j]) + " ");
             }
             if (end < path.length) {
                 System.out.print("...");
