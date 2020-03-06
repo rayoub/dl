@@ -67,7 +67,7 @@ SELECT
         group_rank,
         group_count,
         group_sum,
-        (group_count::REAL / group_sum)::REAL AS group_prob
+        LEAST(0.999, (group_count::REAL / group_sum)::REAL) AS group_prob
 FROM
     group_counts_2;
 
