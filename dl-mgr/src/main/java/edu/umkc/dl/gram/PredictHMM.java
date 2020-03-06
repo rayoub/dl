@@ -1,8 +1,10 @@
 package edu.umkc.dl.gram;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class PredictHMM { 
@@ -21,9 +23,8 @@ public class PredictHMM {
 
     public static PredictResult predict(List<Target> targets) {
 
-        double[] priors = Db.getPriorDescrProbs();
-        Map<String, DescrProbs> gramProbs = Db.getGramDescrProbs();
-        Map<Integer, DescrProbs> pairProbs = Db.getPairDescrProbs();
+        Map<String, DescrProbs> gramProbsMap = Db.getGramDescrProbs();
+        Map<Integer, DescrProbs> pairProbsMap = Db.getPairDescrProbs();
 
         double[][] score = new double[targets.size()][DESCR_COUNT];
         int[][] path = new int[targets.size()][DESCR_COUNT];
@@ -35,43 +36,124 @@ public class PredictHMM {
         fillIntArray(path, -1);
 
         // i across j down
-        for (int i = 1; i < targets.size(); i++) {
+        for (int i = 1; i < targets.size() - 1; i++) {
 
             Target last = targets.get(i - 1);
             Target current = targets.get(i);
+            Target next = targets.get(i + 1);
+                
+            // get emission probs for current gram 
+            String gram = last.getResidueCode() + current.getResidueCode() + next.getResidueCode();
+            DescrProbs gramProbs = gramProbsMap.get(gram);
             
             if (current.getDescriptor().equals("_")) {
 
                 // set 0 to signal end of segment - should already be zero
-                for (int k = 0; k < DESCR_COUNT; k++) {
-                    score[i][k] = 0.0;
+                for (int j = 0; j < DESCR_COUNT; j++) {
+                    score[i][j] = 0.0;
                 }
             }
             else if (last.getDescriptor().equals("_")) {
 
                 // score using prior probs to start segment
-                for (int k = 0; k < DESCR_COUNT; k++) {
-                    score[i][k] = priors[k];
+                for (int j = 0; j < DESCR_COUNT; j++) {
+                    score[i][j] = gramProbs.getProbByDescr(j);
                 }
             }
             else {
 
-                // determine max probs
+                // main logic
+                for (int j = 0; j < DESCR_COUNT; j++) {
 
+                    // get prob of descriptor j for gram
+                    double gramProb = gramProbs.getProbByDescr(j);
 
+                    // break on flag
+                    if (gramProb == 0.0) {
+                        continue;
+                    }
 
+                    // get transition probs to descriptor j
+                    DescrProbs pairProbs = pairProbsMap.get(j);
+                    
+                    int maxK = -1;
+                    double maxScore = -999_999.999;
+                    for (int k = 0; k < DESCR_COUNT; k++) {
+                        
+                        // get prob to descriptor j from descriptor k 
+                        double pairProb = pairProbs.getProbByDescr(k); 
+                        
+                        // break on flag
+                        if (pairProb != 0.0 && score[i-1][k] != 0.0) {
 
+                            double s = score[i-1][k] + pairProb + gramProb;
+                            if (s > maxScore) {
+                                maxK = k;
+                                maxScore = s;
+                            }
+                        }
+                    }
+
+                    path[i][j] = maxK; 
+                    score[i][j] = maxScore;
+                } 
             }
         }        
 
-        for (int k = 0; k < score[0].length; k++) {
-            for (int i = 0; i < score.length; i++) {
-                System.out.print(score[i][k] + " ");
+        System.out.println("target length = " + targets.size());
+        printScoresLeft(score);
+        printPathLeft(path);
+        printScoresRight(score);
+
+        System.out.println("---------------------------------------------------");
+
+        return null;
+    }
+
+    private static void printScoresLeft(double[][] score) {
+
+        DecimalFormat formatter = (DecimalFormat)NumberFormat.getNumberInstance(Locale.US);
+        formatter.applyPattern("000.00");
+        formatter.setNegativePrefix("");
+
+        System.out.println("left columns");
+        for (int j = 0; j < score[0].length; j++) {
+            System.out.print(j + " ");
+            for (int i = 0; i < 25; i++) {
+                System.out.print(formatter.format(score[i][j]) + " ");
+            }
+            System.out.print("...");
+            System.out.println("");
+        }
+    }
+
+    private static void printScoresRight(double[][] score) {
+
+        DecimalFormat formatter = (DecimalFormat)NumberFormat.getNumberInstance(Locale.US);
+        formatter.applyPattern("000.00");
+        formatter.setNegativePrefix("");
+
+        System.out.println("right columns");
+        for (int j = 0; j < score[0].length; j++) {
+            System.out.print(j + " ... ");
+            for (int i = score.length - 25; i < score.length; i++) {
+                System.out.print(formatter.format(score[i][j]) + " ");
             }
             System.out.println("");
         }
+    }
 
-        return null;
+    private static void printPathLeft(int[][] path) {
+
+        System.out.println("left columns");
+        for (int j = 0; j < path[0].length; j++) {
+            System.out.print(j + " ");
+            for (int i = 0; i < 25; i++) {
+                System.out.print(String.format("%6d", path[i][j]) + " ");
+            }
+            System.out.print("...");
+            System.out.println("");
+        }
     }
 
     private static void fillDoubleArray(double[][] a, double val) {

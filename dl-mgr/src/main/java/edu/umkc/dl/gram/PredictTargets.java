@@ -6,8 +6,8 @@ public class PredictTargets {
 
     public static void predict() {
 
-        List<PredictResult> results = PredictNaive.predict();
-
+        List<PredictResult> results = PredictHMM.predict();
+/*
         int total = 0;
         int totalCorrect = 0;
         for (PredictResult result : results) {
@@ -21,5 +21,6 @@ public class PredictTargets {
         }
 
         System.out.println(((double)totalCorrect) / total);
+*/
     }
 }
