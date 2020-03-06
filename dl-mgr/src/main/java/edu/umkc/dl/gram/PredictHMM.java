@@ -104,54 +104,67 @@ public class PredictHMM {
         printScoresLeft(score);
         printPathLeft(path);
         printScoresRight(score);
+        printPathRight(path);
+        printScoresRange(score, 160, 180);
+        printPathRange(path, 160, 180);
 
         System.out.println("---------------------------------------------------");
 
         return null;
     }
 
-    private static void printScoresLeft(double[][] score) {
+    public static void printScoresLeft(double[][] score) {
+        printScoresRange(score, 0, 25);
+    }
+
+    public static void printScoresRight(double[][] score) {
+        printScoresRange(score, score.length - 25, score.length);
+    }
+
+    public static void printScoresRange(double[][] score, int start, int end) {
 
         DecimalFormat formatter = (DecimalFormat)NumberFormat.getNumberInstance(Locale.US);
         formatter.applyPattern("000.00");
         formatter.setNegativePrefix("");
 
-        System.out.println("left columns");
+        System.out.println("range: " + start + ", " + end);
         for (int j = 0; j < score[0].length; j++) {
             System.out.print(j + " ");
-            for (int i = 0; i < 25; i++) {
+            if (start > 0) {
+                System.out.print("... ");
+            }
+            for (int i = start; i < end; i++) {
                 System.out.print(formatter.format(score[i][j]) + " ");
             }
-            System.out.print("...");
-            System.out.println("");
-        }
-    }
-
-    private static void printScoresRight(double[][] score) {
-
-        DecimalFormat formatter = (DecimalFormat)NumberFormat.getNumberInstance(Locale.US);
-        formatter.applyPattern("000.00");
-        formatter.setNegativePrefix("");
-
-        System.out.println("right columns");
-        for (int j = 0; j < score[0].length; j++) {
-            System.out.print(j + " ... ");
-            for (int i = score.length - 25; i < score.length; i++) {
-                System.out.print(formatter.format(score[i][j]) + " ");
+            if (end < score.length) {
+                System.out.print("...");
             }
             System.out.println("");
         }
     }
 
-    private static void printPathLeft(int[][] path) {
+    public static void printPathLeft(int[][] path) {
+        printPathRange(path, 0, 25);
+    }
 
-        System.out.println("left columns");
+    public static void printPathRight(int[][] path) {
+        printPathRange(path, path.length - 25, path.length);
+    }
+
+    public static void printPathRange(int[][] path, int start, int end) {
+
+        System.out.println("range: " + start + ", " + end);
         for (int j = 0; j < path[0].length; j++) {
             System.out.print(j + " ");
-            for (int i = 0; i < 25; i++) {
+            if (start > 0) {
+                System.out.print("... ");
+            }
+            for (int i = start; i < end; i++) {
                 System.out.print(String.format("%6d", path[i][j]) + " ");
             }
-            System.out.print("...");
+            if (end < path.length) {
+                System.out.print("...");
+            }
             System.out.println("");
         }
     }
