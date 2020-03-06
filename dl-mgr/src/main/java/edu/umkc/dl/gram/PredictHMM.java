@@ -30,6 +30,7 @@ public class PredictHMM {
         int[][] path = new int[targets.size()][DESCR_COUNT];
 
         // 0.0 will never happen so it is used as a flag
+        // (note: actually it can happen if you don't have enough data)
         fillDoubleArray(score, 0.0);
 
         // -1 will never happen so it is used as a flag
