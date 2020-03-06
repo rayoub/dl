@@ -101,33 +101,43 @@ public class PredictHMM {
         }        
 
         System.out.println("target length = " + targets.size());
-        printScoresLeft(score);
-        printPathLeft(path);
-        printScoresRight(score);
-        printPathRight(path);
-        printScoresRange(score, 160, 180);
-        printPathRange(path, 160, 180);
+        printScoresLeft(targets, score);
+        printPathLeft(targets, path);
+        printScoresRight(targets, score);
+        printPathRight(targets, path);
+        printScoresRange(targets, score, 160, 180);
+        printPathRange(targets, path, 160, 180);
 
         System.out.println("---------------------------------------------------");
 
         return null;
     }
 
-    public static void printScoresLeft(double[][] score) {
-        printScoresRange(score, 0, 25);
+    public static void printScoresLeft(List<Target> targets, double[][] score) {
+        printScoresRange(targets, score, 0, 25);
     }
 
-    public static void printScoresRight(double[][] score) {
-        printScoresRange(score, score.length - 25, score.length);
+    public static void printScoresRight(List<Target> targets, double[][] score) {
+        printScoresRange(targets, score, score.length - 25, score.length);
     }
 
-    public static void printScoresRange(double[][] score, int start, int end) {
+    public static void printScoresRange(List<Target> targets, double[][] score, int start, int end) {
 
         DecimalFormat formatter = (DecimalFormat)NumberFormat.getNumberInstance(Locale.US);
         formatter.applyPattern("000.00");
         formatter.setNegativePrefix("");
 
         System.out.println("range: " + start + ", " + end);
+        if (start > 0) {
+            System.out.print("     ");
+        }
+        else {
+            System.out.print(" ");
+        }
+        for (int i = start; i < end; i++) {
+            System.out.print("      " + targets.get(i).getResidueCode());
+        }
+        System.out.println("");
         for (int j = 0; j < score[0].length; j++) {
             System.out.print(j + " ");
             if (start > 0) {
@@ -143,17 +153,27 @@ public class PredictHMM {
         }
     }
 
-    public static void printPathLeft(int[][] path) {
-        printPathRange(path, 0, 25);
+    public static void printPathLeft(List<Target> targets, int[][] path) {
+        printPathRange(targets, path, 0, 25);
     }
 
-    public static void printPathRight(int[][] path) {
-        printPathRange(path, path.length - 25, path.length);
+    public static void printPathRight(List<Target> targets, int[][] path) {
+        printPathRange(targets, path, path.length - 25, path.length);
     }
 
-    public static void printPathRange(int[][] path, int start, int end) {
+    public static void printPathRange(List<Target> targets, int[][] path, int start, int end) {
 
         System.out.println("range: " + start + ", " + end);
+        if (start > 0) {
+            System.out.print("     ");
+        }
+        else {
+            System.out.print(" ");
+        }
+        for (int i = start; i < end; i++) {
+            System.out.print("      " + targets.get(i).getResidueCode());
+        }
+        System.out.println("");
         for (int j = 0; j < path[0].length; j++) {
             System.out.print(j + " ");
             if (start > 0) {
