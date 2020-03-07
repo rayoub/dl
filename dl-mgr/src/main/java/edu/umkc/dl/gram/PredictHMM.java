@@ -10,6 +10,7 @@ import java.util.Map;
 public class PredictHMM { 
 
     private static int DESCR_COUNT = 10;
+    private static double DOUBLE_MIN = -999_999.999;
 
     public static List<PredictResult> predict() {
 
@@ -79,7 +80,7 @@ public class PredictHMM {
                     PairProbs pairProbs = pairProbsMap.get(j);
                     
                     int maxK = -1;
-                    double maxScore = -999_999.999;
+                    double maxScore = DOUBLE_MIN;
                     for (int k = 0; k < DESCR_COUNT; k++) {
                         
                         // get prob to descriptor j from descriptor k 
@@ -102,17 +103,60 @@ public class PredictHMM {
             }
         }        
 
+        /*
+        // DEBUG OUTPUT
         System.out.println("target id = " + targets.get(0).getTargetId());
         System.out.println("target length = " + targets.size());
         printScoresLeft(targets, score);
         printPathLeft(targets, path);
         printScoresRight(targets, score);
         printPathRight(targets, path);
+        */
 
-        System.out.println("---------------------------------------------------");
+        int pointer = -1;
+        StringBuilder predicted = new StringBuilder();
+        for (int i = score.length - 1; i >= 0; i--) {
+           
+            if (pointer == -1) {
 
-        return null;
+                int maxJ = -1;
+                double maxScore = DOUBLE_MIN;
+                for (int j = 0; j < DESCR_COUNT; j++) {
+                    if (score[i][j] != 0.0 && score[i][j] > maxScore) {
+                        maxJ = j;
+                        maxScore = score[i][j];
+                    }
+                }
+                if (maxJ != -1) {
+                    predicted.append(maxJ);
+                    pointer = path[i][maxJ];
+                }
+                else {
+                    predicted.append("_");
+                    pointer = -1;
+                }
+            }
+            else {
+
+                predicted.append(pointer);
+                pointer = path[i][pointer];
+            }
+        }
+
+        StringBuilder actual = new StringBuilder();
+        for (int i = 0; i < targets.size(); i++) {
+
+            Target target = targets.get(i);
+            String descr = target.getDescriptor();
+            actual.append(descr); 
+        }
+
+        PredictResult results = new PredictResult(actual, predicted.reverse());
+        
+        return results;
     }
+
+    /* DEBUG OUTPUT */
 
     private static int LEAD = 20;
 
