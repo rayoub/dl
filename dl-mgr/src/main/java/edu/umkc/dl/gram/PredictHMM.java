@@ -26,7 +26,7 @@ public class PredictHMM {
 
         Map<String, DescrProbs> descrProbsMap = Db.getDescrProbs();
         Map<Integer, GramProbs> gramProbsMap = Db.getGramProbs();
-        Map<Integer, PairProbs> pairProbsMap = Db.getPairProbs();
+        Map<String, PairProbs> pairProbsMap = Db.getPairProbs();
 
         double[][] score = new double[targets.size()][DESCR_COUNT];
         int[][] path = new int[targets.size()][DESCR_COUNT];
@@ -77,14 +77,21 @@ public class PredictHMM {
                     }
 
                     // get transition probs to descriptor j
-                    PairProbs pairProbs = pairProbsMap.get(j);
+                    String key = current.getResidueCode() + last.getResidueCode() + j + "";
+                    PairProbs pairProbs = pairProbsMap.get(key);
                     
                     int maxK = -1;
                     double maxScore = DOUBLE_MIN;
                     for (int k = 0; k < DESCR_COUNT; k++) {
                         
                         // get prob to descriptor j from descriptor k 
-                        double pairProb = pairProbs.getProbByDescr1(k); 
+                        double pairProb;
+                        if (pairProbs != null) {
+                            pairProb = pairProbs.getProbByDescr1(k); 
+                        }
+                        else {
+                            pairProb = descrProbs.getProbByDescr(j);
+                        }
                         
                         // break on flag
                         if (pairProb != 0.0 && score[i-1][k] != 0.0) {
@@ -128,7 +135,7 @@ public class PredictHMM {
                     }
                 }
                 if (maxJ != -1) {
-                    predicted.append(maxJ);
+                    predicted.append(SecStruct.toSs(maxJ));
                     pointer = path[i][maxJ];
                 }
                 else {
@@ -138,7 +145,7 @@ public class PredictHMM {
             }
             else {
 
-                predicted.append(pointer);
+                predicted.append(SecStruct.toSs(pointer));
                 pointer = path[i][pointer];
             }
         }
@@ -148,7 +155,12 @@ public class PredictHMM {
 
             Target target = targets.get(i);
             String descr = target.getDescriptor();
-            actual.append(descr); 
+            if (descr.equals("_")) {
+                actual.append(descr);
+            }
+            else {
+                actual.append(SecStruct.toSs(Integer.parseInt(descr))); 
+            }
         }
 
         PredictResult results = new PredictResult(actual, predicted.reverse());

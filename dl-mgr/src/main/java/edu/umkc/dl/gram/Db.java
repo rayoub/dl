@@ -189,9 +189,9 @@ public class Db {
         return map; 
     }
 
-    public static Map<Integer, PairProbs> getPairProbs() {
+    public static Map<String, PairProbs> getPairProbs() {
 
-        Map<Integer, PairProbs> map = new HashMap<>();
+        Map<String, PairProbs> map = new HashMap<>();
 
         PGSimpleDataSource ds = Db.getDataSource();
 
@@ -203,22 +203,22 @@ public class Db {
             // descriptors from *_probs table are always non-null integers
         
             PreparedStatement stmt = conn.prepareCall(
-                "select descriptor_2, descriptor_1, group_prob " + 
+                "select residue_code_2 || residue_code_1 || descriptor_2 AS descriptor_2, descriptor_1, group_prob " + 
                 "from pair_probs " + 
                 "order by descriptor_2, descriptor_1;"
             );
            
-            int lastDescr2 = -1;
+            String lastDescr2 = "";
             PairProbs probs = new PairProbs(); 
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
 
-                int descr2 = rs.getInt("descriptor_2");
+                String descr2 = rs.getString("descriptor_2");
                 int descr1 = rs.getInt("descriptor_1");
                 double prob = rs.getDouble("group_prob");
 
-                if (lastDescr2 != -1 && descr2 != lastDescr2) {
+                if (!lastDescr2.isEmpty() && !descr2.equals(lastDescr2)) {
                     map.put(lastDescr2, probs);
                     probs = new PairProbs();
                 }

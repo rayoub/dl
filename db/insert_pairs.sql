@@ -8,6 +8,8 @@ BEGIN
         scop_id,
         pdb_id,
         max_tf,
+        residue_code_1,
+        residue_code_2,
         descriptor_1,
         descriptor_2
     )
@@ -15,6 +17,8 @@ BEGIN
         scop_id,
         pdb_id,
         max_tf,
+        residue_code_1,
+        residue_code_2,
         descriptor_1,
         descriptor_2
 	FROM
