@@ -26,13 +26,13 @@ public class SecStruct {
             case "G":
             case "H":
             case "I":
-            case "T":
                 ss3 = "H";
                 break;
             case "E":
-            case "B":
                 ss3 = "S";
                 break;
+            case "B":
+            case "T":
             case "S":
             case "C":
                 ss3 = "C";
@@ -53,19 +53,6 @@ public class SecStruct {
         }
         else {
             return "C";
-        }
-    }
-
-    public static int toSsIndex(int descr) {
-
-        if (descr <= 3) {
-            return 0;
-        }
-        else if (descr <= 6) {
-            return 1;
-        }
-        else {
-            return 2;
         }
     }
 }

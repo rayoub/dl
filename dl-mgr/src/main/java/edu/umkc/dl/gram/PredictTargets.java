@@ -14,6 +14,7 @@ public class PredictTargets {
             total += result.getTotal();
             totalCorrect += result.getTotalCorrect();
 
+            System.out.println(result.getTargetId());
             System.out.println(result.getActual());
             System.out.println(result.getPredicted());
             System.out.println("");

@@ -2,13 +2,15 @@ package edu.umkc.dl.gram;
 
 public class PredictResult {
 
-    private int total;
-    private int totalCorrect;
+    private String targetId;
     private StringBuilder actual;
     private StringBuilder predicted;
+    private int total;
+    private int totalCorrect;
 
-    public PredictResult(StringBuilder actual, StringBuilder predicted) {
+    public PredictResult(String targetId, StringBuilder actual, StringBuilder predicted) {
 
+        this.targetId = targetId;
         this.actual = actual;
         this.predicted = predicted;
         
@@ -27,6 +29,10 @@ public class PredictResult {
                 }
             } 
         }
+    }
+
+    public String getTargetId() {
+        return targetId;
     }
 
     public StringBuilder getActual() {
