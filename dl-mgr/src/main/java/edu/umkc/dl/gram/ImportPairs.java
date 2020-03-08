@@ -9,9 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.IntStream;
@@ -35,32 +33,6 @@ import edu.umkc.dl.lib.Descriptor;
 import edu.umkc.dl.lib.Residue;
 
 public class ImportPairs {
-
-    private static Set<String> validCodes = new HashSet<>();
-
-    static {
-
-        validCodes.add("A");
-        validCodes.add("C");
-        validCodes.add("D");
-        validCodes.add("E");
-        validCodes.add("F");
-        validCodes.add("G");
-        validCodes.add("H");
-        validCodes.add("I");
-        validCodes.add("K");
-        validCodes.add("L");
-        validCodes.add("M");
-        validCodes.add("N");
-        validCodes.add("P");
-        validCodes.add("Q");
-        validCodes.add("R");
-        validCodes.add("S");
-        validCodes.add("T");
-        validCodes.add("V");
-        validCodes.add("W");
-        validCodes.add("Y");
-    }
 
     public static void importPairs() {
 
@@ -189,7 +161,7 @@ public class ImportPairs {
             String residueCode2 = g3.getChemComp().getOne_letter_code().toUpperCase();
 
             // we need valid residue codes
-            if (!(validCodes.contains(residueCode1) && validCodes.contains(residueCode2))) {
+            if (!(Codes.ValidCodes.contains(residueCode1) && Codes.ValidCodes.contains(residueCode2))) {
                 continue;
             }
 
