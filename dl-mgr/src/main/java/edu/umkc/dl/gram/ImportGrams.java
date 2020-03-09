@@ -160,16 +160,16 @@ public class ImportGrams {
             String residueCode2 = g2.getChemComp().getOne_letter_code().toUpperCase();
             String residueCode3 = g3.getChemComp().getOne_letter_code().toUpperCase();
 
+            // we need valid residue codes
+            if (!(Codes.ValidCodes.contains(residueCode1) && Codes.ValidCodes.contains(residueCode2) && Codes.ValidCodes.contains(residueCode3))) {
+                continue;
+            }
+
             // get secondary structure 8
             String ss8 = SecStruct.getSecStruct8(g2);
                 
             // map to secondary structure 3
             String ss3 = SecStruct.getSecStruct3(ss8);
-
-            // we need valid residue codes
-            if (!(Codes.ValidCodes.contains(residueCode1) && Codes.ValidCodes.contains(residueCode2) && Codes.ValidCodes.contains(residueCode3))) {
-                continue;
-            }
             
             // calculate torsion angles
             double phi = Residue.NULL_VAL;
