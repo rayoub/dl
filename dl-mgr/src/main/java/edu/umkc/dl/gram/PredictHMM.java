@@ -163,7 +163,9 @@ public class PredictHMM {
             }
         }
 
-        PredictResult results = new PredictResult(targets.get(0).getTargetId(), actual, predicted.reverse());
+        PredictResult results = new PredictResult(targets.get(0).getTargetId(), actual);
+        results.addPrediction(predicted.reverse());
+        results.resetTotals();
         
         return results;
     }

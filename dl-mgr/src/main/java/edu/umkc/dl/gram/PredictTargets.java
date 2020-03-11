@@ -16,7 +16,7 @@ public class PredictTargets {
 
             System.out.println(result.getTargetId());
             System.out.println(result.getActual());
-            System.out.println(result.getPredicted());
+            System.out.println(result.getPredictions().get(0));
             System.out.println("");
         }
 
