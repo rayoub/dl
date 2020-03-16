@@ -1,4 +1,4 @@
-package edu.umkc.dl.lib;
+package edu.umkc.dl.gram;
 
 import org.postgresql.util.PGobject;
 
@@ -15,8 +15,6 @@ public class Gram extends PGobject {
     private double maxTf;
     private double phi;
     private double psi;
-    private String ss8;
-    private String ss3;
     private String descriptor;
 
     public String getScopId() {
@@ -107,22 +105,6 @@ public class Gram extends PGobject {
         this.psi = psi;
     }
 
-    public String getSs8() {
-        return ss8;
-    }
-
-    public void setSs8(String ss8) {
-        this.ss8 = ss8;
-    }
-
-    public String getSs3() {
-        return ss3;
-    }
-
-    public void setSs3(String ss3) {
-        this.ss3 = ss3;
-    }
-
     public String getDescriptor() {
         return descriptor;
     }
@@ -140,8 +122,7 @@ public class Gram extends PGobject {
             + residueCode2 + "," 
             + residueCode3 + ","
             + maxTf + ","
-            + phi + "," + psi + "," 
-            + ss8 + "," + ss3 + "," + descriptor 
+            + phi + "," + psi + "," + descriptor 
             + ")";
         return row;
     }

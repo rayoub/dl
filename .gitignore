@@ -1,6 +1,7 @@
 
 # data directories
 data/pdbstyle-2.07
+data/targets
 test_ss/CASP11
 test_ss/CB513
 

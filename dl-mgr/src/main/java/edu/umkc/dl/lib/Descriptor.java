@@ -2,138 +2,141 @@ package edu.umkc.dl.lib;
 
 public class Descriptor {
 
-    public static int calculateRegion(double phi, double psi, String sse) {
+    public static String toDescriptor(double phi, double psi, String sse) {
 
         // helix 0, 1, 2, 3
         if (sse.equals("H")) {
-            return calculateHelixRegion(phi, psi);
+            return toHelixDescriptor(phi, psi);
         }
 
         // strand 4, 5, 6
         else if (sse.equals("S")) {
-            return calculateStrandRegion(phi, psi);
+            return toStrandDescriptor(phi, psi);
         }
      
         // coil 7, 8, 9
-        else { 
-            return calculateCoilRegion(phi, psi);
+        else if (sse.equals("C")) { 
+            return toCoilDescriptor(phi, psi);
+        }
+        else {
+            return "_";
         }
     }
 
-    public static int calculateHelixRegion(double phi, double psi) {
+    public static String toHelixDescriptor(double phi, double psi) {
 
-        int region = -1;
+        String descr = "_";
 
         if (psi >= -180 && psi < -135) {
             if (phi >= 0 && phi < 180) {
-                region = 3;
+                descr = "3";
             }
             else {
-                region = 0; 
+                descr = "0"; 
             }
         }
         else if (psi >= -135 && psi < -90) {
             if (phi >= 0 && phi < 180) {
-                region = 3;
+                descr = "3";
             }
             else {
-                region = 2;
+                descr = "2";
             }
         }
         else if (psi >= -90 && psi < 90) {
             if (phi >= 0 && phi < 180) {
-                region = 1;
+                descr = "1";
             }
             else {
-                region = 2;
+                descr = "2";
             }
         }
         else if (psi >= 90 && psi < 180) {
             if (phi >= 0 && phi < 180) {
-                region = 3;
+                descr = "3";
             }
             else {
-                region = 0;
+                descr = "0";
             }
         }
         
-        return region;
+        return descr;
     }
 
-    public static int calculateStrandRegion(double phi, double psi) {
+    public static String toStrandDescriptor(double phi, double psi) {
 
-        int region = -1;
+        String descr = "_";
 
         if (psi >= -180 && psi < -100) {
-            region = 4;
+            descr = "4";
         }
         else if (psi >= -100 && psi < -90) {
             if (phi >= 0 && phi < 180) {
-                region = 4;
+                descr = "4";
             }
             else {
-                region = 6;
+                descr = "6";
             }
         }
         else if (psi >= -90 && psi < 40) {
             if (phi >= 0 && phi < 180) {
-                region = 5;
+                descr = "5";
             }
             else {
-                region = 6;
+                descr = "6";
             }
         }
         else if (psi >= 40 && psi < 90) {
             if (phi >= 0 && phi < 180) {
-                region = 5;
+                descr = "5";
             }
             else {
-                region = 4;
+                descr = "4";
             }
         }
         else if (psi >= 90 && psi < 180) {
-            region = 4;
+            descr = "4";
         }
 
-        return region;
+        return descr;
     }
     
-    public static int calculateCoilRegion(double phi, double psi) {
+    public static String toCoilDescriptor(double phi, double psi) {
 
-        int region = -1;
+        String descr = "_";
 
         if (psi >= -180 && psi < -100) {
-            region = 7;
+            descr = "7";
         }
         else if (psi >= -100 && psi < -90) {
             if (phi >= 0 && phi < 180) {
-                region = 7;
+                descr = "7";
             }
             else {
-                region = 9;
+                descr = "9";
             }
         }
         else if (psi >= -90 && psi < 40) {
             if (phi >= 0 && phi < 180) {
-                region = 8;
+                descr = "8";
             }
             else {
-                region = 9;
+                descr = "9";
             }
         }
         else if (psi >= 40 && psi < 90) {
             if (phi >= 0 && phi < 180) {
-                region = 8;
+                descr = "8";
             }
             else {
-                region = 7;
+                descr = "7";
             }
         }
         else if (psi >= 90 && psi < 180) {
-            region = 7;
+            descr = "7";
         }
 
-        return region;
+        return descr;
     }
 }
 

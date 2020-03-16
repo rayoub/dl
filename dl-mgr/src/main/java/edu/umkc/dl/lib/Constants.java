@@ -11,6 +11,7 @@ public class Constants {
    
     public final static String DATA_PATH = "/home/ayoub/git/dl/data/";
     public final static String PDB_PATH = DATA_PATH + "pdbstyle-2.07/";
+    public final static String TARGET_PATH = DATA_PATH + "targets/";
     
     public final static int SPLIT_COUNT = 8;
     public final static int PROCESSED_INCREMENT = 500;

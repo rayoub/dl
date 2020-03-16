@@ -12,9 +12,12 @@ import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import edu.umkc.dl.gram.ImportGrams;
+import edu.umkc.dl.gram.ImportPairs;
+import edu.umkc.dl.gram.ImportTargets;
+import edu.umkc.dl.gram.PredictTargets;
 import edu.umkc.dl.lib.Constants;
 import edu.umkc.dl.lib.FitSequenceType;
-import edu.umkc.dl.lib.ImportStructures;
 import edu.umkc.dl.lib.SetFitSequences;
 
 public class Main {
@@ -72,7 +75,10 @@ public class Main {
 
         //ImportAaSequences.importAaSequences();
         //ImportMaps.importMaps();
-        ImportStructures.importStructures();
+        //ImportStructures.importStructures();
+        ImportGrams.importGrams();
+        ImportTargets.importTargets();
+        ImportPairs.importPairs();
     }
     
     private static void option_s(CommandLine line) {
@@ -83,6 +89,42 @@ public class Main {
     
     private static void option_d(CommandLine line) {
 
+
+        PredictTargets.predict();
+        /*
+        Map<Integer,PairProbs> map = Db.getPairProbs();
+        for (Integer key : map.keySet()) {
+
+            System.out.println(key + ":");
+            PairProbs probs = map.get(key);
+            for (int i = 0; i < 10; i++) {
+                double prob = probs.getProbByDescr1(i);
+                System.out.println(i + " = " + prob);
+            }
+        }
+        */
+        /*
+        Map<String,DescrProbs> map = Db.getDescrProbs();
+        for (String key : map.keySet()) {
+
+            System.out.println(key + ":");
+            DescrProbs probs = map.get(key);
+            for (int i = 0; i < 10; i++) {
+                double prob = probs.getProbByDescr(i);
+                System.out.println(i + " = " + prob);
+            }
+        }
+        */
+        /*
+        Map<Integer,GramProbs> map = Db.getGramProbs();
+        for (int key : map.keySet()) {
+
+            System.out.println(key + ":");
+            GramProbs probs = map.get(key);
+            double prob = probs.getProbByGram("ACA");
+            System.out.println("ACA = " + prob);
+        }
+        */
     }
 
     private static void option_help(Options options) {

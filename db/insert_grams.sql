@@ -16,8 +16,6 @@ BEGIN
         max_tf,
         phi,
         psi,
-        ss8,
-        ss3,
         descriptor
     )
 	SELECT
@@ -32,8 +30,6 @@ BEGIN
         max_tf,
         phi,
         psi,
-        ss8,
-        ss3,
         descriptor
 	FROM
 		UNNEST(p_tab);
