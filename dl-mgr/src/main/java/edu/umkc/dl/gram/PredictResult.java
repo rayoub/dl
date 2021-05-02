@@ -8,8 +8,10 @@ public class PredictResult {
     private String targetId;
     private StringBuilder actual;
     private List<StringBuilder> predictions = new ArrayList<>();
-    private int total;
-    private int totalCorrect;
+    private int totalPositives;
+    private int totalNegatives;
+    private int totalTruePositives;
+    private int totalTrueNegatives;
 
     public PredictResult(String targetId, StringBuilder actual) {
 
@@ -25,12 +27,20 @@ public class PredictResult {
         return actual;
     }
 
-    public int getTotal() {
-        return total;
+    public int getTotalPositives() {
+        return totalPositives;
     }
 
-    public int getTotalCorrect() {
-        return totalCorrect;
+    public int getTotalNegatives() {
+        return totalNegatives;
+    }
+
+    public int getTotalTruePositives() {
+        return totalTruePositives;
+    }
+
+    public int getTotalTrueNegatives() {
+        return totalTrueNegatives;
     }
 
     public List<StringBuilder> getPredictions() {
@@ -43,8 +53,10 @@ public class PredictResult {
 
     public void resetTotals() {
 
-        this.total = 0;
-        this.totalCorrect = 0;
+        this.totalPositives = 0;
+        this.totalTruePositives = 0;
+        this.totalNegatives = 0;
+        this.totalTrueNegatives = 0;
 
         for (StringBuilder prediction : predictions) {
             for (int i = 0; i < this.actual.length(); i++) {
@@ -53,9 +65,17 @@ public class PredictResult {
                 char p = prediction.charAt(i);
                
                 if (a != '_' && p != '_') {
-                    this.total++;
-                    if (a == p) {
-                        this.totalCorrect++;
+                    if (a == 'C') { // positives
+                        this.totalPositives++;
+                        if (a == p) {
+                            this.totalTruePositives++;
+                        }
+                    }
+                    else { // negatives
+                        this.totalNegatives++;
+                        if (a == p) {
+                            this.totalTrueNegatives++;
+                        }
                     }
                 } 
             }

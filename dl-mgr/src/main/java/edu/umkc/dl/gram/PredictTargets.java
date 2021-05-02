@@ -7,12 +7,18 @@ public class PredictTargets {
     public static void predict() {
 
         List<PredictResult> results = PredictHMM.predict();
-        int total = 0;
-        int totalCorrect = 0;
+        int totalPositives = 0;
+        int totalTruePositives = 0;
+        int totalNegatives = 0;
+        int totalTrueNegatives = 0;
+
         for (PredictResult result : results) {
             
-            total += result.getTotal();
-            totalCorrect += result.getTotalCorrect();
+            totalPositives += result.getTotalPositives();
+            totalTruePositives += result.getTotalTruePositives();
+            
+            totalNegatives += result.getTotalNegatives();
+            totalTrueNegatives += result.getTotalTrueNegatives();
 
             System.out.println(result.getTargetId());
             System.out.println(result.getActual());
@@ -20,6 +26,8 @@ public class PredictTargets {
             System.out.println("");
         }
 
-        System.out.println(((double)totalCorrect) / total);
+        System.out.println("ACC: " + ((double)(totalTruePositives + totalTrueNegatives)) / (totalPositives + totalNegatives));
+        System.out.println("TPR: " + ((double)totalTruePositives) / totalPositives);
+        System.out.println("TNR: " + ((double)totalTrueNegatives) / totalNegatives);
     }
 }

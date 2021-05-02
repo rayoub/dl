@@ -37,6 +37,6 @@ calc_probs AS
     FROM
         calc_counts_2
 )
-SELECT * FROM calc_probs ORDER BY descriptor, gram;
+SELECT * FROM calc_probs ORDER BY descriptor, gram WHERE descriptor = 0;
 
 

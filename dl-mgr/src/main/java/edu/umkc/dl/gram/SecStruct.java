@@ -49,7 +49,7 @@ public class SecStruct {
             return "H";
         }
         else if (descr <= 6) {
-            return "S";
+            return "H";
         }
         else {
             return "C";
